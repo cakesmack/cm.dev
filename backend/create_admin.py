@@ -3,6 +3,7 @@ from app.db import SessionLocal, engine, Base
 from app.models.user import User
 from app.core.security import get_password_hash
 import sys
+import getpass
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -37,13 +38,18 @@ def create_admin_user(email: str, password: str, full_name: str, company_name: s
         db.close()
 
 if __name__ == "__main__":
-    if len(sys.argv) < 4:
-        print("Usage: python create_admin.py <email> <password> <full_name> [company_name]")
+    if len(sys.argv) < 3:
+        print("Usage: python create_admin.py <email> <full_name> [company_name]")
         sys.exit(1)
 
     email = sys.argv[1]
-    password = sys.argv[2]
-    full_name = sys.argv[3]
-    company_name = sys.argv[4] if len(sys.argv) > 4 else None
+    full_name = sys.argv[2]
+    company_name = sys.argv[3] if len(sys.argv) > 3 else None
+
+    # Securely prompt for password
+    password = getpass.getpass("Enter admin password: ")
+    if not password:
+        print("Password cannot be empty!")
+        sys.exit(1)
 
     create_admin_user(email, password, full_name, company_name)
