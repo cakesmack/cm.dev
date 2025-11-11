@@ -27,8 +27,10 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
 from app.routers import auth
+from app.routers.admin import projects as admin_projects
 
 app.include_router(auth.router, prefix=settings.API_PREFIX)
+app.include_router(admin_projects.router, prefix=settings.API_PREFIX)
 
 
 @app.get("/health")
