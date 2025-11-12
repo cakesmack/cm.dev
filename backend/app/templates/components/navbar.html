@@ -1,25 +1,89 @@
-<nav class="fixed w-full top-0 bg-white/90 backdrop-blur-sm z-50 border-b border-gray-200">
-    <div class="max-w-6xl mx-auto px-6 py-4">
-        <div class="flex justify-between items-center">
-            <a href="/" class="text-2xl font-bold text-charcoal">Craig Mackenzie</a>
-
-            <div class="hidden md:flex space-x-8">
-                <a href="/#projects" class="text-charcoal hover:text-gray-600 transition">Projects</a>
-                <a href="/#about" class="text-charcoal hover:text-gray-600 transition">About</a>
-                <a href="/#contact" class="text-charcoal hover:text-gray-600 transition">Contact</a>
+<!-- Navigation -->
+<nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
+    <div class="container mx-auto px-6 lg:px-8 py-5">
+        <div class="flex items-center justify-between">
+            <a href="/" class="text-xl font-semibold text-charcoal tracking-tight">
+                Craig Mackenzie
+            </a>
+            <div class="hidden md:flex items-center space-x-10">
+                <a href="/#home" class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal">Home</a>
+                <a href="/#projects" class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal">Projects</a>
+                <a href="/#about" class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal">About</a>
+                <a href="/#contact" class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal">Contact</a>
             </div>
-
-            <button id="mobile-menu-btn" class="md:hidden">
+            <!-- Mobile menu button -->
+            <button id="mobile-menu-button" class="md:hidden text-charcoal focus:outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
         </div>
-
-        <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-2">
-            <a href="/#projects" class="block text-charcoal hover:text-gray-600 transition">Projects</a>
-            <a href="/#about" class="block text-charcoal hover:text-gray-600 transition">About</a>
-            <a href="/#contact" class="block text-charcoal hover:text-gray-600 transition">Contact</a>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden mt-6 pb-4 space-y-4">
+            <a href="/#home" class="block text-sm font-medium text-gray-600 hover:text-charcoal">Home</a>
+            <a href="/#projects" class="block text-sm font-medium text-gray-600 hover:text-charcoal">Projects</a>
+            <a href="/#about" class="block text-sm font-medium text-gray-600 hover:text-charcoal">About</a>
+            <a href="/#contact" class="block text-sm font-medium text-gray-600 hover:text-charcoal">Contact</a>
         </div>
     </div>
 </nav>
+
+<script>
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+    }
+
+    // Smooth scroll for navigation links
+    document.querySelectorAll('a[href^="/#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(2);
+            const target = document.getElementById(targetId);
+            if (target) {
+                const offset = 80;
+                const targetPosition = target.offsetTop - offset;
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Active nav link on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('nav a[href^="/#"]');
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.clientHeight;
+            if (scrollY >= sectionTop - 200) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active', 'text-charcoal');
+            link.classList.add('text-gray-600');
+            if (link.getAttribute('href') === `/#${current}`) {
+                link.classList.remove('text-gray-600');
+                link.classList.add('active', 'text-charcoal');
+            }
+        });
+    });
+</script>
