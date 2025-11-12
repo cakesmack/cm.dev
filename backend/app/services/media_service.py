@@ -12,12 +12,21 @@ ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"}
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
 
 
-def validate_image(file: UploadFile) -> bool:
+async def validate_image(file: UploadFile) -> bool:
     """Validate image file"""
     # Check extension
     ext = Path(file.filename).suffix.lower()
     if ext not in ALLOWED_EXTENSIONS:
         return False
+
+    # Check file size
+    contents = await file.read()
+    file_size = len(contents)
+    await file.seek(0)  # Reset file pointer for later reading
+
+    if file_size > MAX_FILE_SIZE:
+        return False
+
     return True
 
 
@@ -33,8 +42,19 @@ async def save_upload_file(file: UploadFile) -> str:
 
     # Save file
     contents = await file.read()
-    with open(file_path, "wb") as f:
-        f.write(contents)
+
+    # Additional file size check
+    if len(contents) > MAX_FILE_SIZE:
+        raise ValueError(f"File size exceeds maximum allowed size of {MAX_FILE_SIZE} bytes")
+
+    try:
+        with open(file_path, "wb") as f:
+            f.write(contents)
+    except IOError as e:
+        # Clean up partially written file if it exists
+        if file_path.exists():
+            file_path.unlink()
+        raise IOError(f"Failed to save file: {str(e)}")
 
     # Return URL path
     return f"/static/uploads/{filename}"
@@ -77,8 +97,9 @@ def delete_project_media(db: Session, media_id: int) -> bool:
     if not media:
         return False
 
-    # Delete file from disk
-    file_path = Path("." + media.url)  # Remove leading /
+    # Delete file from disk - use safe path construction
+    filename = Path(media.url).name
+    file_path = UPLOAD_DIR / filename
     if file_path.exists():
         file_path.unlink()
 
