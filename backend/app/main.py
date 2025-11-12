@@ -32,6 +32,7 @@ from app.routers.admin import media as admin_media
 from app.routers.admin import leads as admin_leads
 from app.routers.admin import clients as admin_clients
 from app.routers.admin import invoices as admin_invoices
+from app.routers.admin import pages as admin_pages
 
 app.include_router(auth.router, prefix=settings.API_PREFIX)
 app.include_router(admin_projects.router, prefix=settings.API_PREFIX)
@@ -40,6 +41,7 @@ app.include_router(contact.router, prefix=settings.API_PREFIX)
 app.include_router(admin_leads.router, prefix=settings.API_PREFIX)
 app.include_router(admin_clients.router, prefix=settings.API_PREFIX)
 app.include_router(admin_invoices.router, prefix=settings.API_PREFIX)
+app.include_router(admin_pages.router)
 app.include_router(public.router)
 
 

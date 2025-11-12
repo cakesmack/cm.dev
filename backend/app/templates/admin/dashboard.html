@@ -1,0 +1,111 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="md:mt-0 mt-16">
+    <h1 class="text-4xl font-bold mb-8">Dashboard</h1>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-gray-600 text-sm font-semibold mb-2">Total Projects</h3>
+            <p class="text-3xl font-bold" id="total-projects">-</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-gray-600 text-sm font-semibold mb-2">New Leads</h3>
+            <p class="text-3xl font-bold" id="new-leads">-</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-gray-600 text-sm font-semibold mb-2">Total Clients</h3>
+            <p class="text-3xl font-bold" id="total-clients">-</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-gray-600 text-sm font-semibold mb-2">Pending Invoices</h3>
+            <p class="text-3xl font-bold" id="pending-invoices">-</p>
+        </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-bold mb-4">Recent Leads</h2>
+            <div id="recent-leads">Loading...</div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-bold mb-4">Recent Invoices</h2>
+            <div id="recent-invoices">Loading...</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+async function loadDashboard() {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = '/admin/login';
+        return;
+    }
+
+    const headers = {
+        'Authorization': `Bearer ${token}`
+    };
+
+    try {
+        // Load projects count
+        const projectsRes = await fetch('/api/v1/admin/projects', { headers });
+        const projects = await projectsRes.json();
+        document.getElementById('total-projects').textContent = projects.length;
+
+        // Load leads count
+        const leadsRes = await fetch('/api/v1/admin/leads?status=new', { headers });
+        const leads = await leadsRes.json();
+        document.getElementById('new-leads').textContent = leads.length;
+
+        // Load clients count
+        const clientsRes = await fetch('/api/v1/admin/clients', { headers });
+        const clients = await clientsRes.json();
+        document.getElementById('total-clients').textContent = clients.length;
+
+        // Load invoices count
+        const invoicesRes = await fetch('/api/v1/admin/invoices?status=sent', { headers });
+        const invoices = await invoicesRes.json();
+        document.getElementById('pending-invoices').textContent = invoices.length;
+
+        // Display recent leads
+        const recentLeadsRes = await fetch('/api/v1/admin/leads?limit=5', { headers });
+        const recentLeads = await recentLeadsRes.json();
+        const leadsHtml = recentLeads.map(lead => `
+            <div class="border-b py-3">
+                <p class="font-semibold">${lead.name}</p>
+                <p class="text-sm text-gray-600">${lead.email}</p>
+            </div>
+        `).join('');
+        document.getElementById('recent-leads').innerHTML = leadsHtml || '<p class="text-gray-500">No leads yet</p>';
+
+        // Display recent invoices
+        const recentInvoicesRes = await fetch('/api/v1/admin/invoices?limit=5', { headers });
+        const recentInvoices = await recentInvoicesRes.json();
+        const invoicesHtml = recentInvoices.map(inv => `
+            <div class="border-b py-3 flex justify-between">
+                <div>
+                    <p class="font-semibold">${inv.invoice_number}</p>
+                    <p class="text-sm text-gray-600">${inv.status}</p>
+                </div>
+                <p class="font-bold">$${inv.total}</p>
+            </div>
+        `).join('');
+        document.getElementById('recent-invoices').innerHTML = invoicesHtml || '<p class="text-gray-500">No invoices yet</p>';
+
+    } catch (error) {
+        console.error('Error loading dashboard:', error);
+    }
+}
+
+loadDashboard();
+</script>
+{% endblock %}
