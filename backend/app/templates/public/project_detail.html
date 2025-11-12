@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} - Craig Mackenzie{% endblock %}
+
+{% block content %}
+<article class="pt-32 pb-20 px-6">
+    <div class="max-w-4xl mx-auto">
+        <a href="/#projects" class="text-charcoal hover:underline mb-6 inline-block">← Back to Projects</a>
+
+        <h1 class="text-5xl font-bold mb-4 opacity-0 fade-in">{{ project.title }}</h1>
+
+        {% if project.date %}
+        <p class="text-gray-600 mb-8">{{ project.date.strftime('%B %Y') }}</p>
+        {% endif %}
+
+        {% if project.media and project.media|length > 0 %}
+        <div class="mb-12">
+            <img src="{{ project.media[0].url }}" alt="{{ project.media[0].alt_text }}"
+                 class="w-full rounded-lg shadow-lg opacity-0 fade-in">
+        </div>
+        {% endif %}
+
+        {% if project.tech_stack %}
+        <div class="flex flex-wrap gap-2 mb-8 opacity-0 fade-in">
+            {% for tech in project.tech_stack %}
+            <span class="bg-light-grey text-charcoal px-4 py-2 rounded-full">{{ tech }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="prose prose-lg max-w-none opacity-0 fade-in">
+            {% if project.case_study %}
+            {{ project.case_study|safe }}
+            {% else %}
+            <p>{{ project.description }}</p>
+            {% endif %}
+        </div>
+
+        {% if project.project_url %}
+        <div class="mt-12 opacity-0 fade-in">
+            <a href="{{ project.project_url }}" target="_blank" rel="noopener noreferrer"
+               class="inline-block bg-charcoal text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition">
+                View Live Project →
+            </a>
+        </div>
+        {% endif %}
+
+        {% if project.media|length > 1 %}
+        <div class="mt-12">
+            <h2 class="text-2xl font-bold mb-6">Gallery</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                {% for media in project.media[1:] %}
+                <img src="{{ media.url }}" alt="{{ media.alt_text }}"
+                     class="w-full rounded-lg shadow opacity-0 fade-in">
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</article>
+{% endblock %}
