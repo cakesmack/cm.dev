@@ -45,6 +45,7 @@
 {% block extra_scripts %}
 <script>
 async function loadDashboard() {
+    // Check if token exists
     const token = localStorage.getItem('access_token');
     if (!token) {
         window.location.href = '/admin/login';
@@ -55,30 +56,42 @@ async function loadDashboard() {
         'Authorization': `Bearer ${token}`
     };
 
+    // Helper function to handle API responses
+    async function fetchWithAuth(url) {
+        const response = await fetch(url, { headers });
+
+        // If unauthorized or forbidden, redirect to login
+        if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem('access_token');
+            window.location.href = '/admin/login?error=session_expired';
+            throw new Error('Unauthorized');
+        }
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return response.json();
+    }
+
     try {
-        // Load projects count
-        const projectsRes = await fetch('/api/v1/admin/projects', { headers });
-        const projects = await projectsRes.json();
+        // Load all dashboard data
+        const [projects, newLeads, clients, pendingInvoices, recentLeads, recentInvoices] = await Promise.all([
+            fetchWithAuth('/api/v1/admin/projects'),
+            fetchWithAuth('/api/v1/admin/leads?status=new'),
+            fetchWithAuth('/api/v1/admin/clients'),
+            fetchWithAuth('/api/v1/admin/invoices?status=sent'),
+            fetchWithAuth('/api/v1/admin/leads?limit=5'),
+            fetchWithAuth('/api/v1/admin/invoices?limit=5')
+        ]);
+
+        // Update counts
         document.getElementById('total-projects').textContent = projects.length;
-
-        // Load leads count
-        const leadsRes = await fetch('/api/v1/admin/leads?status=new', { headers });
-        const leads = await leadsRes.json();
-        document.getElementById('new-leads').textContent = leads.length;
-
-        // Load clients count
-        const clientsRes = await fetch('/api/v1/admin/clients', { headers });
-        const clients = await clientsRes.json();
+        document.getElementById('new-leads').textContent = newLeads.length;
         document.getElementById('total-clients').textContent = clients.length;
-
-        // Load invoices count
-        const invoicesRes = await fetch('/api/v1/admin/invoices?status=sent', { headers });
-        const invoices = await invoicesRes.json();
-        document.getElementById('pending-invoices').textContent = invoices.length;
+        document.getElementById('pending-invoices').textContent = pendingInvoices.length;
 
         // Display recent leads
-        const recentLeadsRes = await fetch('/api/v1/admin/leads?limit=5', { headers });
-        const recentLeads = await recentLeadsRes.json();
         const leadsHtml = recentLeads.map(lead => `
             <div class="border-b py-3">
                 <p class="font-semibold">${lead.name}</p>
@@ -88,24 +101,29 @@ async function loadDashboard() {
         document.getElementById('recent-leads').innerHTML = leadsHtml || '<p class="text-gray-500">No leads yet</p>';
 
         // Display recent invoices
-        const recentInvoicesRes = await fetch('/api/v1/admin/invoices?limit=5', { headers });
-        const recentInvoices = await recentInvoicesRes.json();
         const invoicesHtml = recentInvoices.map(inv => `
             <div class="border-b py-3 flex justify-between">
                 <div>
                     <p class="font-semibold">${inv.invoice_number}</p>
                     <p class="text-sm text-gray-600">${inv.status}</p>
                 </div>
-                <p class="font-bold">$${inv.total}</p>
+                <p class="font-bold">$${inv.total_amount || inv.total || 0}</p>
             </div>
         `).join('');
         document.getElementById('recent-invoices').innerHTML = invoicesHtml || '<p class="text-gray-500">No invoices yet</p>';
 
     } catch (error) {
-        console.error('Error loading dashboard:', error);
+        if (error.message !== 'Unauthorized') {
+            console.error('Error loading dashboard:', error);
+            // Show error message to user
+            document.querySelectorAll('[id^="total-"], [id^="new-"], [id^="pending-"], [id$="-leads"], [id$="-invoices"]').forEach(el => {
+                el.textContent = 'Error';
+            });
+        }
     }
 }
 
+// Run on page load
 loadDashboard();
 </script>
 {% endblock %}
