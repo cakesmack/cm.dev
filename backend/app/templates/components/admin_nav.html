@@ -1,4 +1,4 @@
-<nav class="fixed left-0 top-0 h-full w-64 bg-charcoal text-white p-6 hidden md:block">
+<nav class="fixed left-0 top-0 h-full w-64 bg-charcoal text-white p-6 hidden md:block shadow-xl">
     <div class="mb-8">
         <h1 class="text-2xl font-bold">Mackenzie-Dev</h1>
         <p class="text-gray-400 text-sm">Admin Panel</p>
@@ -6,35 +6,41 @@
 
     <ul class="space-y-2">
         <li>
-            <a href="/admin" class="block px-4 py-2 rounded hover:bg-gray-700 transition">
-                Dashboard
+            <a href="/admin" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
+                <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                <span>Dashboard</span>
             </a>
         </li>
         <li>
-            <a href="/admin/projects" class="block px-4 py-2 rounded hover:bg-gray-700 transition">
-                Projects
+            <a href="/admin/projects" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
+                <i data-lucide="folder" class="w-5 h-5"></i>
+                <span>Projects</span>
             </a>
         </li>
         <li>
-            <a href="/admin/leads" class="block px-4 py-2 rounded hover:bg-gray-700 transition">
-                Leads
+            <a href="/admin/leads" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
+                <i data-lucide="users" class="w-5 h-5"></i>
+                <span>Leads</span>
             </a>
         </li>
         <li>
-            <a href="/admin/clients" class="block px-4 py-2 rounded hover:bg-gray-700 transition">
-                Clients
+            <a href="/admin/clients" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
+                <i data-lucide="briefcase" class="w-5 h-5"></i>
+                <span>Clients</span>
             </a>
         </li>
         <li>
-            <a href="/admin/invoices" class="block px-4 py-2 rounded hover:bg-gray-700 transition">
-                Invoices
+            <a href="/admin/invoices" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl">
+                <i data-lucide="file-text" class="w-5 h-5"></i>
+                <span>Invoices</span>
             </a>
         </li>
     </ul>
 
-    <div class="mt-auto pt-8">
-        <button onclick="logout()" class="w-full px-4 py-2 bg-red-600 rounded hover:bg-red-700 transition">
-            Logout
+    <div class="absolute bottom-6 left-6 right-6">
+        <button onclick="logout()" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-600 rounded-xl hover:bg-red-700 transition shadow-lg">
+            <i data-lucide="log-out" class="w-5 h-5"></i>
+            <span>Logout</span>
         </button>
     </div>
 </nav>

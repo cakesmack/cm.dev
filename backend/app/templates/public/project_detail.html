@@ -5,53 +5,57 @@
 {% block content %}
 <article class="pt-32 pb-20 px-6">
     <div class="max-w-4xl mx-auto">
-        <a href="/#projects" class="text-charcoal hover:underline mb-6 inline-block">← Back to Projects</a>
+        <a href="/#projects" class="fade-in text-muted-blue hover:text-charcoal mb-8 inline-flex items-center gap-2 font-medium transition">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            <span>Back to Projects</span>
+        </a>
 
-        <h1 class="text-5xl font-bold mb-4 opacity-0 fade-in">{{ project.title }}</h1>
+        <h1 class="fade-in text-5xl md:text-6xl font-bold text-charcoal mb-4 tracking-tight">{{ project.title }}</h1>
 
         {% if project.date %}
-        <p class="text-gray-600 mb-8">{{ project.date.strftime('%B %Y') }}</p>
+        <p class="fade-in text-gray-600 text-lg mb-8">{{ project.date.strftime('%B %Y') }}</p>
         {% endif %}
 
         {% if project.media and project.media|length > 0 %}
-        <div class="mb-12">
+        <div class="fade-in mb-12">
             <img src="{{ project.media[0].url }}" alt="{{ project.media[0].alt_text }}"
-                 class="w-full rounded-lg shadow-lg opacity-0 fade-in">
+                 class="w-full rounded-2xl shadow-lg">
         </div>
         {% endif %}
 
         {% if project.tech_stack %}
-        <div class="flex flex-wrap gap-2 mb-8 opacity-0 fade-in">
+        <div class="fade-in flex flex-wrap gap-3 mb-12">
             {% for tech in project.tech_stack %}
-            <span class="bg-light-grey text-charcoal px-4 py-2 rounded-full">{{ tech }}</span>
+            <span class="bg-light-grey text-charcoal px-5 py-2 rounded-full text-sm font-medium shadow-sm">{{ tech }}</span>
             {% endfor %}
         </div>
         {% endif %}
 
-        <div class="prose prose-lg max-w-none opacity-0 fade-in">
+        <div class="fade-in prose prose-lg max-w-none text-gray-700 leading-relaxed">
             {% if project.case_study %}
             {{ project.case_study|safe }}
             {% else %}
-            <p>{{ project.description }}</p>
+            <p class="text-xl">{{ project.description }}</p>
             {% endif %}
         </div>
 
         {% if project.project_url %}
-        <div class="mt-12 opacity-0 fade-in">
+        <div class="fade-in mt-12">
             <a href="{{ project.project_url }}" target="_blank" rel="noopener noreferrer"
-               class="inline-block bg-charcoal text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition">
-                View Live Project →
+               class="cta-button inline-flex items-center gap-2 bg-charcoal text-white px-8 py-4 rounded-xl font-medium shadow-lg hover:shadow-xl transition">
+                <span>View Live Project</span>
+                <i data-lucide="external-link" class="w-5 h-5"></i>
             </a>
         </div>
         {% endif %}
 
         {% if project.media|length > 1 %}
-        <div class="mt-12">
-            <h2 class="text-2xl font-bold mb-6">Gallery</h2>
-            <div class="grid md:grid-cols-2 gap-4">
+        <div class="fade-in mt-16">
+            <h2 class="text-3xl font-bold text-charcoal mb-8">Gallery</h2>
+            <div class="grid md:grid-cols-2 gap-6">
                 {% for media in project.media[1:] %}
                 <img src="{{ media.url }}" alt="{{ media.alt_text }}"
-                     class="w-full rounded-lg shadow opacity-0 fade-in">
+                     class="w-full rounded-2xl shadow-sm hover:shadow-lg transition">
                 {% endfor %}
             </div>
         </div>

@@ -1,0 +1,305 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+<div class="md:mt-0 mt-16">
+    <div class="fade-in mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="text-4xl font-bold text-charcoal">Projects</h1>
+            <p class="text-gray-600 mt-2">Manage your portfolio projects</p>
+        </div>
+        <button onclick="openProjectModal()" class="flex items-center gap-2 bg-charcoal text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition">
+            <i data-lucide="plus" class="w-5 h-5"></i>
+            <span>Add Project</span>
+        </button>
+    </div>
+
+    <!-- Projects Table -->
+    <div class="fade-in bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div id="projects-table" class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-light-grey">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Title</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Slug</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Status</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Date</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="projects-list">
+                    <tr>
+                        <td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading projects...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Project Modal -->
+<div id="project-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-6">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-charcoal" id="modal-title">Add Project</h2>
+                <button onclick="closeProjectModal()" class="text-gray-500 hover:text-charcoal">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <form id="project-form" class="space-y-6">
+                <input type="hidden" id="project-id">
+
+                <div>
+                    <label class="block text-sm font-medium text-charcoal mb-2">Title *</label>
+                    <input type="text" id="title" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-charcoal mb-2">Slug *</label>
+                    <input type="text" id="slug" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                    <p class="text-sm text-gray-500 mt-1">URL-friendly identifier (e.g., my-project)</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-charcoal mb-2">Description *</label>
+                    <textarea id="description" rows="4" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue resize-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-charcoal mb-2">Tech Stack</label>
+                    <input type="text" id="tech-stack" placeholder="Python, FastAPI, PostgreSQL (comma-separated)" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-charcoal mb-2">Project URL</label>
+                    <input type="url" id="project-url" placeholder="https://example.com" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-charcoal mb-2">GitHub URL</label>
+                    <input type="url" id="github-url" placeholder="https://github.com/username/repo" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="is-published" class="w-5 h-5 text-muted-blue rounded focus:ring-muted-blue">
+                    <label for="is-published" class="text-sm font-medium text-charcoal">Published (visible on public site)</label>
+                </div>
+
+                <div id="form-error" class="hidden p-4 bg-red-50 text-red-800 border border-red-200 rounded-xl text-sm"></div>
+
+                <div class="flex gap-4">
+                    <button type="submit" class="flex-1 bg-charcoal text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition">
+                        Save Project
+                    </button>
+                    <button type="button" onclick="closeProjectModal()" class="px-6 py-3 border-2 border-gray-200 rounded-xl font-medium hover:border-muted-blue transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let editingProjectId = null;
+
+async function loadProjects() {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = '/admin/login';
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/v1/admin/projects', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem('access_token');
+            window.location.href = '/admin/login?error=session_expired';
+            return;
+        }
+
+        if (!response.ok) throw new Error('Failed to load projects');
+
+        const projects = await response.json();
+        displayProjects(projects);
+    } catch (error) {
+        console.error('Error loading projects:', error);
+        document.getElementById('projects-list').innerHTML = `
+            <tr><td colspan="5" class="px-6 py-8 text-center text-red-600">Error loading projects</td></tr>
+        `;
+    }
+}
+
+function displayProjects(projects) {
+    const tbody = document.getElementById('projects-list');
+
+    if (projects.length === 0) {
+        tbody.innerHTML = `
+            <tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No projects yet. Click "Add Project" to create one.</td></tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = projects.map(project => `
+        <tr class="border-t border-gray-100 hover:bg-light-grey transition">
+            <td class="px-6 py-4">
+                <p class="font-semibold text-charcoal">${project.title}</p>
+            </td>
+            <td class="px-6 py-4 text-gray-600">${project.slug}</td>
+            <td class="px-6 py-4">
+                <span class="px-3 py-1 rounded-full text-xs font-medium ${project.is_published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}">
+                    ${project.is_published ? 'Published' : 'Draft'}
+                </span>
+            </td>
+            <td class="px-6 py-4 text-gray-600">${project.date ? new Date(project.date).toLocaleDateString() : '-'}</td>
+            <td class="px-6 py-4">
+                <div class="flex gap-2">
+                    <button onclick="editProject(${project.id})" class="p-2 text-muted-blue hover:bg-blue-50 rounded-lg transition" title="Edit">
+                        <i data-lucide="edit-2" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="deleteProject(${project.id}, '${project.title.replace(/'/g, "\\'")}')" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition" title="Delete">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+
+    lucide.createIcons();
+}
+
+function openProjectModal(project = null) {
+    editingProjectId = project ? project.id : null;
+    document.getElementById('modal-title').textContent = project ? 'Edit Project' : 'Add Project';
+    document.getElementById('project-form').reset();
+    document.getElementById('form-error').classList.add('hidden');
+
+    if (project) {
+        document.getElementById('project-id').value = project.id;
+        document.getElementById('title').value = project.title;
+        document.getElementById('slug').value = project.slug;
+        document.getElementById('description').value = project.description || '';
+        document.getElementById('tech-stack').value = project.tech_stack ? project.tech_stack.join(', ') : '';
+        document.getElementById('project-url').value = project.project_url || '';
+        document.getElementById('github-url').value = project.github_url || '';
+        document.getElementById('is-published').checked = project.is_published;
+    }
+
+    document.getElementById('project-modal').classList.remove('hidden');
+    lucide.createIcons();
+}
+
+function closeProjectModal() {
+    document.getElementById('project-modal').classList.add('hidden');
+    editingProjectId = null;
+}
+
+async function editProject(projectId) {
+    const token = localStorage.getItem('access_token');
+
+    try {
+        const response = await fetch(`/api/v1/admin/projects/${projectId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error('Failed to load project');
+
+        const project = await response.json();
+        openProjectModal(project);
+    } catch (error) {
+        console.error('Error loading project:', error);
+        alert('Failed to load project details');
+    }
+}
+
+async function deleteProject(projectId, projectTitle) {
+    if (!confirm(`Are you sure you want to delete "${projectTitle}"? This cannot be undone.`)) {
+        return;
+    }
+
+    const token = localStorage.getItem('access_token');
+
+    try {
+        const response = await fetch(`/api/v1/admin/projects/${projectId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error('Failed to delete project');
+
+        await loadProjects();
+    } catch (error) {
+        console.error('Error deleting project:', error);
+        alert('Failed to delete project');
+    }
+}
+
+document.getElementById('project-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const errorDiv = document.getElementById('form-error');
+    errorDiv.classList.add('hidden');
+
+    const projectData = {
+        title: document.getElementById('title').value,
+        slug: document.getElementById('slug').value,
+        description: document.getElementById('description').value,
+        tech_stack: document.getElementById('tech-stack').value.split(',').map(t => t.trim()).filter(t => t),
+        project_url: document.getElementById('project-url').value || null,
+        github_url: document.getElementById('github-url').value || null,
+        is_published: document.getElementById('is-published').checked
+    };
+
+    const token = localStorage.getItem('access_token');
+    const url = editingProjectId
+        ? `/api/v1/admin/projects/${editingProjectId}`
+        : '/api/v1/admin/projects';
+    const method = editingProjectId ? 'PUT' : 'POST';
+
+    try {
+        const response = await fetch(url, {
+            method,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(projectData)
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || 'Failed to save project');
+        }
+
+        closeProjectModal();
+        await loadProjects();
+    } catch (error) {
+        console.error('Error saving project:', error);
+        errorDiv.textContent = error.message;
+        errorDiv.classList.remove('hidden');
+    }
+});
+
+// Auto-generate slug from title
+document.getElementById('title').addEventListener('input', (e) => {
+    if (!editingProjectId) {
+        const slug = e.target.value
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '');
+        document.getElementById('slug').value = slug;
+    }
+});
+
+// Load projects on page load
+loadProjects();
+</script>
+{% endblock %}

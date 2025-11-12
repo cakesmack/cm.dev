@@ -4,39 +4,68 @@
 
 {% block content %}
 <div class="md:mt-0 mt-16">
-    <h1 class="text-4xl font-bold mb-8">Dashboard</h1>
+    <div class="fade-in mb-8">
+        <h1 class="text-4xl font-bold text-charcoal">Dashboard</h1>
+        <p class="text-gray-600 mt-2">Welcome to your admin dashboard</p>
+    </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white p-6 rounded-lg shadow">
-            <h3 class="text-gray-600 text-sm font-semibold mb-2">Total Projects</h3>
-            <p class="text-3xl font-bold" id="total-projects">-</p>
+        <div class="stat-card fade-in bg-white p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-gray-600 text-sm font-semibold">Total Projects</h3>
+                <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                    <i data-lucide="folder" class="w-5 h-5 text-blue-600"></i>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-charcoal" id="total-projects">-</p>
         </div>
 
-        <div class="bg-white p-6 rounded-lg shadow">
-            <h3 class="text-gray-600 text-sm font-semibold mb-2">New Leads</h3>
-            <p class="text-3xl font-bold" id="new-leads">-</p>
+        <div class="stat-card fade-in bg-white p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-gray-600 text-sm font-semibold">New Leads</h3>
+                <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                    <i data-lucide="users" class="w-5 h-5 text-green-600"></i>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-charcoal" id="new-leads">-</p>
         </div>
 
-        <div class="bg-white p-6 rounded-lg shadow">
-            <h3 class="text-gray-600 text-sm font-semibold mb-2">Total Clients</h3>
-            <p class="text-3xl font-bold" id="total-clients">-</p>
+        <div class="stat-card fade-in bg-white p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-gray-600 text-sm font-semibold">Total Clients</h3>
+                <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                    <i data-lucide="briefcase" class="w-5 h-5 text-purple-600"></i>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-charcoal" id="total-clients">-</p>
         </div>
 
-        <div class="bg-white p-6 rounded-lg shadow">
-            <h3 class="text-gray-600 text-sm font-semibold mb-2">Pending Invoices</h3>
-            <p class="text-3xl font-bold" id="pending-invoices">-</p>
+        <div class="stat-card fade-in bg-white p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-gray-600 text-sm font-semibold">Pending Invoices</h3>
+                <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                    <i data-lucide="file-text" class="w-5 h-5 text-amber-600"></i>
+                </div>
+            </div>
+            <p class="text-3xl font-bold text-charcoal" id="pending-invoices">-</p>
         </div>
     </div>
 
     <div class="grid md:grid-cols-2 gap-6">
-        <div class="bg-white p-6 rounded-lg shadow">
-            <h2 class="text-xl font-bold mb-4">Recent Leads</h2>
-            <div id="recent-leads">Loading...</div>
+        <div class="fade-in bg-white p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center gap-2 mb-4">
+                <i data-lucide="users" class="w-5 h-5 text-muted-blue"></i>
+                <h2 class="text-xl font-bold text-charcoal">Recent Leads</h2>
+            </div>
+            <div id="recent-leads" class="text-gray-600">Loading...</div>
         </div>
 
-        <div class="bg-white p-6 rounded-lg shadow">
-            <h2 class="text-xl font-bold mb-4">Recent Invoices</h2>
-            <div id="recent-invoices">Loading...</div>
+        <div class="fade-in bg-white p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center gap-2 mb-4">
+                <i data-lucide="file-text" class="w-5 h-5 text-muted-blue"></i>
+                <h2 class="text-xl font-bold text-charcoal">Recent Invoices</h2>
+            </div>
+            <div id="recent-invoices" class="text-gray-600">Loading...</div>
         </div>
     </div>
 </div>

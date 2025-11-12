@@ -1,0 +1,304 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Leads{% endblock %}
+
+{% block content %}
+<div class="md:mt-0 mt-16">
+    <div class="fade-in mb-8">
+        <h1 class="text-4xl font-bold text-charcoal">Leads</h1>
+        <p class="text-gray-600 mt-2">Contact form submissions from potential clients</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid md:grid-cols-4 gap-6 mb-8">
+        <div class="fade-in bg-white p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+                <p class="text-sm font-semibold text-gray-600">New</p>
+                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <i data-lucide="inbox" class="w-4 h-4 text-blue-600"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-charcoal" id="new-count">-</p>
+        </div>
+
+        <div class="fade-in bg-white p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+                <p class="text-sm font-semibold text-gray-600">Contacted</p>
+                <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <i data-lucide="phone" class="w-4 h-4 text-yellow-600"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-charcoal" id="contacted-count">-</p>
+        </div>
+
+        <div class="fade-in bg-white p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+                <p class="text-sm font-semibold text-gray-600">Converted</p>
+                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-charcoal" id="converted-count">-</p>
+        </div>
+
+        <div class="fade-in bg-white p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+                <p class="text-sm font-semibold text-gray-600">Archived</p>
+                <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <i data-lucide="archive" class="w-4 h-4 text-gray-600"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-charcoal" id="archived-count">-</p>
+        </div>
+    </div>
+
+    <!-- Leads Table -->
+    <div class="fade-in bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div id="leads-table" class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-light-grey">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Name</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Email</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Message</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Status</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Date</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="leads-list">
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">Loading leads...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Lead Detail Modal -->
+<div id="lead-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-6">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-charcoal">Lead Details</h2>
+                <button onclick="closeLeadModal()" class="text-gray-500 hover:text-charcoal">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div id="lead-details" class="space-y-6">
+                <!-- Lead details will be populated here -->
+            </div>
+
+            <div class="mt-8 flex gap-4">
+                <button onclick="closeLeadModal()" class="flex-1 px-6 py-3 border-2 border-gray-200 rounded-xl font-medium hover:border-muted-blue transition">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let allLeads = [];
+
+async function loadLeads() {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = '/admin/login';
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/v1/admin/leads', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem('access_token');
+            window.location.href = '/admin/login?error=session_expired';
+            return;
+        }
+
+        if (!response.ok) throw new Error('Failed to load leads');
+
+        allLeads = await response.json();
+        updateStats();
+        displayLeads(allLeads);
+    } catch (error) {
+        console.error('Error loading leads:', error);
+        document.getElementById('leads-list').innerHTML = `
+            <tr><td colspan="6" class="px-6 py-8 text-center text-red-600">Error loading leads</td></tr>
+        `;
+    }
+}
+
+function updateStats() {
+    const stats = {
+        new: 0,
+        contacted: 0,
+        converted: 0,
+        archived: 0
+    };
+
+    allLeads.forEach(lead => {
+        stats[lead.status]++;
+    });
+
+    document.getElementById('new-count').textContent = stats.new;
+    document.getElementById('contacted-count').textContent = stats.contacted;
+    document.getElementById('converted-count').textContent = stats.converted;
+    document.getElementById('archived-count').textContent = stats.archived;
+}
+
+function displayLeads(leads) {
+    const tbody = document.getElementById('leads-list');
+
+    if (leads.length === 0) {
+        tbody.innerHTML = `
+            <tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No leads yet</td></tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = leads.map(lead => {
+        const statusColors = {
+            new: 'bg-blue-100 text-blue-700',
+            contacted: 'bg-yellow-100 text-yellow-700',
+            converted: 'bg-green-100 text-green-700',
+            archived: 'bg-gray-100 text-gray-700'
+        };
+
+        return `
+            <tr class="border-t border-gray-100 hover:bg-light-grey transition cursor-pointer" onclick="viewLead(${lead.id})">
+                <td class="px-6 py-4 font-semibold text-charcoal">${lead.name}</td>
+                <td class="px-6 py-4 text-gray-600">${lead.email}</td>
+                <td class="px-6 py-4 text-gray-600 max-w-xs truncate">${lead.message}</td>
+                <td class="px-6 py-4">
+                    <span class="px-3 py-1 rounded-full text-xs font-medium ${statusColors[lead.status]}">
+                        ${lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-gray-600">${new Date(lead.created_at).toLocaleDateString()}</td>
+                <td class="px-6 py-4" onclick="event.stopPropagation()">
+                    <div class="flex gap-2">
+                        <button onclick="deleteLead(${lead.id}, '${lead.name.replace(/'/g, "\\'")}')" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition" title="Delete">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+
+    lucide.createIcons();
+}
+
+async function viewLead(leadId) {
+    const lead = allLeads.find(l => l.id === leadId);
+    if (!lead) return;
+
+    const statusColors = {
+        new: 'bg-blue-100 text-blue-700',
+        contacted: 'bg-yellow-100 text-yellow-700',
+        converted: 'bg-green-100 text-green-700',
+        archived: 'bg-gray-100 text-gray-700'
+    };
+
+    document.getElementById('lead-details').innerHTML = `
+        <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Name</label>
+            <p class="text-lg font-semibold text-charcoal">${lead.name}</p>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Email</label>
+            <a href="mailto:${lead.email}" class="text-lg text-muted-blue hover:underline">${lead.email}</a>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Message</label>
+            <p class="text-gray-700 whitespace-pre-wrap">${lead.message}</p>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Source</label>
+            <p class="text-gray-700">${lead.source}</p>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-600 mb-2">Status</label>
+            <select id="lead-status" onchange="updateLeadStatus(${lead.id}, this.value)" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                <option value="new" ${lead.status === 'new' ? 'selected' : ''}>New</option>
+                <option value="contacted" ${lead.status === 'contacted' ? 'selected' : ''}>Contacted</option>
+                <option value="converted" ${lead.status === 'converted' ? 'selected' : ''}>Converted</option>
+                <option value="archived" ${lead.status === 'archived' ? 'selected' : ''}>Archived</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Received</label>
+            <p class="text-gray-700">${new Date(lead.created_at).toLocaleString()}</p>
+        </div>
+    `;
+
+    document.getElementById('lead-modal').classList.remove('hidden');
+    lucide.createIcons();
+}
+
+function closeLeadModal() {
+    document.getElementById('lead-modal').classList.add('hidden');
+}
+
+async function updateLeadStatus(leadId, newStatus) {
+    const token = localStorage.getItem('access_token');
+
+    try {
+        const response = await fetch(`/api/v1/admin/leads/${leadId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: newStatus })
+        });
+
+        if (!response.ok) throw new Error('Failed to update status');
+
+        await loadLeads();
+        closeLeadModal();
+    } catch (error) {
+        console.error('Error updating status:', error);
+        alert('Failed to update lead status');
+    }
+}
+
+async function deleteLead(leadId, leadName) {
+    if (!confirm(`Are you sure you want to delete the lead from "${leadName}"?`)) {
+        return;
+    }
+
+    const token = localStorage.getItem('access_token');
+
+    try {
+        const response = await fetch(`/api/v1/admin/leads/${leadId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error('Failed to delete lead');
+
+        await loadLeads();
+    } catch (error) {
+        console.error('Error deleting lead:', error);
+        alert('Failed to delete lead');
+    }
+}
+
+// Load leads on page load
+loadLeads();
+</script>
+{% endblock %}

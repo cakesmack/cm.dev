@@ -1,67 +1,178 @@
-{% extends "admin/base.html" %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Mackenzie-Dev</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        charcoal: '#2d3748',
+                        'light-grey': '#f7fafc',
+                        'muted-blue': '#5b8eb3',
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .cta-button {
+            transition: all 0.3s ease;
+        }
 
-{% block title %}Login{% endblock %}
-
-{% block content %}
-<div class="min-h-screen flex items-center justify-center">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 class="text-3xl font-bold mb-6 text-center">Admin Login</h2>
-
-        <form id="login-form" class="space-y-4">
-            <div>
-                <label for="email" class="block text-sm font-semibold mb-2">Email</label>
-                <input type="email" id="email" name="email" required
-                       class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-charcoal">
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-light-grey text-charcoal antialiased">
+    <div class="min-h-screen flex items-center justify-center px-6 py-12">
+        <div class="w-full max-w-md">
+            <!-- Logo/Title -->
+            <div class="text-center mb-8">
+                <h1 class="text-3xl md:text-4xl font-bold text-charcoal mb-2">Mackenzie-Dev</h1>
+                <p class="text-gray-600">Admin Portal</p>
             </div>
 
-            <div>
-                <label for="password" class="block text-sm font-semibold mb-2">Password</label>
-                <input type="password" id="password" name="password" required
-                       class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-charcoal">
+            <!-- Login Card -->
+            <div class="bg-white rounded-2xl shadow-sm p-8">
+                <h2 class="text-2xl font-semibold text-charcoal mb-6">Sign In</h2>
+
+                <!-- Session Expired Message -->
+                <div id="session-expired" class="hidden mb-4 p-4 bg-amber-50 text-amber-800 border border-amber-200 rounded-xl text-sm">
+                    Your session has expired. Please sign in again.
+                </div>
+
+                <form id="login-form" class="space-y-6">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-charcoal mb-2">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            required
+                            class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue focus:border-transparent transition"
+                            placeholder="admin@mackenzie.dev"
+                        >
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-charcoal mb-2">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            required
+                            class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue focus:border-transparent transition"
+                            placeholder="Enter your password"
+                        >
+                    </div>
+
+                    <div id="login-error" class="hidden p-4 bg-red-50 text-red-800 border border-red-200 rounded-xl text-sm">
+                        <div class="flex items-center">
+                            <i data-lucide="alert-circle" class="w-4 h-4 mr-2"></i>
+                            <span>Invalid email or password. Please try again.</span>
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        id="login-btn"
+                        class="cta-button w-full bg-charcoal text-white px-8 py-4 rounded-xl font-medium shadow-lg hover:shadow-xl transition"
+                    >
+                        Sign In
+                    </button>
+                </form>
+
+                <!-- Back to Site Link -->
+                <div class="mt-6 text-center">
+                    <a href="/" class="text-sm text-gray-600 hover:text-muted-blue transition inline-flex items-center">
+                        <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i>
+                        Back to site
+                    </a>
+                </div>
             </div>
 
-            <div id="login-error" class="hidden p-3 bg-red-100 text-red-800 rounded-lg text-sm">
-                Invalid email or password
+            <!-- Footer -->
+            <div class="text-center mt-8 text-sm text-gray-500">
+                <p>&copy; 2025 Craig Mackenzie. All rights reserved.</p>
             </div>
-
-            <button type="submit"
-                    class="w-full bg-charcoal text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition">
-                Login
-            </button>
-        </form>
+        </div>
     </div>
-</div>
-{% endblock %}
 
-{% block extra_scripts %}
-<script>
-document.getElementById('login-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
 
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+        // Check for session expired message
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error') === 'session_expired') {
+            document.getElementById('session-expired').classList.remove('hidden');
+        }
 
-    const formData = new URLSearchParams();
-    formData.append('username', email);
-    formData.append('password', password);
+        // Login form handler
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-    try {
-        const response = await fetch('/api/v1/auth/token', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: formData
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('login-btn');
+            const errorDiv = document.getElementById('login-error');
+
+            // Hide previous errors
+            errorDiv.classList.add('hidden');
+
+            // Show loading state
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="flex items-center justify-center"><svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Signing in...</span>';
+
+            // Prepare form data
+            const formData = new URLSearchParams();
+            formData.append('username', email);
+            formData.append('password', password);
+
+            try {
+                const response = await fetch('/api/v1/auth/token', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('access_token', data.access_token);
+
+                    // Success - redirect to dashboard
+                    window.location.href = '/admin';
+                } else {
+                    // Show error
+                    errorDiv.classList.remove('hidden');
+                    lucide.createIcons();
+
+                    // Reset button
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Sign In';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorDiv.classList.remove('hidden');
+                lucide.createIcons();
+
+                // Reset button
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Sign In';
+            }
         });
 
-        if (response.ok) {
-            const data = await response.json();
-            localStorage.setItem('access_token', data.access_token);
-            window.location.href = '/admin';
-        } else {
-            document.getElementById('login-error').classList.remove('hidden');
-        }
-    } catch (error) {
-        document.getElementById('login-error').classList.remove('hidden');
-    }
-});
-</script>
-{% endblock %}
+        // Auto-focus email input
+        document.getElementById('email').focus();
+    </script>
+</body>
+</html>

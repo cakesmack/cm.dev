@@ -1,0 +1,329 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Clients{% endblock %}
+
+{% block content %}
+<div class="md:mt-0 mt-16">
+    <div class="fade-in mb-8 flex justify-between items-center">
+        <div>
+            <h1 class="text-4xl font-bold text-charcoal">Clients</h1>
+            <p class="text-gray-600 mt-2">Manage your client contacts</p>
+        </div>
+        <button onclick="openClientModal()" class="flex items-center gap-2 bg-charcoal text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition">
+            <i data-lucide="plus" class="w-5 h-5"></i>
+            <span>Add Client</span>
+        </button>
+    </div>
+
+    <!-- Clients Table -->
+    <div class="fade-in bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div id="clients-table" class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-light-grey">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Company</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Contact</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Email</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Phone</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Location</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="clients-list">
+                    <tr>
+                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">Loading clients...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Client Modal -->
+<div id="client-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-6">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-charcoal" id="modal-title">Add Client</h2>
+                <button onclick="closeClientModal()" class="text-gray-500 hover:text-charcoal">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <form id="client-form" class="space-y-6">
+                <input type="hidden" id="client-id">
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-charcoal mb-2">Company Name</label>
+                        <input type="text" id="company-name" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-charcoal mb-2">Contact Name *</label>
+                        <input type="text" id="contact-name" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-charcoal mb-2">Email *</label>
+                        <input type="email" id="contact-email" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-charcoal mb-2">Phone</label>
+                        <input type="tel" id="phone" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-charcoal mb-2">Address</label>
+                    <input type="text" id="address" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-charcoal mb-2">City</label>
+                        <input type="text" id="city" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-charcoal mb-2">State/Region</label>
+                        <input type="text" id="state" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-charcoal mb-2">Postal Code</label>
+                        <input type="text" id="postal-code" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-charcoal mb-2">Country</label>
+                        <input type="text" id="country" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-charcoal mb-2">Tax ID</label>
+                        <input type="text" id="tax-id" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-charcoal mb-2">Notes</label>
+                    <textarea id="notes" rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue resize-none"></textarea>
+                </div>
+
+                <div id="form-error" class="hidden p-4 bg-red-50 text-red-800 border border-red-200 rounded-xl text-sm"></div>
+
+                <div class="flex gap-4">
+                    <button type="submit" class="flex-1 bg-charcoal text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition">
+                        Save Client
+                    </button>
+                    <button type="button" onclick="closeClientModal()" class="px-6 py-3 border-2 border-gray-200 rounded-xl font-medium hover:border-muted-blue transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let editingClientId = null;
+
+async function loadClients() {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = '/admin/login';
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/v1/admin/clients', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem('access_token');
+            window.location.href = '/admin/login?error=session_expired';
+            return;
+        }
+
+        if (!response.ok) throw new Error('Failed to load clients');
+
+        const clients = await response.json();
+        displayClients(clients);
+    } catch (error) {
+        console.error('Error loading clients:', error);
+        document.getElementById('clients-list').innerHTML = `
+            <tr><td colspan="6" class="px-6 py-8 text-center text-red-600">Error loading clients</td></tr>
+        `;
+    }
+}
+
+function displayClients(clients) {
+    const tbody = document.getElementById('clients-list');
+
+    if (clients.length === 0) {
+        tbody.innerHTML = `
+            <tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No clients yet. Click "Add Client" to create one.</td></tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = clients.map(client => `
+        <tr class="border-t border-gray-100 hover:bg-light-grey transition">
+            <td class="px-6 py-4">
+                <p class="font-semibold text-charcoal">${client.company_name || '-'}</p>
+            </td>
+            <td class="px-6 py-4 text-gray-600">${client.contact_name}</td>
+            <td class="px-6 py-4">
+                <a href="mailto:${client.contact_email}" class="text-muted-blue hover:underline">${client.contact_email}</a>
+            </td>
+            <td class="px-6 py-4 text-gray-600">${client.phone || '-'}</td>
+            <td class="px-6 py-4 text-gray-600">${client.city ? `${client.city}${client.state ? ', ' + client.state : ''}` : '-'}</td>
+            <td class="px-6 py-4">
+                <div class="flex gap-2">
+                    <button onclick="editClient(${client.id})" class="p-2 text-muted-blue hover:bg-blue-50 rounded-lg transition" title="Edit">
+                        <i data-lucide="edit-2" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="deleteClient(${client.id}, '${client.contact_name.replace(/'/g, "\\'")}')" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition" title="Delete">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+
+    lucide.createIcons();
+}
+
+function openClientModal(client = null) {
+    editingClientId = client ? client.id : null;
+    document.getElementById('modal-title').textContent = client ? 'Edit Client' : 'Add Client';
+    document.getElementById('client-form').reset();
+    document.getElementById('form-error').classList.add('hidden');
+
+    if (client) {
+        document.getElementById('client-id').value = client.id;
+        document.getElementById('company-name').value = client.company_name || '';
+        document.getElementById('contact-name').value = client.contact_name;
+        document.getElementById('contact-email').value = client.contact_email;
+        document.getElementById('phone').value = client.phone || '';
+        document.getElementById('address').value = client.address || '';
+        document.getElementById('city').value = client.city || '';
+        document.getElementById('state').value = client.state || '';
+        document.getElementById('postal-code').value = client.postal_code || '';
+        document.getElementById('country').value = client.country || '';
+        document.getElementById('tax-id').value = client.tax_id || '';
+        document.getElementById('notes').value = client.notes || '';
+    }
+
+    document.getElementById('client-modal').classList.remove('hidden');
+    lucide.createIcons();
+}
+
+function closeClientModal() {
+    document.getElementById('client-modal').classList.add('hidden');
+    editingClientId = null;
+}
+
+async function editClient(clientId) {
+    const token = localStorage.getItem('access_token');
+
+    try {
+        const response = await fetch(`/api/v1/admin/clients/${clientId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error('Failed to load client');
+
+        const client = await response.json();
+        openClientModal(client);
+    } catch (error) {
+        console.error('Error loading client:', error);
+        alert('Failed to load client details');
+    }
+}
+
+async function deleteClient(clientId, clientName) {
+    if (!confirm(`Are you sure you want to delete "${clientName}"? This will also delete all associated invoices.`)) {
+        return;
+    }
+
+    const token = localStorage.getItem('access_token');
+
+    try {
+        const response = await fetch(`/api/v1/admin/clients/${clientId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error('Failed to delete client');
+
+        await loadClients();
+    } catch (error) {
+        console.error('Error deleting client:', error);
+        alert('Failed to delete client');
+    }
+}
+
+document.getElementById('client-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const errorDiv = document.getElementById('form-error');
+    errorDiv.classList.add('hidden');
+
+    const clientData = {
+        company_name: document.getElementById('company-name').value || null,
+        contact_name: document.getElementById('contact-name').value,
+        contact_email: document.getElementById('contact-email').value,
+        phone: document.getElementById('phone').value || null,
+        address: document.getElementById('address').value || null,
+        city: document.getElementById('city').value || null,
+        state: document.getElementById('state').value || null,
+        postal_code: document.getElementById('postal-code').value || null,
+        country: document.getElementById('country').value || null,
+        tax_id: document.getElementById('tax-id').value || null,
+        notes: document.getElementById('notes').value || null
+    };
+
+    const token = localStorage.getItem('access_token');
+    const url = editingClientId
+        ? `/api/v1/admin/clients/${editingClientId}`
+        : '/api/v1/admin/clients';
+    const method = editingClientId ? 'PUT' : 'POST';
+
+    try {
+        const response = await fetch(url, {
+            method,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(clientData)
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || 'Failed to save client');
+        }
+
+        closeClientModal();
+        await loadClients();
+    } catch (error) {
+        console.error('Error saving client:', error);
+        errorDiv.textContent = error.message;
+        errorDiv.classList.remove('hidden');
+    }
+});
+
+// Load clients on page load
+loadClients();
+</script>
+{% endblock %}

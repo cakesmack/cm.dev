@@ -1,0 +1,354 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Invoices{% endblock %}
+
+{% block content %}
+<div class="md:mt-0 mt-16">
+    <div class="fade-in mb-8">
+        <h1 class="text-4xl font-bold text-charcoal">Invoices</h1>
+        <p class="text-gray-600 mt-2">Manage client invoices and payments</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid md:grid-cols-5 gap-6 mb-8">
+        <div class="fade-in bg-white p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+                <p class="text-sm font-semibold text-gray-600">Draft</p>
+                <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <i data-lucide="file-edit" class="w-4 h-4 text-gray-600"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-charcoal" id="draft-count">-</p>
+        </div>
+
+        <div class="fade-in bg-white p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+                <p class="text-sm font-semibold text-gray-600">Sent</p>
+                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <i data-lucide="send" class="w-4 h-4 text-blue-600"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-charcoal" id="sent-count">-</p>
+        </div>
+
+        <div class="fade-in bg-white p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+                <p class="text-sm font-semibold text-gray-600">Paid</p>
+                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-charcoal" id="paid-count">-</p>
+        </div>
+
+        <div class="fade-in bg-white p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+                <p class="text-sm font-semibold text-gray-600">Overdue</p>
+                <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                    <i data-lucide="alert-circle" class="w-4 h-4 text-red-600"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-charcoal" id="overdue-count">-</p>
+        </div>
+
+        <div class="fade-in bg-white p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between mb-2">
+                <p class="text-sm font-semibold text-gray-600">Cancelled</p>
+                <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <i data-lucide="x-circle" class="w-4 h-4 text-gray-600"></i>
+                </div>
+            </div>
+            <p class="text-2xl font-bold text-charcoal" id="cancelled-count">-</p>
+        </div>
+    </div>
+
+    <!-- Invoices Table -->
+    <div class="fade-in bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div id="invoices-table" class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-light-grey">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Invoice #</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Client</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Amount</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Status</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Issue Date</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Due Date</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="invoices-list">
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-gray-500">Loading invoices...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Invoice Detail Modal -->
+<div id="invoice-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-6">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-charcoal">Invoice Details</h2>
+                <button onclick="closeInvoiceModal()" class="text-gray-500 hover:text-charcoal">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div id="invoice-details" class="space-y-6">
+                <!-- Invoice details will be populated here -->
+            </div>
+
+            <div class="mt-8 flex gap-4">
+                <button onclick="closeInvoiceModal()" class="flex-1 px-6 py-3 border-2 border-gray-200 rounded-xl font-medium hover:border-muted-blue transition">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let allInvoices = [];
+
+async function loadInvoices() {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = '/admin/login';
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/v1/admin/invoices', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem('access_token');
+            window.location.href = '/admin/login?error=session_expired';
+            return;
+        }
+
+        if (!response.ok) throw new Error('Failed to load invoices');
+
+        allInvoices = await response.json();
+        updateStats();
+        displayInvoices(allInvoices);
+    } catch (error) {
+        console.error('Error loading invoices:', error);
+        document.getElementById('invoices-list').innerHTML = `
+            <tr><td colspan="7" class="px-6 py-8 text-center text-red-600">Error loading invoices</td></tr>
+        `;
+    }
+}
+
+function updateStats() {
+    const stats = {
+        draft: 0,
+        sent: 0,
+        paid: 0,
+        overdue: 0,
+        cancelled: 0
+    };
+
+    allInvoices.forEach(invoice => {
+        stats[invoice.status]++;
+    });
+
+    document.getElementById('draft-count').textContent = stats.draft;
+    document.getElementById('sent-count').textContent = stats.sent;
+    document.getElementById('paid-count').textContent = stats.paid;
+    document.getElementById('overdue-count').textContent = stats.overdue;
+    document.getElementById('cancelled-count').textContent = stats.cancelled;
+}
+
+function displayInvoices(invoices) {
+    const tbody = document.getElementById('invoices-list');
+
+    if (invoices.length === 0) {
+        tbody.innerHTML = `
+            <tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No invoices yet</td></tr>
+        `;
+        return;
+    }
+
+    const statusColors = {
+        draft: 'bg-gray-100 text-gray-700',
+        sent: 'bg-blue-100 text-blue-700',
+        paid: 'bg-green-100 text-green-700',
+        overdue: 'bg-red-100 text-red-700',
+        cancelled: 'bg-gray-100 text-gray-700'
+    };
+
+    tbody.innerHTML = invoices.map(invoice => `
+        <tr class="border-t border-gray-100 hover:bg-light-grey transition cursor-pointer" onclick="viewInvoice(${invoice.id})">
+            <td class="px-6 py-4 font-semibold text-charcoal">${invoice.invoice_number}</td>
+            <td class="px-6 py-4 text-gray-600">${invoice.client ? (invoice.client.company_name || invoice.client.contact_name) : '-'}</td>
+            <td class="px-6 py-4 font-semibold text-charcoal">$${parseFloat(invoice.total || 0).toFixed(2)}</td>
+            <td class="px-6 py-4">
+                <span class="px-3 py-1 rounded-full text-xs font-medium ${statusColors[invoice.status]}">
+                    ${invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+                </span>
+            </td>
+            <td class="px-6 py-4 text-gray-600">${new Date(invoice.issue_date).toLocaleDateString()}</td>
+            <td class="px-6 py-4 text-gray-600">${invoice.due_date ? new Date(invoice.due_date).toLocaleDateString() : '-'}</td>
+            <td class="px-6 py-4" onclick="event.stopPropagation()">
+                <div class="flex gap-2">
+                    <button onclick="deleteInvoice(${invoice.id}, '${invoice.invoice_number}')" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition" title="Delete">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+
+    lucide.createIcons();
+}
+
+async function viewInvoice(invoiceId) {
+    const invoice = allInvoices.find(i => i.id === invoiceId);
+    if (!invoice) return;
+
+    const statusColors = {
+        draft: 'bg-gray-100 text-gray-700',
+        sent: 'bg-blue-100 text-blue-700',
+        paid: 'bg-green-100 text-green-700',
+        overdue: 'bg-red-100 text-red-700',
+        cancelled: 'bg-gray-100 text-gray-700'
+    };
+
+    const clientInfo = invoice.client
+        ? `<div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Client</label>
+            <p class="text-lg font-semibold text-charcoal">${invoice.client.company_name || invoice.client.contact_name}</p>
+            <p class="text-gray-600">${invoice.client.contact_email}</p>
+          </div>`
+        : '';
+
+    document.getElementById('invoice-details').innerHTML = `
+        <div class="grid md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">Invoice Number</label>
+                <p class="text-lg font-semibold text-charcoal">${invoice.invoice_number}</p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">Status</label>
+                <select id="invoice-status" onchange="updateInvoiceStatus(${invoice.id}, this.value)" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                    <option value="draft" ${invoice.status === 'draft' ? 'selected' : ''}>Draft</option>
+                    <option value="sent" ${invoice.status === 'sent' ? 'selected' : ''}>Sent</option>
+                    <option value="paid" ${invoice.status === 'paid' ? 'selected' : ''}>Paid</option>
+                    <option value="overdue" ${invoice.status === 'overdue' ? 'selected' : ''}>Overdue</option>
+                    <option value="cancelled" ${invoice.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                </select>
+            </div>
+        </div>
+
+        ${clientInfo}
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">Issue Date</label>
+                <p class="text-gray-700">${new Date(invoice.issue_date).toLocaleDateString()}</p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">Due Date</label>
+                <p class="text-gray-700">${invoice.due_date ? new Date(invoice.due_date).toLocaleDateString() : '-'}</p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">Paid Date</label>
+                <p class="text-gray-700">${invoice.paid_date ? new Date(invoice.paid_date).toLocaleDateString() : '-'}</p>
+            </div>
+        </div>
+
+        <div class="border-t pt-6">
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Subtotal</label>
+                    <p class="text-xl font-semibold text-charcoal">$${parseFloat(invoice.subtotal || 0).toFixed(2)}</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Tax (${parseFloat(invoice.tax_rate || 0)}%)</label>
+                    <p class="text-xl font-semibold text-charcoal">$${parseFloat(invoice.tax_amount || 0).toFixed(2)}</p>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-4 border-t">
+                <label class="block text-sm font-medium text-gray-600 mb-1">Total</label>
+                <p class="text-3xl font-bold text-charcoal">$${parseFloat(invoice.total || 0).toFixed(2)} ${invoice.currency}</p>
+            </div>
+        </div>
+
+        ${invoice.notes ? `
+        <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Notes</label>
+            <p class="text-gray-700 whitespace-pre-wrap">${invoice.notes}</p>
+        </div>
+        ` : ''}
+    `;
+
+    document.getElementById('invoice-modal').classList.remove('hidden');
+    lucide.createIcons();
+}
+
+function closeInvoiceModal() {
+    document.getElementById('invoice-modal').classList.add('hidden');
+}
+
+async function updateInvoiceStatus(invoiceId, newStatus) {
+    const token = localStorage.getItem('access_token');
+
+    try {
+        const response = await fetch(`/api/v1/admin/invoices/${invoiceId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: newStatus })
+        });
+
+        if (!response.ok) throw new Error('Failed to update status');
+
+        await loadInvoices();
+        closeInvoiceModal();
+    } catch (error) {
+        console.error('Error updating status:', error);
+        alert('Failed to update invoice status');
+    }
+}
+
+async function deleteInvoice(invoiceId, invoiceNumber) {
+    if (!confirm(`Are you sure you want to delete invoice "${invoiceNumber}"?`)) {
+        return;
+    }
+
+    const token = localStorage.getItem('access_token');
+
+    try {
+        const response = await fetch(`/api/v1/admin/invoices/${invoiceId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error('Failed to delete invoice');
+
+        await loadInvoices();
+    } catch (error) {
+        console.error('Error deleting invoice:', error);
+        alert('Failed to delete invoice');
+    }
+}
+
+// Load invoices on page load
+loadInvoices();
+</script>
+{% endblock %}
