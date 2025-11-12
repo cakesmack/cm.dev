@@ -64,17 +64,18 @@ def delete_lead(
     return None
 
 
-from app.schemas.client import ClientResponse
+from app.schemas.client import ClientResponse, ClientCreate
 
 
 @router.post("/{lead_id}/convert", response_model=ClientResponse)
 def convert_lead_to_client(
     lead_id: int,
+    client_data: ClientCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_admin_user)
 ):
-    """Convert a lead to a client (admin only)"""
-    client = lead_service.convert_lead_to_client(db, lead_id, current_user.id)
+    """Convert a lead to a client with full client details (admin only)"""
+    client = lead_service.convert_lead_to_client(db, lead_id, current_user.id, client_data)
     if not client:
         raise HTTPException(status_code=404, detail="Lead not found")
     return client

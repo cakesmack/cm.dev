@@ -64,21 +64,22 @@ from app.models.client import Client
 from app.schemas.client import ClientCreate
 
 
-def convert_lead_to_client(db: Session, lead_id: int, user_id: int) -> Optional[Client]:
-    """Convert a lead to a client"""
+def convert_lead_to_client(db: Session, lead_id: int, user_id: int, client_data: ClientCreate) -> Optional[Client]:
+    """Convert a lead to a client with provided client data"""
     lead = get_lead(db, lead_id)
     if not lead:
         return None
 
-    # Create client from lead
-    client_data = ClientCreate(
-        contact_name=lead.name,
-        contact_email=lead.email,
-        notes=f"Converted from lead. Original message: {lead.message}"
-    )
+    # If notes are empty, add the lead's original message
+    client_dict = client_data.model_dump()
+    if not client_dict.get('notes'):
+        client_dict['notes'] = f"Converted from lead. Original message: {lead.message}"
+    else:
+        # Append the original message to user's notes
+        client_dict['notes'] = f"{client_dict['notes']}\n\nOriginal lead message: {lead.message}"
 
     client = Client(
-        **client_data.model_dump(),
+        **client_dict,
         user_id=user_id
     )
     db.add(client)

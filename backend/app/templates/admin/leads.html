@@ -92,10 +92,144 @@
             </div>
 
             <div class="mt-8 flex gap-4">
+                <button id="convert-lead-btn" onclick="openConversionModal()" class="flex-1 px-6 py-3 bg-green-600 text-white rounded-xl font-medium hover:bg-green-700 transition">
+                    Convert to Client
+                </button>
                 <button onclick="closeLeadModal()" class="flex-1 px-6 py-3 border-2 border-gray-200 rounded-xl font-medium hover:border-muted-blue transition">
                     Close
                 </button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Conversion Modal -->
+<div id="conversion-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-6">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-8">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-charcoal">Convert Lead to Client</h2>
+                    <p class="text-gray-600 mt-1">Fill in additional client details before converting</p>
+                </div>
+                <button onclick="closeConversionModal()" class="text-gray-500 hover:text-charcoal">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <form id="conversion-form" class="space-y-6">
+                <!-- Contact Information -->
+                <div class="bg-blue-50 p-4 rounded-xl">
+                    <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        Contact Information (from lead)
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Contact Name *</label>
+                            <input type="text" id="contact-name" name="contact_name" required
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Contact Email *</label>
+                            <input type="email" id="contact-email" name="contact_email" required
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Company Information -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                        <i data-lucide="building-2" class="w-4 h-4"></i>
+                        Company Information
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                            <input type="text" id="company-name" name="company_name"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                            <input type="tel" id="phone" name="phone"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                        <i data-lucide="map-pin" class="w-4 h-4"></i>
+                        Address
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
+                            <input type="text" id="address" name="address"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                                <input type="text" id="city" name="city"
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">State/Region</label>
+                                <input type="text" id="state" name="state"
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
+                                <input type="text" id="postal-code" name="postal_code"
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                                <input type="text" id="country" name="country"
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Information -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        Additional Information
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Tax ID</label>
+                            <input type="text" id="tax-id" name="tax_id"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                            <textarea id="notes" name="notes" rows="3"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue"
+                                placeholder="Add any additional notes about this client..."></textarea>
+                            <p class="text-xs text-gray-500 mt-1">The original lead message will be automatically appended to your notes</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button type="button" onclick="closeConversionModal()"
+                        class="flex-1 px-6 py-3 border-2 border-gray-200 rounded-xl font-medium hover:border-muted-blue transition">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="flex-1 px-6 py-3 bg-green-600 text-white rounded-xl font-medium hover:bg-green-700 transition">
+                        Create Client
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -104,6 +238,7 @@
 {% block extra_scripts %}
 <script>
 let allLeads = [];
+let currentLead = null;
 
 async function loadLeads() {
     const token = localStorage.getItem('access_token');
@@ -201,6 +336,8 @@ async function viewLead(leadId) {
     const lead = allLeads.find(l => l.id === leadId);
     if (!lead) return;
 
+    currentLead = lead; // Store current lead for conversion
+
     const statusColors = {
         new: 'bg-blue-100 text-blue-700',
         contacted: 'bg-yellow-100 text-yellow-700',
@@ -244,6 +381,14 @@ async function viewLead(leadId) {
             <p class="text-gray-700">${new Date(lead.created_at).toLocaleString()}</p>
         </div>
     `;
+
+    // Hide convert button if already converted
+    const convertBtn = document.getElementById('convert-lead-btn');
+    if (lead.status === 'converted') {
+        convertBtn.classList.add('hidden');
+    } else {
+        convertBtn.classList.remove('hidden');
+    }
 
     document.getElementById('lead-modal').classList.remove('hidden');
     lucide.createIcons();
@@ -297,6 +442,91 @@ async function deleteLead(leadId, leadName) {
         alert('Failed to delete lead');
     }
 }
+
+function openConversionModal() {
+    if (!currentLead) return;
+
+    // Pre-fill the form with lead data
+    document.getElementById('contact-name').value = currentLead.name;
+    document.getElementById('contact-email').value = currentLead.email;
+
+    // Clear other fields
+    document.getElementById('company-name').value = '';
+    document.getElementById('phone').value = '';
+    document.getElementById('address').value = '';
+    document.getElementById('city').value = '';
+    document.getElementById('state').value = '';
+    document.getElementById('postal-code').value = '';
+    document.getElementById('country').value = '';
+    document.getElementById('tax-id').value = '';
+    document.getElementById('notes').value = '';
+
+    // Close lead modal and show conversion modal
+    closeLeadModal();
+    document.getElementById('conversion-modal').classList.remove('hidden');
+    lucide.createIcons();
+}
+
+function closeConversionModal() {
+    document.getElementById('conversion-modal').classList.add('hidden');
+    document.getElementById('conversion-form').reset();
+}
+
+// Handle conversion form submission
+document.getElementById('conversion-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!currentLead) return;
+
+    const token = localStorage.getItem('access_token');
+    const formData = new FormData(e.target);
+
+    // Build client data object
+    const clientData = {
+        contact_name: formData.get('contact_name'),
+        contact_email: formData.get('contact_email'),
+        company_name: formData.get('company_name') || null,
+        phone: formData.get('phone') || null,
+        address: formData.get('address') || null,
+        city: formData.get('city') || null,
+        state: formData.get('state') || null,
+        postal_code: formData.get('postal_code') || null,
+        country: formData.get('country') || null,
+        tax_id: formData.get('tax_id') || null,
+        notes: formData.get('notes') || null
+    };
+
+    try {
+        const response = await fetch(`/api/v1/admin/leads/${currentLead.id}/convert`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(clientData)
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || 'Failed to convert lead');
+        }
+
+        const newClient = await response.json();
+
+        // Show success message
+        alert(`Successfully converted "${currentLead.name}" to a client! The client has been added to your Clients section.`);
+
+        // Close modal and reload leads
+        closeConversionModal();
+        await loadLeads();
+
+        // Optional: Redirect to clients page to see the new client
+        // window.location.href = '/admin/clients';
+    } catch (error) {
+        console.error('Error converting lead:', error);
+        alert(`Failed to convert lead: ${error.message}`);
+    }
+});
 
 // Load leads on page load
 loadLeads();
