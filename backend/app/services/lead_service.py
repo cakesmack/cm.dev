@@ -58,3 +58,34 @@ def delete_lead(db: Session, lead_id: int) -> bool:
     db.delete(lead)
     db.commit()
     return True
+
+
+from app.models.client import Client
+from app.schemas.client import ClientCreate
+
+
+def convert_lead_to_client(db: Session, lead_id: int, user_id: int) -> Optional[Client]:
+    """Convert a lead to a client"""
+    lead = get_lead(db, lead_id)
+    if not lead:
+        return None
+
+    # Create client from lead
+    client_data = ClientCreate(
+        contact_name=lead.name,
+        contact_email=lead.email,
+        notes=f"Converted from lead. Original message: {lead.message}"
+    )
+
+    client = Client(
+        **client_data.model_dump(),
+        user_id=user_id
+    )
+    db.add(client)
+
+    # Update lead status
+    lead.status = LeadStatus.CONVERTED
+
+    db.commit()
+    db.refresh(client)
+    return client
