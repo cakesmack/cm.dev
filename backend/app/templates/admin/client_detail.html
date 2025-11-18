@@ -1,0 +1,527 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Client Details{% endblock %}
+
+{% block content %}
+<div class="md:mt-0 mt-16">
+    <!-- Header with Back Button -->
+    <div class="fade-in mb-6 md:mb-8">
+        <a href="/admin/clients" class="inline-flex items-center gap-2 text-muted-blue hover:text-charcoal mb-4 transition">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Back to Clients</span>
+        </a>
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+            <div>
+                <h1 id="client-title" class="text-3xl md:text-4xl font-bold text-charcoal">Loading...</h1>
+                <p class="text-gray-600 mt-2">Client Details</p>
+            </div>
+            <div class="flex gap-3">
+                <button id="create-invoice-btn" class="flex items-center gap-2 bg-muted-blue text-white px-4 md:px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition">
+                    <i data-lucide="file-plus" class="w-5 h-5"></i>
+                    <span class="hidden md:inline">Create Invoice</span>
+                    <span class="md:hidden">Invoice</span>
+                </button>
+                <button id="edit-client-btn" class="flex items-center gap-2 bg-charcoal text-white px-4 md:px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition">
+                    <i data-lucide="edit-2" class="w-5 h-5"></i>
+                    <span class="hidden md:inline">Edit Client</span>
+                    <span class="md:hidden">Edit</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Information -->
+    <div class="fade-in grid md:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
+        <!-- Contact Information Card -->
+        <div class="bg-white rounded-2xl shadow-sm p-4 md:p-6">
+            <h2 class="text-lg md:text-xl font-bold text-charcoal mb-4 flex items-center gap-2">
+                <i data-lucide="user" class="w-5 h-5"></i>
+                Contact Information
+            </h2>
+            <div id="contact-info" class="space-y-3">
+                <div class="animate-pulse space-y-3">
+                    <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                    <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Address Information Card -->
+        <div class="bg-white rounded-2xl shadow-sm p-4 md:p-6">
+            <h2 class="text-lg md:text-xl font-bold text-charcoal mb-4 flex items-center gap-2">
+                <i data-lucide="map-pin" class="w-5 h-5"></i>
+                Address Information
+            </h2>
+            <div id="address-info" class="space-y-3">
+                <div class="animate-pulse space-y-3">
+                    <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                    <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes Section -->
+    <div id="notes-section" class="fade-in bg-white rounded-2xl shadow-sm p-4 md:p-6 mb-6 md:mb-8 hidden">
+        <h2 class="text-lg md:text-xl font-bold text-charcoal mb-4 flex items-center gap-2">
+            <i data-lucide="file-text" class="w-5 h-5"></i>
+            Notes
+        </h2>
+        <p id="client-notes" class="text-gray-700 whitespace-pre-wrap text-sm md:text-base"></p>
+    </div>
+
+    <!-- Invoices Section -->
+    <div class="fade-in bg-white rounded-2xl shadow-sm p-4 md:p-6 mb-6 md:mb-8">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg md:text-xl font-bold text-charcoal flex items-center gap-2">
+                <i data-lucide="receipt" class="w-5 h-5"></i>
+                Invoices <span id="invoices-count">(0)</span>
+            </h2>
+            <div id="invoice-stats" class="hidden md:flex gap-4 text-sm">
+                <div class="text-center">
+                    <p class="text-gray-500">Total Billed</p>
+                    <p id="total-billed" class="font-semibold text-charcoal">$0.00</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-gray-500">Paid</p>
+                    <p id="total-paid" class="font-semibold text-green-600">$0.00</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-gray-500">Outstanding</p>
+                    <p id="total-outstanding" class="font-semibold text-amber-600">$0.00</p>
+                </div>
+            </div>
+        </div>
+        <div id="invoices-container">
+            <div class="animate-pulse space-y-3">
+                <div class="h-16 bg-gray-100 rounded-lg"></div>
+                <div class="h-16 bg-gray-100 rounded-lg"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Projects Section -->
+    <div class="fade-in bg-white rounded-2xl shadow-sm p-4 md:p-6">
+        <h2 class="text-lg md:text-xl font-bold text-charcoal mb-4 flex items-center gap-2">
+            <i data-lucide="folder" class="w-5 h-5"></i>
+            Projects <span id="projects-count">(0)</span>
+        </h2>
+        <div id="projects-container">
+            <div class="animate-pulse space-y-3">
+                <div class="h-24 bg-gray-100 rounded-lg"></div>
+                <div class="h-24 bg-gray-100 rounded-lg"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="hidden fixed bottom-6 right-6 bg-charcoal text-white px-6 py-4 rounded-xl shadow-2xl z-50 flex items-center gap-3 max-w-md">
+    <i data-lucide="check-circle" class="w-5 h-5" id="toast-icon"></i>
+    <span id="toast-message">Action completed successfully</span>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const clientId = {{ client_id }};
+
+// Check authentication on page load
+const token = localStorage.getItem('access_token');
+if (!token) {
+    window.location.href = '/admin/login';
+}
+
+// Toast notification function
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    const toastIcon = document.getElementById('toast-icon');
+
+    toastMessage.textContent = message;
+
+    if (type === 'success') {
+        toast.className = 'fixed bottom-6 right-6 bg-green-600 text-white px-6 py-4 rounded-xl shadow-2xl z-50 flex items-center gap-3 max-w-md';
+        toastIcon.setAttribute('data-lucide', 'check-circle');
+    } else if (type === 'error') {
+        toast.className = 'fixed bottom-6 right-6 bg-red-600 text-white px-6 py-4 rounded-xl shadow-2xl z-50 flex items-center gap-3 max-w-md';
+        toastIcon.setAttribute('data-lucide', 'alert-circle');
+    } else if (type === 'info') {
+        toast.className = 'fixed bottom-6 right-6 bg-muted-blue text-white px-6 py-4 rounded-xl shadow-2xl z-50 flex items-center gap-3 max-w-md';
+        toastIcon.setAttribute('data-lucide', 'info');
+    }
+
+    toast.classList.remove('hidden');
+    lucide.createIcons();
+
+    setTimeout(() => {
+        toast.classList.add('hidden');
+    }, 3000);
+}
+
+async function loadClientDetails() {
+    try {
+        const response = await fetch(`/api/v1/admin/clients/${clientId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            console.error('Authentication failed. Status:', response.status);
+            const errorData = await response.json().catch(() => ({ detail: 'Session expired' }));
+            console.error('Error details:', errorData);
+            localStorage.removeItem('access_token');
+            window.location.href = '/admin/login?error=session_expired';
+            return;
+        }
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
+            console.error('API error:', response.status, errorData);
+            throw new Error(errorData.detail || 'Failed to load client');
+        }
+
+        const client = await response.json();
+        console.log('Client loaded successfully:', client);
+        displayClientDetails(client);
+
+        // Load invoices after client details
+        await loadClientInvoices();
+    } catch (error) {
+        console.error('Error loading client:', error);
+        document.getElementById('client-title').textContent = 'Error Loading Client';
+        document.getElementById('contact-info').innerHTML = `
+            <div class="text-red-600">
+                <p class="font-semibold mb-2">Failed to load client details</p>
+                <p class="text-sm">${error.message}</p>
+                <a href="/admin/clients" class="text-sm text-muted-blue hover:underline mt-2 inline-block">← Back to clients</a>
+            </div>
+        `;
+        document.getElementById('address-info').innerHTML = '<p class="text-gray-500">Unable to load address information</p>';
+    }
+}
+
+async function loadClientInvoices() {
+    try {
+        const response = await fetch(`/api/v1/admin/invoices?client_id=${clientId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to load invoices');
+        }
+
+        const invoices = await response.json();
+        displayInvoices(invoices);
+    } catch (error) {
+        console.error('Error loading invoices:', error);
+        document.getElementById('invoices-container').innerHTML = `
+            <p class="text-center py-4 text-red-600 text-sm">Failed to load invoices</p>
+        `;
+    }
+}
+
+function displayClientDetails(client) {
+    // Update title
+    document.getElementById('client-title').textContent = client.company_name || client.contact_name;
+
+    // Update edit button
+    document.getElementById('edit-client-btn').onclick = () => {
+        window.location.href = '/admin/clients?edit=' + client.id;
+    };
+
+    // Update create invoice button
+    document.getElementById('create-invoice-btn').onclick = () => {
+        window.location.href = '/admin/invoices?client=' + client.id;
+    };
+
+    // Display contact information
+    let contactHtml = '';
+    if (client.company_name) {
+        contactHtml += `
+            <div>
+                <label class="text-xs md:text-sm font-medium text-gray-500">Company</label>
+                <p class="text-sm md:text-base text-charcoal">${client.company_name}</p>
+            </div>
+        `;
+    }
+    contactHtml += `
+        <div>
+            <label class="text-xs md:text-sm font-medium text-gray-500">Contact Name</label>
+            <p class="text-sm md:text-base text-charcoal">${client.contact_name}</p>
+        </div>
+        <div>
+            <label class="text-xs md:text-sm font-medium text-gray-500">Email</label>
+            <p class="text-sm md:text-base text-charcoal">
+                <a href="mailto:${client.contact_email}" class="text-muted-blue hover:underline">
+                    ${client.contact_email}
+                </a>
+            </p>
+        </div>
+    `;
+    if (client.phone) {
+        contactHtml += `
+            <div>
+                <label class="text-xs md:text-sm font-medium text-gray-500">Phone</label>
+                <p class="text-sm md:text-base text-charcoal">
+                    <a href="tel:${client.phone}" class="text-muted-blue hover:underline">
+                        ${client.phone}
+                    </a>
+                </p>
+            </div>
+        `;
+    }
+    document.getElementById('contact-info').innerHTML = contactHtml;
+
+    // Display address information
+    let addressHtml = '';
+    let hasAddress = false;
+
+    if (client.address) {
+        hasAddress = true;
+        addressHtml += `
+            <div>
+                <label class="text-xs md:text-sm font-medium text-gray-500">Street Address</label>
+                <p class="text-sm md:text-base text-charcoal">${client.address}</p>
+            </div>
+        `;
+    }
+
+    if (client.city || client.state || client.postal_code) {
+        hasAddress = true;
+        const location = [
+            client.city,
+            client.state,
+            client.postal_code
+        ].filter(Boolean).join(', ');
+
+        addressHtml += `
+            <div>
+                <label class="text-xs md:text-sm font-medium text-gray-500">Location</label>
+                <p class="text-sm md:text-base text-charcoal">${location}</p>
+            </div>
+        `;
+    }
+
+    if (client.country) {
+        hasAddress = true;
+        addressHtml += `
+            <div>
+                <label class="text-xs md:text-sm font-medium text-gray-500">Country</label>
+                <p class="text-sm md:text-base text-charcoal">${client.country}</p>
+            </div>
+        `;
+    }
+
+    if (client.tax_id) {
+        hasAddress = true;
+        addressHtml += `
+            <div>
+                <label class="text-xs md:text-sm font-medium text-gray-500">Tax ID</label>
+                <p class="text-sm md:text-base text-charcoal">${client.tax_id}</p>
+            </div>
+        `;
+    }
+
+    if (!hasAddress) {
+        addressHtml = '<p class="text-sm md:text-base text-gray-500">No address information available</p>';
+    }
+
+    document.getElementById('address-info').innerHTML = addressHtml;
+
+    // Display notes if available
+    if (client.notes) {
+        document.getElementById('notes-section').classList.remove('hidden');
+        document.getElementById('client-notes').textContent = client.notes;
+    }
+
+    // Display projects
+    displayProjects(client.projects || []);
+
+    // Reinitialize Lucide icons
+    lucide.createIcons();
+}
+
+function displayInvoices(invoices) {
+    document.getElementById('invoices-count').textContent = `(${invoices.length})`;
+
+    const container = document.getElementById('invoices-container');
+
+    // Calculate stats
+    let totalBilled = 0;
+    let totalPaid = 0;
+    let totalOutstanding = 0;
+
+    invoices.forEach(invoice => {
+        const amount = parseFloat(invoice.total);
+        totalBilled += amount;
+        if (invoice.status === 'paid') {
+            totalPaid += amount;
+        } else {
+            totalOutstanding += amount;
+        }
+    });
+
+    // Update stats
+    if (invoices.length > 0) {
+        document.getElementById('invoice-stats').classList.remove('hidden');
+        document.getElementById('total-billed').textContent = `$${totalBilled.toFixed(2)}`;
+        document.getElementById('total-paid').textContent = `$${totalPaid.toFixed(2)}`;
+        document.getElementById('total-outstanding').textContent = `$${totalOutstanding.toFixed(2)}`;
+    }
+
+    if (invoices.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-8">
+                <i data-lucide="receipt" class="w-12 h-12 mx-auto text-gray-300 mb-3"></i>
+                <p class="text-gray-500 mb-4 text-sm md:text-base">No invoices for this client yet</p>
+                <button onclick="document.getElementById('create-invoice-btn').click()" class="inline-flex items-center gap-2 text-muted-blue hover:underline text-sm md:text-base">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    Create an invoice
+                </button>
+            </div>
+        `;
+    } else {
+        // Desktop table view
+        const desktopTable = `
+            <div class="hidden md:block overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-light-grey">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-charcoal">Invoice #</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-charcoal">Date</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-charcoal">Due Date</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-charcoal">Status</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-charcoal">Amount</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-charcoal">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${invoices.map(invoice => {
+                            const statusColors = {
+                                draft: 'bg-gray-100 text-gray-700',
+                                sent: 'bg-blue-100 text-blue-700',
+                                paid: 'bg-green-100 text-green-700',
+                                overdue: 'bg-red-100 text-red-700',
+                                cancelled: 'bg-gray-100 text-gray-500'
+                            };
+                            return `
+                                <tr class="border-t border-gray-100 hover:bg-light-grey">
+                                    <td class="px-4 py-3 font-medium text-charcoal">${invoice.invoice_number}</td>
+                                    <td class="px-4 py-3 text-gray-600">${new Date(invoice.issue_date).toLocaleDateString()}</td>
+                                    <td class="px-4 py-3 text-gray-600">${invoice.due_date ? new Date(invoice.due_date).toLocaleDateString() : '-'}</td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs rounded-full ${statusColors[invoice.status] || statusColors.draft}">
+                                            ${invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3 text-right font-semibold text-charcoal">$${parseFloat(invoice.total).toFixed(2)}</td>
+                                    <td class="px-4 py-3 text-right">
+                                        <a href="/admin/invoices?view=${invoice.id}" class="text-muted-blue hover:underline text-sm">View</a>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        // Mobile card view
+        const mobileCards = `
+            <div class="md:hidden space-y-3">
+                ${invoices.map(invoice => {
+                    const statusColors = {
+                        draft: 'bg-gray-100 text-gray-700',
+                        sent: 'bg-blue-100 text-blue-700',
+                        paid: 'bg-green-100 text-green-700',
+                        overdue: 'bg-red-100 text-red-700',
+                        cancelled: 'bg-gray-100 text-gray-500'
+                    };
+                    return `
+                        <div class="border border-gray-200 rounded-xl p-4">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <p class="font-semibold text-charcoal">${invoice.invoice_number}</p>
+                                    <p class="text-sm text-gray-500">${new Date(invoice.issue_date).toLocaleDateString()}</p>
+                                </div>
+                                <span class="px-2 py-1 text-xs rounded-full ${statusColors[invoice.status] || statusColors.draft}">
+                                    ${invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-lg font-bold text-charcoal">$${parseFloat(invoice.total).toFixed(2)}</span>
+                                <a href="/admin/invoices?view=${invoice.id}" class="text-muted-blue hover:underline text-sm">View</a>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+
+        container.innerHTML = desktopTable + mobileCards;
+    }
+
+    lucide.createIcons();
+}
+
+function displayProjects(projects) {
+    document.getElementById('projects-count').textContent = `(${projects.length})`;
+
+    const container = document.getElementById('projects-container');
+
+    if (projects.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-8">
+                <i data-lucide="folder-open" class="w-12 h-12 mx-auto text-gray-300 mb-3"></i>
+                <p class="text-gray-500 mb-4 text-sm md:text-base">No projects linked to this client yet</p>
+                <a href="/admin/projects" class="inline-flex items-center gap-2 text-muted-blue hover:underline text-sm md:text-base">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    Create a new project
+                </a>
+            </div>
+        `;
+    } else {
+        container.innerHTML = `
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                ${projects.map(project => `
+                    <div class="border border-gray-200 rounded-xl p-4 hover:border-muted-blue hover:shadow-md transition">
+                        <div class="flex items-start justify-between mb-2">
+                            <h3 class="font-semibold text-charcoal text-sm md:text-base">${project.title}</h3>
+                            <span class="px-2 py-1 text-xs rounded-full ${project.is_published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}">
+                                ${project.is_published ? 'Published' : 'Draft'}
+                            </span>
+                        </div>
+                        <p class="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2">${project.description || ''}</p>
+                        <div class="flex gap-2 text-sm">
+                            <a href="/admin/projects?edit=${project.id}" class="text-muted-blue hover:underline">
+                                Edit
+                            </a>
+                            ${project.is_published ? `
+                                <span class="text-gray-300">|</span>
+                                <a href="/${project.slug}" target="_blank" class="text-muted-blue hover:underline">
+                                    View Public
+                                </a>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    lucide.createIcons();
+}
+
+// Initialize Lucide icons
+lucide.createIcons();
+
+// Load client details on page load
+loadClientDetails();
+</script>
+{% endblock %}

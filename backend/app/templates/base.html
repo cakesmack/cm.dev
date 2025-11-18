@@ -4,29 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Craig Mackenzie - Developer Portfolio{% endblock %}</title>
+
+    <!-- Distinctive Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        charcoal: '#2d3748',
+                        charcoal: '#1a202c',
+                        'charcoal-light': '#2d3748',
                         'light-grey': '#f7fafc',
+                        'warm-grey': '#faf8f5',
                         'muted-blue': '#5b8eb3',
+                        'deep-blue': '#2c5282',
+                        'accent-amber': '#d97706',
+                        'accent-rose': '#e11d48',
                     },
                     fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+                        sans: ['DM Sans', 'system-ui', '-apple-system', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'DM Sans', 'system-ui', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        /* Grain texture overlay for visual depth */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: overlay;
+        }
+
+        /* Smooth fade-in with stagger */
         .fade-in {
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transform: translateY(40px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .fade-in.visible {
@@ -34,9 +61,10 @@
             transform: translateY(0);
         }
 
+        /* Navigation link with gradient underline */
         .nav-link {
             position: relative;
-            transition: color 0.3s ease;
+            transition: color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .nav-link::after {
@@ -46,8 +74,9 @@
             height: 2px;
             bottom: -6px;
             left: 50%;
-            background-color: #5b8eb3;
-            transition: width 0.3s ease, left 0.3s ease;
+            background: linear-gradient(90deg, #5b8eb3 0%, #2c5282 100%);
+            transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 2px 8px rgba(91, 142, 179, 0.3);
         }
 
         .nav-link:hover::after,
@@ -56,62 +85,208 @@
             left: 0;
         }
 
+        /* Project cards with smooth immediate hover */
         .project-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            background: linear-gradient(to bottom, #ffffff, #fefefe);
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out !important;
         }
 
         .project-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            transform: translateY(-6px) !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(91, 142, 179, 0.08);
         }
 
+        /* CTA buttons with magnetic hover effect */
         .cta-button {
-            transition: all 0.3s ease;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .cta-button:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .cta-button:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
 
+        /* Social links with bounce */
         .social-link {
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .social-link:hover {
-            transform: translateY(-2px);
-            background-color: #f1f5f9;
+            transform: translateY(-4px) rotate(5deg);
+            background: linear-gradient(135deg, #fafafa, #f0f0f0);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
 
+        /* Profile image with gradient and subtle animation */
         .profile-image {
             aspect-ratio: 1;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #5b8eb3 0%, #2c5282 50%, #d97706 100%);
+            animation: gradientShift 8s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Skill cards with refined hover */
+        .skill-card {
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        .skill-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 0.75rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .skill-card:hover::after {
+            opacity: 1;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        /* Custom focus states with gradient rings */
+        input:focus, textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(91, 142, 179, 0.1), 0 0 0 1px #5b8eb3;
+        }
+
+        /* Main content positioning */
+        main {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Smooth scroll with offset */
+        section {
+            scroll-margin-top: 5rem;
+        }
+
+        /* Prose styling for rich text content */
+        .prose {
+            color: #4b5563;
+        }
+        .prose strong {
+            font-weight: 600;
+            color: #1a202c;
+        }
+        .prose em {
+            font-style: italic;
+        }
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin: 1rem 0;
+        }
+        .prose ol {
+            list-style-type: decimal;
+            padding-left: 1.5rem;
+            margin: 1rem 0;
+        }
+        .prose li {
+            margin: 0.25rem 0;
+        }
+        .prose h1, .prose h2, .prose h3 {
+            font-weight: 600;
+            color: #1a202c;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .prose h1 { font-size: 1.5rem; }
+        .prose h2 { font-size: 1.25rem; }
+        .prose h3 { font-size: 1.125rem; }
+        .prose a {
+            color: #5b8eb3;
+            text-decoration: underline;
+        }
+        .prose a:hover {
+            color: #2c5282;
+        }
+        .prose p {
+            margin: 1rem 0;
+            line-height: 1.75;
+        }
+        .prose p:first-child {
+            margin-top: 0;
+        }
+        .prose p:last-child {
+            margin-bottom: 0;
+        }
+        .prose br {
+            display: block;
+            margin: 0.5rem 0;
+            content: "";
         }
     </style>
     {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-white text-charcoal antialiased">
+<body class="bg-gradient-to-br from-white via-warm-grey to-light-grey text-charcoal antialiased">
     {% include 'components/navbar.html' %}
 
     <main>
         {% block content %}{% endblock %}
     </main>
 
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="hidden fixed inset-0 bg-black bg-opacity-90 z-[100] flex items-center justify-center p-4">
+        <button id="lightbox-close" class="absolute top-6 right-6 text-white hover:text-gray-300 transition-colors z-10">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+        <button id="lightbox-prev" class="absolute left-6 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 hidden">
+            <i data-lucide="chevron-left" class="w-10 h-10"></i>
+        </button>
+        <button id="lightbox-next" class="absolute right-6 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 hidden">
+            <i data-lucide="chevron-right" class="w-10 h-10"></i>
+        </button>
+        <img id="lightbox-image" src="" alt="" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl">
+    </div>
+
     <!-- Footer -->
-    <footer class="bg-white py-12 px-6 border-t border-gray-100">
-        <div class="container mx-auto max-w-6xl">
+    <footer class="bg-gradient-to-b from-white to-warm-grey py-16 px-6 border-t border-gray-100 relative">
+        <div class="absolute inset-0 bg-gradient-to-t from-charcoal/5 to-transparent"></div>
+        <div class="container mx-auto max-w-6xl relative z-10">
             <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                <p class="text-gray-500 text-sm">
-                    &copy; 2025 Craig Mackenzie. Built with FastAPI & Tailwind CSS.
+                <p class="text-gray-600 text-sm font-medium">
+                    &copy; 2025 Craig Mackenzie.
                 </p>
                 <div class="flex gap-6">
-                    <a href="https://github.com" target="_blank" class="text-gray-500 hover:text-charcoal transition">
-                        <i data-lucide="github" class="w-5 h-5"></i>
+                    <a href="mailto:craig@cmack.dev" class="text-gray-500 hover:text-charcoal transition-all duration-300 hover:scale-110">
+                        <i data-lucide="mail" class="w-5 h-5"></i>
                     </a>
-                    <a href="https://linkedin.com" target="_blank" class="text-gray-500 hover:text-charcoal transition">
-                        <i data-lucide="linkedin" class="w-5 h-5"></i>
-                    </a>
-                    <a href="https://twitter.com" target="_blank" class="text-gray-500 hover:text-charcoal transition">
-                        <i data-lucide="twitter" class="w-5 h-5"></i>
+                    <a href="https://wa.me/447497716117" target="_blank" class="text-gray-500 hover:text-charcoal transition-all duration-300 hover:scale-110">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i>
                     </a>
                 </div>
             </div>
@@ -136,10 +311,105 @@
             });
         }, observerOptions);
 
-        document.querySelectorAll('.fade-in').forEach(el => {
+        document.querySelectorAll('.fade-in').forEach((el, index) => {
+            // Add staggered delay for multiple fade-in elements in the same container
+            if (index > 0) {
+                el.style.transitionDelay = `${index * 0.1}s`;
+            }
             observer.observe(el);
         });
     </script>
+
+    <!-- Lightbox functionality -->
+    <script>
+        let lightboxImages = [];
+        let currentLightboxIndex = 0;
+
+        function initLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightbox-image');
+            const closeBtn = document.getElementById('lightbox-close');
+            const prevBtn = document.getElementById('lightbox-prev');
+            const nextBtn = document.getElementById('lightbox-next');
+
+            // Find all images that should open in lightbox
+            document.querySelectorAll('.lightbox-image').forEach((img, index) => {
+                img.style.cursor = 'pointer';
+                img.addEventListener('click', () => {
+                    lightboxImages = Array.from(document.querySelectorAll('.lightbox-image'));
+                    currentLightboxIndex = index;
+                    showLightbox();
+                });
+            });
+
+            // Close lightbox
+            closeBtn.addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) closeLightbox();
+            });
+
+            // Navigation
+            prevBtn.addEventListener('click', () => {
+                currentLightboxIndex = (currentLightboxIndex - 1 + lightboxImages.length) % lightboxImages.length;
+                updateLightboxImage();
+            });
+
+            nextBtn.addEventListener('click', () => {
+                currentLightboxIndex = (currentLightboxIndex + 1) % lightboxImages.length;
+                updateLightboxImage();
+            });
+
+            // Keyboard support
+            document.addEventListener('keydown', (e) => {
+                if (!lightbox.classList.contains('hidden')) {
+                    if (e.key === 'Escape') closeLightbox();
+                    if (e.key === 'ArrowLeft' && lightboxImages.length > 1) prevBtn.click();
+                    if (e.key === 'ArrowRight' && lightboxImages.length > 1) nextBtn.click();
+                }
+            });
+        }
+
+        function showLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            const prevBtn = document.getElementById('lightbox-prev');
+            const nextBtn = document.getElementById('lightbox-next');
+
+            updateLightboxImage();
+            lightbox.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            // Show/hide navigation buttons
+            if (lightboxImages.length > 1) {
+                prevBtn.classList.remove('hidden');
+                nextBtn.classList.remove('hidden');
+            } else {
+                prevBtn.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+            }
+
+            lucide.createIcons();
+        }
+
+        function updateLightboxImage() {
+            const lightboxImage = document.getElementById('lightbox-image');
+            const currentImg = lightboxImages[currentLightboxIndex];
+            lightboxImage.src = currentImg.src;
+            lightboxImage.alt = currentImg.alt;
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        // Initialize lightbox when page loads
+        document.addEventListener('DOMContentLoaded', initLightbox);
+    </script>
+
+    <!-- Particle wave background -->
+    <script src="{{ url_for('static', path='/js/particles.js') }}"></script>
+
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>

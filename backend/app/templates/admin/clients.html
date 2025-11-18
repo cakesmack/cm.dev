@@ -4,19 +4,41 @@
 
 {% block content %}
 <div class="md:mt-0 mt-16">
-    <div class="fade-in mb-8 flex justify-between items-center">
+    <!-- Header -->
+    <div class="fade-in mb-8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <div>
             <h1 class="text-4xl font-bold text-charcoal">Clients</h1>
             <p class="text-gray-600 mt-2">Manage your client contacts</p>
         </div>
-        <button onclick="openClientModal()" class="flex items-center gap-2 bg-charcoal text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition">
+        <button onclick="openClientModal()" class="flex items-center justify-center gap-2 bg-charcoal text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition">
             <i data-lucide="plus" class="w-5 h-5"></i>
             <span>Add Client</span>
         </button>
     </div>
 
-    <!-- Clients Table -->
-    <div class="fade-in bg-white rounded-2xl shadow-sm overflow-hidden">
+    <!-- Search and Filter Bar -->
+    <div class="fade-in mb-6 bg-white rounded-2xl shadow-sm p-4">
+        <div class="flex flex-col md:flex-row gap-4">
+            <div class="flex-1 relative">
+                <i data-lucide="search" class="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <input
+                    type="text"
+                    id="search-input"
+                    placeholder="Search clients by name, email, or company..."
+                    class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue"
+                    oninput="filterClients()"
+                >
+            </div>
+            <button onclick="clearSearch()" class="px-6 py-3 border border-gray-200 rounded-xl hover:border-muted-blue transition flex items-center gap-2">
+                <i data-lucide="x" class="w-4 h-4"></i>
+                <span>Clear</span>
+            </button>
+        </div>
+        <div id="search-results-count" class="mt-2 text-sm text-gray-600 hidden"></div>
+    </div>
+
+    <!-- Desktop Table View -->
+    <div class="fade-in bg-white rounded-2xl shadow-sm overflow-hidden hidden md:block">
         <div id="clients-table" class="overflow-x-auto">
             <table class="w-full">
                 <thead class="bg-light-grey">
@@ -29,20 +51,48 @@
                         <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Actions</th>
                     </tr>
                 </thead>
-                <tbody id="clients-list">
+                <tbody id="clients-list-desktop">
+                    <!-- Skeleton Loader -->
                     <tr>
-                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">Loading clients...</td>
+                        <td colspan="6" class="px-6 py-4">
+                            <div class="space-y-3">
+                                <div class="h-12 bg-gray-100 rounded-lg animate-pulse"></div>
+                                <div class="h-12 bg-gray-100 rounded-lg animate-pulse"></div>
+                                <div class="h-12 bg-gray-100 rounded-lg animate-pulse"></div>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <!-- Mobile Card View -->
+    <div class="fade-in md:hidden space-y-4" id="clients-cards-mobile">
+        <!-- Skeleton Loader for Mobile -->
+        <div class="bg-white rounded-2xl shadow-sm p-6 animate-pulse">
+            <div class="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
+            <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+            <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm p-6 animate-pulse">
+            <div class="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
+            <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+            <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="hidden fixed bottom-6 right-6 bg-charcoal text-white px-6 py-4 rounded-xl shadow-2xl z-50 flex items-center gap-3 max-w-md">
+    <i data-lucide="check-circle" class="w-5 h-5" id="toast-icon"></i>
+    <span id="toast-message">Action completed successfully</span>
 </div>
 
 <!-- Client Modal -->
 <div id="client-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-6">
     <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="p-8">
+        <div class="p-6 md:p-8">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-charcoal" id="modal-title">Add Client</h2>
                 <button onclick="closeClientModal()" class="text-gray-500 hover:text-charcoal">
@@ -116,11 +166,19 @@
                     <textarea id="notes" rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue resize-none"></textarea>
                 </div>
 
+                <!-- Projects Section (shown when editing) -->
+                <div id="client-projects-section" class="hidden border-t border-gray-200 pt-6">
+                    <h3 class="text-lg font-semibold text-charcoal mb-4">Linked Projects</h3>
+                    <div id="client-projects-list" class="space-y-2">
+                        <p class="text-sm text-gray-500">No projects linked to this client</p>
+                    </div>
+                </div>
+
                 <div id="form-error" class="hidden p-4 bg-red-50 text-red-800 border border-red-200 rounded-xl text-sm"></div>
 
-                <div class="flex gap-4">
-                    <button type="submit" class="flex-1 bg-charcoal text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition">
-                        Save Client
+                <div class="flex flex-col md:flex-row gap-4">
+                    <button type="submit" id="save-client-btn" class="flex-1 bg-charcoal text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2">
+                        <span>Save Client</span>
                     </button>
                     <button type="button" onclick="closeClientModal()" class="px-6 py-3 border-2 border-gray-200 rounded-xl font-medium hover:border-muted-blue transition">
                         Cancel
@@ -135,6 +193,36 @@
 {% block extra_scripts %}
 <script>
 let editingClientId = null;
+let allClients = [];
+
+// Toast notification function
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    const toastIcon = document.getElementById('toast-icon');
+
+    toastMessage.textContent = message;
+
+    // Update icon and color based on type
+    if (type === 'success') {
+        toast.className = 'fixed bottom-6 right-6 bg-green-600 text-white px-6 py-4 rounded-xl shadow-2xl z-50 flex items-center gap-3 max-w-md';
+        toastIcon.setAttribute('data-lucide', 'check-circle');
+    } else if (type === 'error') {
+        toast.className = 'fixed bottom-6 right-6 bg-red-600 text-white px-6 py-4 rounded-xl shadow-2xl z-50 flex items-center gap-3 max-w-md';
+        toastIcon.setAttribute('data-lucide', 'alert-circle');
+    } else if (type === 'info') {
+        toast.className = 'fixed bottom-6 right-6 bg-muted-blue text-white px-6 py-4 rounded-xl shadow-2xl z-50 flex items-center gap-3 max-w-md';
+        toastIcon.setAttribute('data-lucide', 'info');
+    }
+
+    toast.classList.remove('hidden');
+    lucide.createIcons();
+
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+        toast.classList.add('hidden');
+    }, 3000);
+}
 
 async function loadClients() {
     const token = localStorage.getItem('access_token');
@@ -156,32 +244,53 @@ async function loadClients() {
 
         if (!response.ok) throw new Error('Failed to load clients');
 
-        const clients = await response.json();
-        displayClients(clients);
+        allClients = await response.json();
+        displayClients(allClients);
     } catch (error) {
         console.error('Error loading clients:', error);
-        document.getElementById('clients-list').innerHTML = `
+        showToast('Failed to load clients', 'error');
+
+        document.getElementById('clients-list-desktop').innerHTML = `
             <tr><td colspan="6" class="px-6 py-8 text-center text-red-600">Error loading clients</td></tr>
+        `;
+        document.getElementById('clients-cards-mobile').innerHTML = `
+            <div class="bg-white rounded-2xl shadow-sm p-6 text-center text-red-600">Error loading clients</div>
         `;
     }
 }
 
 function displayClients(clients) {
-    const tbody = document.getElementById('clients-list');
+    const desktopTbody = document.getElementById('clients-list-desktop');
+    const mobileContainer = document.getElementById('clients-cards-mobile');
 
     if (clients.length === 0) {
-        tbody.innerHTML = `
-            <tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No clients yet. Click "Add Client" to create one.</td></tr>
+        const emptyMessage = `
+            <div class="text-center text-gray-500 py-8">
+                <i data-lucide="users" class="w-16 h-16 mx-auto mb-4 text-gray-300"></i>
+                <p class="text-lg font-medium mb-2">No clients found</p>
+                <p class="text-sm">Click "Add Client" to create your first client.</p>
+            </div>
         `;
+
+        desktopTbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8">${emptyMessage}</td></tr>`;
+        mobileContainer.innerHTML = `<div class="bg-white rounded-2xl shadow-sm p-6">${emptyMessage}</div>`;
+        lucide.createIcons();
         return;
     }
 
-    tbody.innerHTML = clients.map(client => `
+    // Desktop table view
+    desktopTbody.innerHTML = clients.map(client => `
         <tr class="border-t border-gray-100 hover:bg-light-grey transition">
             <td class="px-6 py-4">
-                <p class="font-semibold text-charcoal">${client.company_name || '-'}</p>
+                <a href="/admin/clients/${client.id}" class="font-semibold text-charcoal hover:text-muted-blue transition">
+                    ${client.company_name || '-'}
+                </a>
             </td>
-            <td class="px-6 py-4 text-gray-600">${client.contact_name}</td>
+            <td class="px-6 py-4">
+                <a href="/admin/clients/${client.id}" class="text-gray-600 hover:text-muted-blue transition">
+                    ${client.contact_name}
+                </a>
+            </td>
             <td class="px-6 py-4">
                 <a href="mailto:${client.contact_email}" class="text-muted-blue hover:underline">${client.contact_email}</a>
             </td>
@@ -200,7 +309,84 @@ function displayClients(clients) {
         </tr>
     `).join('');
 
+    // Mobile card view
+    mobileContainer.innerHTML = clients.map(client => `
+        <div class="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition">
+            <div class="flex justify-between items-start mb-4">
+                <div class="flex-1">
+                    <a href="/admin/clients/${client.id}" class="text-xl font-bold text-charcoal hover:text-muted-blue transition block mb-1">
+                        ${client.company_name || client.contact_name}
+                    </a>
+                    ${client.company_name ? `<p class="text-gray-600">${client.contact_name}</p>` : ''}
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="editClient(${client.id})" class="p-2 text-muted-blue hover:bg-blue-50 rounded-lg transition" title="Edit">
+                        <i data-lucide="edit-2" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="deleteClient(${client.id}, '${client.contact_name.replace(/'/g, "\\'")}')" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition" title="Delete">
+                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center gap-2 text-gray-600">
+                    <i data-lucide="mail" class="w-4 h-4"></i>
+                    <a href="mailto:${client.contact_email}" class="text-muted-blue hover:underline">${client.contact_email}</a>
+                </div>
+                ${client.phone ? `
+                    <div class="flex items-center gap-2 text-gray-600">
+                        <i data-lucide="phone" class="w-4 h-4"></i>
+                        <a href="tel:${client.phone}" class="text-muted-blue hover:underline">${client.phone}</a>
+                    </div>
+                ` : ''}
+                ${client.city ? `
+                    <div class="flex items-center gap-2 text-gray-600">
+                        <i data-lucide="map-pin" class="w-4 h-4"></i>
+                        <span>${client.city}${client.state ? ', ' + client.state : ''}</span>
+                    </div>
+                ` : ''}
+            </div>
+
+            <a href="/admin/clients/${client.id}" class="mt-4 inline-flex items-center gap-2 text-muted-blue hover:underline text-sm font-medium">
+                <span>View Details</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+    `).join('');
+
     lucide.createIcons();
+}
+
+function filterClients() {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    const resultsCount = document.getElementById('search-results-count');
+
+    if (!searchTerm) {
+        displayClients(allClients);
+        resultsCount.classList.add('hidden');
+        return;
+    }
+
+    const filtered = allClients.filter(client => {
+        return (
+            (client.company_name && client.company_name.toLowerCase().includes(searchTerm)) ||
+            client.contact_name.toLowerCase().includes(searchTerm) ||
+            client.contact_email.toLowerCase().includes(searchTerm) ||
+            (client.phone && client.phone.includes(searchTerm)) ||
+            (client.city && client.city.toLowerCase().includes(searchTerm)) ||
+            (client.state && client.state.toLowerCase().includes(searchTerm))
+        );
+    });
+
+    displayClients(filtered);
+    resultsCount.textContent = `Found ${filtered.length} of ${allClients.length} clients`;
+    resultsCount.classList.remove('hidden');
+}
+
+function clearSearch() {
+    document.getElementById('search-input').value = '';
+    filterClients();
 }
 
 function openClientModal(client = null) {
@@ -208,6 +394,10 @@ function openClientModal(client = null) {
     document.getElementById('modal-title').textContent = client ? 'Edit Client' : 'Add Client';
     document.getElementById('client-form').reset();
     document.getElementById('form-error').classList.add('hidden');
+
+    // Hide projects section by default
+    const projectsSection = document.getElementById('client-projects-section');
+    projectsSection.classList.add('hidden');
 
     if (client) {
         document.getElementById('client-id').value = client.id;
@@ -222,6 +412,21 @@ function openClientModal(client = null) {
         document.getElementById('country').value = client.country || '';
         document.getElementById('tax-id').value = client.tax_id || '';
         document.getElementById('notes').value = client.notes || '';
+
+        // Display projects if available
+        if (client.projects && client.projects.length > 0) {
+            projectsSection.classList.remove('hidden');
+            const projectsList = document.getElementById('client-projects-list');
+            projectsList.innerHTML = client.projects.map(project => `
+                <div class="flex items-center justify-between p-3 bg-light-grey rounded-lg">
+                    <div>
+                        <p class="font-medium text-charcoal">${project.title}</p>
+                        <p class="text-sm text-gray-500">${project.is_published ? 'Published' : 'Draft'}</p>
+                    </div>
+                    <a href="/admin/projects" class="text-muted-blue hover:underline text-sm">View</a>
+                </div>
+            `).join('');
+        }
     }
 
     document.getElementById('client-modal').classList.remove('hidden');
@@ -247,7 +452,7 @@ async function editClient(clientId) {
         openClientModal(client);
     } catch (error) {
         console.error('Error loading client:', error);
-        alert('Failed to load client details');
+        showToast('Failed to load client details', 'error');
     }
 }
 
@@ -266,10 +471,11 @@ async function deleteClient(clientId, clientName) {
 
         if (!response.ok) throw new Error('Failed to delete client');
 
+        showToast(`Successfully deleted "${clientName}"`, 'success');
         await loadClients();
     } catch (error) {
         console.error('Error deleting client:', error);
-        alert('Failed to delete client');
+        showToast('Failed to delete client', 'error');
     }
 }
 
@@ -277,7 +483,13 @@ document.getElementById('client-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const errorDiv = document.getElementById('form-error');
+    const saveBtn = document.getElementById('save-client-btn');
     errorDiv.classList.add('hidden');
+
+    // Show loading state
+    const originalBtnText = saveBtn.innerHTML;
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
 
     const clientData = {
         company_name: document.getElementById('company-name').value || null,
@@ -314,16 +526,33 @@ document.getElementById('client-form').addEventListener('submit', async (e) => {
             throw new Error(error.detail || 'Failed to save client');
         }
 
+        const successMessage = editingClientId
+            ? `Successfully updated "${clientData.contact_name}"`
+            : `Successfully created "${clientData.contact_name}"`;
+
+        showToast(successMessage, 'success');
         closeClientModal();
         await loadClients();
     } catch (error) {
         console.error('Error saving client:', error);
         errorDiv.textContent = error.message;
         errorDiv.classList.remove('hidden');
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalBtnText;
     }
 });
 
+// Check for edit parameter in URL
+const urlParams = new URLSearchParams(window.location.search);
+const editClientId = urlParams.get('edit');
+if (editClientId) {
+    editClient(parseInt(editClientId));
+}
+
 // Load clients on page load
 loadClients();
+
+// Initialize Lucide icons
+lucide.createIcons();
 </script>
 {% endblock %}

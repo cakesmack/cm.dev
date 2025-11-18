@@ -1,6 +1,9 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.schemas.project import ProjectListResponse
 
 
 class ClientBase(BaseModel):
@@ -40,6 +43,7 @@ class ClientResponse(ClientBase):
     user_id: int
     created_at: datetime
     updated_at: datetime
+    projects: List['ProjectListResponse'] = []
 
     class Config:
         from_attributes = True
@@ -50,7 +54,15 @@ class ClientListResponse(BaseModel):
     company_name: Optional[str]
     contact_name: str
     contact_email: str
+    phone: Optional[str]
+    city: Optional[str]
+    state: Optional[str]
     created_at: datetime
 
     class Config:
         from_attributes = True
+
+
+# Resolve forward references
+from app.schemas.project import ProjectListResponse
+ClientResponse.model_rebuild()

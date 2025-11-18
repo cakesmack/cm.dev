@@ -92,6 +92,9 @@
             </div>
 
             <div class="mt-8 flex gap-4">
+                <button id="convert-btn" onclick="convertToClient()" class="flex-1 bg-green-600 text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition hover:bg-green-700">
+                    Convert to Client
+                </button>
                 <button onclick="closeLeadModal()" class="flex-1 px-6 py-3 border-2 border-gray-200 rounded-xl font-medium hover:border-muted-blue transition">
                     Close
                 </button>
@@ -104,6 +107,7 @@
 {% block extra_scripts %}
 <script>
 let allLeads = [];
+let currentLeadId = null;
 
 async function loadLeads() {
     const token = localStorage.getItem('access_token');
@@ -201,6 +205,8 @@ async function viewLead(leadId) {
     const lead = allLeads.find(l => l.id === leadId);
     if (!lead) return;
 
+    currentLeadId = leadId;
+
     const statusColors = {
         new: 'bg-blue-100 text-blue-700',
         contacted: 'bg-yellow-100 text-yellow-700',
@@ -244,6 +250,14 @@ async function viewLead(leadId) {
             <p class="text-gray-700">${new Date(lead.created_at).toLocaleString()}</p>
         </div>
     `;
+
+    // Show/hide convert button based on lead status
+    const convertBtn = document.getElementById('convert-btn');
+    if (lead.status === 'converted') {
+        convertBtn.style.display = 'none';
+    } else {
+        convertBtn.style.display = 'block';
+    }
 
     document.getElementById('lead-modal').classList.remove('hidden');
     lucide.createIcons();
@@ -295,6 +309,38 @@ async function deleteLead(leadId, leadName) {
     } catch (error) {
         console.error('Error deleting lead:', error);
         alert('Failed to delete lead');
+    }
+}
+
+async function convertToClient() {
+    if (!currentLeadId) return;
+
+    const lead = allLeads.find(l => l.id === currentLeadId);
+    if (!lead) return;
+
+    if (!confirm(`Convert "${lead.name}" to a client?`)) {
+        return;
+    }
+
+    const token = localStorage.getItem('access_token');
+
+    try {
+        const response = await fetch(`/api/v1/admin/leads/${currentLeadId}/convert`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error('Failed to convert lead');
+
+        const client = await response.json();
+
+        alert(`Successfully converted "${lead.name}" to a client!`);
+
+        await loadLeads();
+        closeLeadModal();
+    } catch (error) {
+        console.error('Error converting lead:', error);
+        alert('Failed to convert lead to client');
     }
 }
 

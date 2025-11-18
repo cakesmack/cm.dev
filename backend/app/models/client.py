@@ -30,4 +30,5 @@ class Client(Base):
 
     # Relationships
     user = relationship("User", back_populates="clients")
+    projects = relationship("Project", back_populates="client")
     invoices = relationship("Invoice", back_populates="client", cascade="all, delete-orphan")

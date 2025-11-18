@@ -9,19 +9,23 @@ class Project(Base):
     __tablename__ = "projects"
 
     id = Column(Integer, primary_key=True, index=True)
+    client_id = Column(Integer, ForeignKey("clients.id"), nullable=True)
     title = Column(String, nullable=False)
     slug = Column(String, unique=True, nullable=False, index=True)
-    description = Column(Text, nullable=False)  # Short description
+    short_description = Column(String(200), nullable=True)  # Brief preview for cards
+    description = Column(Text, nullable=False)  # Full description
     case_study = Column(Text, nullable=True)  # Long markdown content
     tech_stack = Column(JSON, nullable=True)  # List of technologies
     project_url = Column(String, nullable=True)
     date = Column(Date, nullable=True)
     is_published = Column(Boolean, default=False)
+    is_featured = Column(Boolean, default=False)
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Relationships
+    client = relationship("Client", back_populates="projects")
     media = relationship("ProjectMedia", back_populates="project", cascade="all, delete-orphan")
     invoices = relationship("Invoice", back_populates="project")
 

@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
+from markupsafe import Markup
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -23,8 +24,9 @@ app.add_middleware(
 # Static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Templates
+# Templates with explicit autoescape
 templates = Jinja2Templates(directory="app/templates")
+templates.env.autoescape = True
 
 from app.routers import auth, public, contact
 from app.routers.admin import projects as admin_projects
@@ -48,3 +50,4 @@ app.include_router(public.router)
 @app.get("/health")
 def health_check():
     return {"status": "healthy", "version": settings.VERSION}
+

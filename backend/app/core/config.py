@@ -15,6 +15,15 @@ class Settings(BaseSettings):
 
     ENVIRONMENT: str = "development"
 
+    # Email configuration
+    SMTP_HOST: str = "smtp.hostinger.com"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM_EMAIL: str = "craig@cmack.dev"
+    SMTP_FROM_NAME: str = "Craig Mackenzie Portfolio"
+    NOTIFICATION_EMAIL: str = "craig@cmack.dev"
+
     class Config:
         env_file = ".env"
         case_sensitive = True

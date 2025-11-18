@@ -16,15 +16,18 @@ async def upload_project_media(
     project_id: int,
     file: UploadFile = File(...),
     alt_text: str = Form(""),
+    display_order: int = Form(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_admin_user)
 ):
-    """Upload media file for a project (admin only)"""
-    # Validate file
-    if not await media_service.validate_image(file):
+    """Upload media file for a project (admin only).
+    If display_order is provided, replaces existing media at that position."""
+    # Validate file and detect media type
+    is_valid, media_type = await media_service.validate_media(file)
+    if not is_valid:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid file type or size. Allowed: jpg, jpeg, png, gif, webp, svg (max 5MB)"
+            detail="Invalid file type or size. Allowed images: jpg, jpeg, png, gif, webp, svg (max 5MB). Allowed videos: mp4, webm, mov (max 50MB)"
         )
 
     # Save file
@@ -42,11 +45,17 @@ async def upload_project_media(
             detail=f"Failed to save file: {str(e)}"
         )
 
-    # Create database record - if this fails, clean up the uploaded file
+    # Create or replace database record - if this fails, clean up the uploaded file
     try:
-        media = media_service.create_project_media(
-            db, project_id, url, media_type="image", alt_text=alt_text
-        )
+        # Use replace_or_create if display_order is provided, otherwise use create
+        if display_order is not None:
+            media = media_service.replace_or_create_media(
+                db, project_id, url, media_type=media_type, display_order=display_order, alt_text=alt_text
+            )
+        else:
+            media = media_service.create_project_media(
+                db, project_id, url, media_type=media_type, alt_text=alt_text
+            )
 
         if not media:
             # Clean up orphaned file

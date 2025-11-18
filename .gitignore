@@ -1,0 +1,107 @@
+# Environment Variables (IMPORTANT - contains passwords!)
+.env
+.env.local
+.env.production
+*.env
+
+# Database Files
+*.db
+*.sqlite
+*.sqlite3
+app.db
+mackenzie_dev.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+backend/venv/
+backend/env/
+
+# IDE & Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Uploaded Media Files
+backend/static/uploads/*
+!backend/static/uploads/.gitkeep
+
+# Compiled Templates
+*.pyc
+
+# OS Files
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Alembic
+alembic/versions/*.pyc
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre
+.pyre/
+
+# Claude Code
+.claude/
+
+# Documentation (optional - uncomment if you want to exclude)
+# docs/plans/
+
+# Production files that shouldn't be in git
+*.pem
+*.key
+*.crt
+*.cer

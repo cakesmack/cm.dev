@@ -2,6 +2,35 @@
 
 {% block title %}Projects{% endblock %}
 
+{% block extra_head %}
+<!-- Quill Rich Text Editor -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<style>
+    /* Quill editor styling to match admin dashboard */
+    .ql-toolbar.ql-snow {
+        border-top-left-radius: 0.75rem;
+        border-top-right-radius: 0.75rem;
+        border-color: #e5e7eb;
+        background: #f7fafc;
+    }
+    .ql-container.ql-snow {
+        border-bottom-left-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+        border-color: #e5e7eb;
+        font-family: inherit;
+    }
+    .ql-editor {
+        min-height: 150px;
+        font-size: 1rem;
+    }
+    .ql-editor.ql-blank::before {
+        color: #9ca3af;
+        font-style: normal;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="md:mt-0 mt-16">
     <div class="fade-in mb-8 flex justify-between items-center">
@@ -24,13 +53,14 @@
                         <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Title</th>
                         <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Slug</th>
                         <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Status</th>
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Featured</th>
                         <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Date</th>
                         <th class="px-6 py-4 text-left text-sm font-semibold text-charcoal">Actions</th>
                     </tr>
                 </thead>
                 <tbody id="projects-list">
                     <tr>
-                        <td colspan="5" class="px-6 py-8 text-center text-gray-500">Loading projects...</td>
+                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">Loading projects...</td>
                     </tr>
                 </tbody>
             </table>
@@ -53,6 +83,14 @@
                 <input type="hidden" id="project-id">
 
                 <div>
+                    <label class="block text-sm font-medium text-charcoal mb-2">Client</label>
+                    <select id="client-id" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                        <option value="">No client (personal project)</option>
+                    </select>
+                    <p class="text-sm text-gray-500 mt-1">Link this project to a client</p>
+                </div>
+
+                <div>
                     <label class="block text-sm font-medium text-charcoal mb-2">Title *</label>
                     <input type="text" id="title" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
                 </div>
@@ -64,8 +102,16 @@
                 </div>
 
                 <div>
+                    <label class="block text-sm font-medium text-charcoal mb-2">Short Description</label>
+                    <input type="text" id="short-description" maxlength="200" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                    <p class="text-sm text-gray-500 mt-1">Brief preview shown on project cards (max 200 characters)</p>
+                </div>
+
+                <div>
                     <label class="block text-sm font-medium text-charcoal mb-2">Description *</label>
-                    <textarea id="description" rows="4" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue resize-none"></textarea>
+                    <div id="description-editor" style="height: 200px;" class="bg-white border border-gray-200 rounded-xl"></div>
+                    <input type="hidden" id="description" required>
+                    <p class="text-sm text-gray-500 mt-1">Full description with rich text formatting</p>
                 </div>
 
                 <div>
@@ -78,14 +124,44 @@
                     <input type="url" id="project-url" placeholder="https://example.com" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-charcoal mb-2">GitHub URL</label>
-                    <input type="url" id="github-url" placeholder="https://github.com/username/repo" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                <!-- Media Upload Section -->
+                <div class="border-t border-gray-200 pt-6">
+                    <h3 class="text-lg font-semibold text-charcoal mb-4">Project Media</h3>
+
+                    <!-- Video Upload -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-charcoal mb-2">Video (optional)</label>
+                        <input type="file" id="video-file" accept=".mp4,.webm,.mov" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue">
+                        <p class="text-sm text-gray-500 mt-1">Max 50MB. Formats: MP4, WebM, MOV</p>
+                        <div id="current-video" class="mt-2 hidden">
+                            <p class="text-sm text-gray-600">Current video: <span id="current-video-name"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Image Uploads -->
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <label class="block text-sm font-medium text-charcoal">Images</label>
+                            <button type="button" onclick="addImageUpload()" class="flex items-center gap-2 px-4 py-2 bg-muted-blue text-white rounded-lg text-sm font-medium hover:bg-deep-blue transition">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                <span>Add Image</span>
+                            </button>
+                        </div>
+                        <div id="image-uploads-container" class="space-y-3">
+                            <!-- Image upload items will be added here dynamically -->
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">Max 5MB per image. Formats: JPG, PNG, GIF, WebP, SVG</p>
+                    </div>
                 </div>
 
                 <div class="flex items-center gap-3">
                     <input type="checkbox" id="is-published" class="w-5 h-5 text-muted-blue rounded focus:ring-muted-blue">
                     <label for="is-published" class="text-sm font-medium text-charcoal">Published (visible on public site)</label>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="is-featured" class="w-5 h-5 text-muted-blue rounded focus:ring-muted-blue">
+                    <label for="is-featured" class="text-sm font-medium text-charcoal">Featured (display as hero project)</label>
                 </div>
 
                 <div id="form-error" class="hidden p-4 bg-red-50 text-red-800 border border-red-200 rounded-xl text-sm"></div>
@@ -107,6 +183,133 @@
 {% block extra_scripts %}
 <script>
 let editingProjectId = null;
+let quillEditor = null;
+let imageUploadCounter = 0;
+let existingMediaToDelete = [];
+
+// Initialize Quill editor
+document.addEventListener('DOMContentLoaded', function() {
+    quillEditor = new Quill('#description-editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'color': [] }, { 'background': [] }],
+                ['link'],
+                ['clean']
+            ]
+        },
+        placeholder: 'Enter project description...'
+    });
+
+    // Update hidden input when editor content changes
+    quillEditor.on('text-change', function() {
+        document.getElementById('description').value = quillEditor.root.innerHTML;
+    });
+});
+
+// Add a new image upload field
+function addImageUpload(existingMedia = null) {
+    const container = document.getElementById('image-uploads-container');
+    const uploadId = `image-upload-${imageUploadCounter++}`;
+
+    const uploadItem = document.createElement('div');
+    uploadItem.className = 'border border-gray-200 rounded-xl p-4 bg-light-grey';
+    uploadItem.id = uploadId;
+
+    let previewHtml = '';
+    if (existingMedia) {
+        previewHtml = `
+            <div class="mb-3">
+                <img src="${existingMedia.url}" alt="${existingMedia.alt_text || 'Preview'}" class="w-full h-40 object-cover rounded-lg">
+                <input type="hidden" class="existing-media-id" value="${existingMedia.id}">
+            </div>
+        `;
+    }
+
+    uploadItem.innerHTML = `
+        <div class="flex justify-between items-start mb-3">
+            <span class="text-sm font-medium text-charcoal">Image ${container.children.length + 1}</span>
+            <button type="button" onclick="removeImageUpload('${uploadId}'${existingMedia ? `, ${existingMedia.id}` : ''})" class="text-red-600 hover:text-red-700 transition">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+        </div>
+        ${previewHtml}
+        <input type="file"
+               class="image-upload-input w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-muted-blue"
+               accept=".jpg,.jpeg,.png,.gif,.webp,.svg"
+               onchange="previewImage(this, '${uploadId}')">
+        <div class="image-preview-container mt-2 hidden">
+            <img class="image-preview w-full h-40 object-cover rounded-lg" src="" alt="Preview">
+        </div>
+    `;
+
+    container.appendChild(uploadItem);
+    lucide.createIcons();
+}
+
+// Remove an image upload field
+function removeImageUpload(uploadId, mediaId = null) {
+    if (mediaId) {
+        existingMediaToDelete.push(mediaId);
+    }
+    document.getElementById(uploadId).remove();
+    updateImageLabels();
+}
+
+// Update image labels after removal
+function updateImageLabels() {
+    const container = document.getElementById('image-uploads-container');
+    const items = container.children;
+    for (let i = 0; i < items.length; i++) {
+        const label = items[i].querySelector('span');
+        if (label) {
+            label.textContent = `Image ${i + 1}`;
+        }
+    }
+}
+
+// Preview image when selected
+function previewImage(input, uploadId) {
+    const uploadItem = document.getElementById(uploadId);
+    const previewContainer = uploadItem.querySelector('.image-preview-container');
+    const previewImg = uploadItem.querySelector('.image-preview');
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            previewContainer.classList.remove('hidden');
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+async function loadClients() {
+    const token = localStorage.getItem('access_token');
+    try {
+        const response = await fetch('/api/v1/admin/clients', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) return;
+
+        const clients = await response.json();
+        const select = document.getElementById('client-id');
+
+        // Keep the "No client" option and add clients
+        select.innerHTML = '<option value="">No client (personal project)</option>';
+        clients.forEach(client => {
+            const option = document.createElement('option');
+            option.value = client.id;
+            option.textContent = client.company_name || client.contact_name;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading clients:', error);
+    }
+}
 
 async function loadProjects() {
     const token = localStorage.getItem('access_token');
@@ -143,7 +346,7 @@ function displayProjects(projects) {
 
     if (projects.length === 0) {
         tbody.innerHTML = `
-            <tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No projects yet. Click "Add Project" to create one.</td></tr>
+            <tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No projects yet. Click "Add Project" to create one.</td></tr>
         `;
         return;
     }
@@ -158,6 +361,9 @@ function displayProjects(projects) {
                 <span class="px-3 py-1 rounded-full text-xs font-medium ${project.is_published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}">
                     ${project.is_published ? 'Published' : 'Draft'}
                 </span>
+            </td>
+            <td class="px-6 py-4">
+                ${project.is_featured ? '<span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Featured</span>' : '-'}
             </td>
             <td class="px-6 py-4 text-gray-600">${project.date ? new Date(project.date).toLocaleDateString() : '-'}</td>
             <td class="px-6 py-4">
@@ -180,17 +386,55 @@ function openProjectModal(project = null) {
     editingProjectId = project ? project.id : null;
     document.getElementById('modal-title').textContent = project ? 'Edit Project' : 'Add Project';
     document.getElementById('project-form').reset();
+    quillEditor.root.innerHTML = ''; // Clear Quill editor
     document.getElementById('form-error').classList.add('hidden');
+
+    // Reset image uploads
+    const imageContainer = document.getElementById('image-uploads-container');
+    imageContainer.innerHTML = '';
+    imageUploadCounter = 0;
+    existingMediaToDelete = [];
+
+    // Hide current video display
+    document.getElementById('current-video').classList.add('hidden');
 
     if (project) {
         document.getElementById('project-id').value = project.id;
+        document.getElementById('client-id').value = project.client_id || '';
         document.getElementById('title').value = project.title;
         document.getElementById('slug').value = project.slug;
+        document.getElementById('short-description').value = project.short_description || '';
+        quillEditor.root.innerHTML = project.description || ''; // Set Quill editor content
         document.getElementById('description').value = project.description || '';
         document.getElementById('tech-stack').value = project.tech_stack ? project.tech_stack.join(', ') : '';
         document.getElementById('project-url').value = project.project_url || '';
-        document.getElementById('github-url').value = project.github_url || '';
         document.getElementById('is-published').checked = project.is_published;
+        document.getElementById('is-featured').checked = project.is_featured || false;
+
+        // Load existing media if available
+        if (project.media && project.media.length > 0) {
+            const videoMedia = project.media.filter(m => m.media_type === 'video');
+            const imageMedia = project.media.filter(m => m.media_type === 'image').sort((a, b) => a.display_order - b.display_order);
+
+            // Show video if exists
+            if (videoMedia.length > 0) {
+                document.getElementById('current-video').classList.remove('hidden');
+                document.getElementById('current-video-name').textContent = videoMedia[0].url.split('/').pop();
+            }
+
+            // Add existing images
+            imageMedia.forEach(media => {
+                addImageUpload(media);
+            });
+        }
+
+        // Add one empty upload field if no images exist
+        if (!project.media || project.media.filter(m => m.media_type === 'image').length === 0) {
+            addImageUpload();
+        }
+    } else {
+        // For new projects, add one empty upload field
+        addImageUpload();
     }
 
     document.getElementById('project-modal').classList.remove('hidden');
@@ -242,21 +486,105 @@ async function deleteProject(projectId, projectTitle) {
     }
 }
 
+async function uploadProjectMedia(projectId) {
+    const token = localStorage.getItem('access_token');
+
+    // Delete media that was marked for deletion
+    for (const mediaId of existingMediaToDelete) {
+        try {
+            const response = await fetch(`/api/v1/admin/projects/media/${mediaId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!response.ok) {
+                console.error(`Failed to delete media ${mediaId}`);
+            }
+        } catch (error) {
+            console.error(`Error deleting media ${mediaId}:`, error);
+        }
+    }
+
+    // Upload video if selected
+    const videoInput = document.getElementById('video-file');
+    if (videoInput.files[0]) {
+        const formData = new FormData();
+        formData.append('file', videoInput.files[0]);
+        formData.append('alt_text', '');
+        formData.append('display_order', '0');
+
+        try {
+            const response = await fetch(`/api/v1/admin/projects/${projectId}/media`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: formData
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.detail || 'Failed to upload video');
+            }
+        } catch (error) {
+            console.error('Error uploading video:', error);
+            throw error;
+        }
+    }
+
+    // Upload all new images
+    const imageInputs = document.querySelectorAll('.image-upload-input');
+    for (let i = 0; i < imageInputs.length; i++) {
+        const input = imageInputs[i];
+        const file = input.files[0];
+
+        if (!file) continue; // Skip if no new file selected
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('alt_text', '');
+        formData.append('display_order', i.toString());
+
+        try {
+            const response = await fetch(`/api/v1/admin/projects/${projectId}/media`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` },
+                body: formData
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.detail || `Failed to upload image ${i + 1}`);
+            }
+
+            console.log(`Successfully uploaded image ${i + 1}`);
+        } catch (error) {
+            console.error(`Error uploading image ${i + 1}:`, error);
+            throw error;
+        }
+    }
+}
+
 document.getElementById('project-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const errorDiv = document.getElementById('form-error');
     errorDiv.classList.add('hidden');
 
+    const clientId = document.getElementById('client-id').value;
+    const shortDesc = document.getElementById('short-description').value;
     const projectData = {
+        client_id: clientId ? parseInt(clientId) : null,
         title: document.getElementById('title').value,
-        slug: document.getElementById('slug').value,
+        short_description: shortDesc || null,
         description: document.getElementById('description').value,
         tech_stack: document.getElementById('tech-stack').value.split(',').map(t => t.trim()).filter(t => t),
         project_url: document.getElementById('project-url').value || null,
-        github_url: document.getElementById('github-url').value || null,
-        is_published: document.getElementById('is-published').checked
+        is_published: document.getElementById('is-published').checked,
+        is_featured: document.getElementById('is-featured').checked
     };
+
+    console.log('=== PROJECT DATA BEING SENT ===');
+    console.log('is_featured checkbox value:', document.getElementById('is-featured').checked);
+    console.log('Full project data:', JSON.stringify(projectData, null, 2));
 
     const token = localStorage.getItem('access_token');
     const url = editingProjectId
@@ -276,8 +604,17 @@ document.getElementById('project-form').addEventListener('submit', async (e) => 
 
         if (!response.ok) {
             const error = await response.json();
+            console.error('=== SERVER ERROR ===', error);
             throw new Error(error.detail || 'Failed to save project');
         }
+
+        const savedProject = await response.json();
+        console.log('=== PROJECT SAVED SUCCESSFULLY ===');
+        console.log('Saved project is_featured:', savedProject.is_featured);
+        console.log('Full saved project:', savedProject);
+
+        // Upload media files
+        await uploadProjectMedia(savedProject.id);
 
         closeProjectModal();
         await loadProjects();
@@ -299,7 +636,8 @@ document.getElementById('title').addEventListener('input', (e) => {
     }
 });
 
-// Load projects on page load
+// Load projects and clients on page load
 loadProjects();
+loadClients();
 </script>
 {% endblock %}

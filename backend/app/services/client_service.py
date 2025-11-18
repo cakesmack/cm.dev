@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from app.models.client import Client
 from app.schemas.client import ClientCreate, ClientUpdate
 from typing import List, Optional
@@ -18,7 +18,9 @@ def create_client(db: Session, client_data: ClientCreate, user_id: int) -> Clien
 
 def get_client(db: Session, client_id: int, user_id: int) -> Optional[Client]:
     """Get client by ID"""
-    return db.query(Client).filter(
+    return db.query(Client).options(
+        selectinload(Client.projects)
+    ).filter(
         Client.id == client_id,
         Client.user_id == user_id
     ).first()
