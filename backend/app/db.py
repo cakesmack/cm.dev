@@ -19,3 +19,10 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def init_db():
+    """Initialize database by creating all tables"""
+    from app.models import user, client, project, lead, invoice
+    Base.metadata.create_all(bind=engine)
+    print("Database tables created successfully!")
