@@ -53,30 +53,25 @@ class ParticleWave {
     }
 
     createParticles() {
-        // Responsive particle count - massive murmuration
+        // MASSIVE particle count - fill entire background
         const isMobile = window.innerWidth < 768;
-        const particleCount = isMobile ? 1000 : 2500;
+        const particleCount = isMobile ? 3000 : 8000; // Much more particles!
 
         this.particles = [];
 
-        // Start particles spread across entire viewport (and beyond)
-        const centerX = this.canvas.width / 2;
-        const centerY = this.canvas.height / 2;
-        const spreadX = this.canvas.width * 1.1;   // Spread across 110% of width
-        const spreadY = this.canvas.height * 1.0;  // Spread across 100% of height
-
+        // Spread particles across ENTIRE screen, edge to edge
         for (let i = 0; i < particleCount; i++) {
             this.particles.push({
-                // Current position - much more spread out
-                x: centerX + (Math.random() - 0.5) * spreadX,
-                y: centerY + (Math.random() - 0.5) * spreadY,
+                // Random position across ENTIRE canvas
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
 
                 // Velocity
-                vx: (Math.random() - 0.5) * 2,
-                vy: (Math.random() - 0.5) * 2,
+                vx: (Math.random() - 0.5) * 1.5,
+                vy: (Math.random() - 0.5) * 1.5,
 
-                // Particle properties
-                size: Math.random() * 1.2 + 0.8,  // 0.8-2px
+                // Tiny particles for background effect
+                size: Math.random() * 1.5 + 0.5,  // 0.5-2px - very small
                 color: this.colors[Math.floor(Math.random() * this.colors.length)],
 
                 // Unique offset for flow field
@@ -99,18 +94,11 @@ class ParticleWave {
     }
 
     updateParticles() {
-        const centerX = this.canvas.width / 2;
-        const centerY = this.canvas.height / 2;
-
         this.particles.forEach((particle, i) => {
             // Get flow direction from flow field
             const flowAngle = this.getFlowAngle(particle.x, particle.y, this.time);
-            const flowForceX = Math.cos(flowAngle) * 0.15;
-            const flowForceY = Math.sin(flowAngle) * 0.15;
-
-            // Cohesion: gentle pull towards center to keep flock together
-            const toCenterX = (centerX - particle.x) * 0.0003;
-            const toCenterY = (centerY - particle.y) * 0.0003;
+            const flowForceX = Math.cos(flowAngle) * 0.12;
+            const flowForceY = Math.sin(flowAngle) * 0.12;
 
             // Simple alignment with nearby particles (check a few neighbors)
             let avgVx = 0, avgVy = 0, neighborCount = 0;
@@ -125,12 +113,12 @@ class ParticleWave {
                 avgVx /= neighborCount;
                 avgVy /= neighborCount;
             }
-            const alignmentX = (avgVx - particle.vx) * 0.05;
-            const alignmentY = (avgVy - particle.vy) * 0.05;
+            const alignmentX = (avgVx - particle.vx) * 0.03;
+            const alignmentY = (avgVy - particle.vy) * 0.03;
 
-            // Apply forces
-            particle.vx += flowForceX + toCenterX + alignmentX;
-            particle.vy += flowForceY + toCenterY + alignmentY;
+            // Apply forces - NO center pull, fills entire screen
+            particle.vx += flowForceX + alignmentX;
+            particle.vy += flowForceY + alignmentY;
 
             // Limit speed
             const speed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
