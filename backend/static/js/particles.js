@@ -1,4 +1,4 @@
-// Particle Murmuration Animation (like flocking birds)
+// Massive Particle Wave Background Animation
 class ParticleWave {
     constructor() {
         this.canvas = document.createElement('canvas');
@@ -9,12 +9,12 @@ class ParticleWave {
 
         // Enhanced brand colors with opacity - sophisticated palette
         this.colors = [
-            'rgba(26, 32, 44, 0.12)',      // charcoal - very subtle
-            'rgba(91, 142, 179, 0.18)',    // muted-blue - subtle
-            'rgba(44, 82, 130, 0.15)',     // deep-blue - medium
-            'rgba(217, 119, 6, 0.08)',     // accent-amber - very light
-            'rgba(26, 32, 44, 0.08)',      // charcoal - lighter
-            'rgba(91, 142, 179, 0.22)',    // muted-blue - slightly stronger
+            'rgba(91, 142, 179, 0.25)',    // muted-blue
+            'rgba(44, 82, 130, 0.20)',     // deep-blue
+            'rgba(26, 32, 44, 0.15)',      // charcoal
+            'rgba(91, 142, 179, 0.30)',    // muted-blue - stronger
+            'rgba(217, 119, 6, 0.12)',     // accent-amber
+            'rgba(26, 32, 44, 0.10)',      // charcoal - lighter
         ];
 
         this.init();
@@ -53,32 +53,41 @@ class ParticleWave {
     }
 
     createParticles() {
-        // MASSIVE particle count - fill entire background
+        // DENSE particle grid covering entire screen
         const isMobile = window.innerWidth < 768;
-        const particleCount = isMobile ? 3000 : 8000; // Much more particles!
+
+        // Calculate grid density - particles every X pixels
+        const spacing = isMobile ? 15 : 10; // Closer spacing = more particles
+        const cols = Math.ceil(this.canvas.width / spacing);
+        const rows = Math.ceil(this.canvas.height / spacing);
 
         this.particles = [];
 
-        // Spread particles across ENTIRE screen, edge to edge
-        for (let i = 0; i < particleCount; i++) {
-            this.particles.push({
-                // Random position across ENTIRE canvas
-                x: Math.random() * this.canvas.width,
-                y: Math.random() * this.canvas.height,
+        // Create a dense grid of particles across entire screen
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                // Add slight randomness to grid position for organic feel
+                const x = col * spacing + (Math.random() - 0.5) * spacing * 0.5;
+                const y = row * spacing + (Math.random() - 0.5) * spacing * 0.5;
 
-                // Velocity
-                vx: (Math.random() - 0.5) * 1.5,
-                vy: (Math.random() - 0.5) * 1.5,
-
-                // Tiny particles for background effect
-                size: Math.random() * 1.5 + 0.5,  // 0.5-2px - very small
-                color: this.colors[Math.floor(Math.random() * this.colors.length)],
-
-                // Unique offset for flow field
-                noiseOffsetX: Math.random() * 1000,
-                noiseOffsetY: Math.random() * 1000,
-            });
+                this.particles.push({
+                    x: x,
+                    y: y,
+                    baseX: x,  // Remember original position
+                    baseY: y,
+                    // Random initial velocity
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    // Particle properties
+                    size: Math.random() * 2 + 1,  // 1-3px
+                    color: this.colors[Math.floor(Math.random() * this.colors.length)],
+                    // Phase offset for wave movement
+                    phase: Math.random() * Math.PI * 2,
+                });
+            }
         }
+
+        console.log(`Created ${this.particles.length} particles in ${cols}x${rows} grid`);
     }
 
     // Create a flow field using layered sine waves (simplified Perlin noise)
@@ -94,49 +103,18 @@ class ParticleWave {
     }
 
     updateParticles() {
-        this.particles.forEach((particle, i) => {
-            // Get flow direction from flow field
-            const flowAngle = this.getFlowAngle(particle.x, particle.y, this.time);
-            const flowForceX = Math.cos(flowAngle) * 0.12;
-            const flowForceY = Math.sin(flowAngle) * 0.12;
+        this.particles.forEach((particle) => {
+            // Create wave movement - particles oscillate from their base position
+            const waveX = Math.sin(particle.baseY * 0.005 + this.time * 0.8 + particle.phase) * 30;
+            const waveY = Math.cos(particle.baseX * 0.003 + this.time * 0.6 + particle.phase) * 20;
 
-            // Simple alignment with nearby particles (check a few neighbors)
-            let avgVx = 0, avgVy = 0, neighborCount = 0;
-            for (let j = i - 5; j < i + 5; j++) {
-                if (j >= 0 && j < this.particles.length && j !== i) {
-                    avgVx += this.particles[j].vx;
-                    avgVy += this.particles[j].vy;
-                    neighborCount++;
-                }
-            }
-            if (neighborCount > 0) {
-                avgVx /= neighborCount;
-                avgVy /= neighborCount;
-            }
-            const alignmentX = (avgVx - particle.vx) * 0.03;
-            const alignmentY = (avgVy - particle.vy) * 0.03;
+            // Add layered wave for complexity
+            const waveX2 = Math.sin(particle.baseY * 0.008 + this.time * 1.2) * 15;
+            const waveY2 = Math.cos(particle.baseX * 0.006 + this.time * 0.9) * 15;
 
-            // Apply forces - NO center pull, fills entire screen
-            particle.vx += flowForceX + alignmentX;
-            particle.vy += flowForceY + alignmentY;
-
-            // Limit speed
-            const speed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
-            const maxSpeed = 2;
-            if (speed > maxSpeed) {
-                particle.vx = (particle.vx / speed) * maxSpeed;
-                particle.vy = (particle.vy / speed) * maxSpeed;
-            }
-
-            // Update position
-            particle.x += particle.vx;
-            particle.y += particle.vy;
-
-            // Soft boundary wrapping
-            if (particle.x < -50) particle.x = this.canvas.width + 50;
-            if (particle.x > this.canvas.width + 50) particle.x = -50;
-            if (particle.y < -50) particle.y = this.canvas.height + 50;
-            if (particle.y > this.canvas.height + 50) particle.y = -50;
+            // Set particle position as base + wave displacement
+            particle.x = particle.baseX + waveX + waveX2;
+            particle.y = particle.baseY + waveY + waveY2;
         });
     }
 
