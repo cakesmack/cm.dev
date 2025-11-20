@@ -104,17 +104,21 @@ class ParticleWave {
 
     updateParticles() {
         this.particles.forEach((particle) => {
-            // Create wave movement - particles oscillate from their base position
-            const waveX = Math.sin(particle.baseY * 0.005 + this.time * 0.8 + particle.phase) * 30;
-            const waveY = Math.cos(particle.baseX * 0.003 + this.time * 0.6 + particle.phase) * 20;
+            // Diagonal wave traveling across screen (top-left to bottom-right)
+            const diagonalPosition = particle.baseX + particle.baseY;
+            const waveProgress = (diagonalPosition * 0.002) - (this.time * 0.5);
 
-            // Add layered wave for complexity
-            const waveX2 = Math.sin(particle.baseY * 0.008 + this.time * 1.2) * 15;
-            const waveY2 = Math.cos(particle.baseX * 0.006 + this.time * 0.9) * 15;
+            // Primary wave - moves particles in sweeping motion
+            const waveOffset = Math.sin(waveProgress) * 80;
+            const wave2 = Math.sin(waveProgress * 2 + this.time * 0.3) * 40;
 
-            // Set particle position as base + wave displacement
-            particle.x = particle.baseX + waveX + waveX2;
-            particle.y = particle.baseY + waveY + waveY2;
+            // Perpendicular movement for flowing effect
+            const flowX = Math.sin(particle.baseY * 0.004 + this.time * 0.7) * 50;
+            const flowY = Math.cos(particle.baseX * 0.004 + this.time * 0.7) * 50;
+
+            // Combine movements - creates flowing wave across screen
+            particle.x = particle.baseX + waveOffset + wave2 + flowX * 0.5;
+            particle.y = particle.baseY + waveOffset + wave2 + flowY * 0.5;
         });
     }
 
