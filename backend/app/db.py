@@ -23,6 +23,6 @@ def get_db():
 
 def init_db():
     """Initialize database by creating all tables"""
-    from app.models import user, client, project, lead, invoice
+    from app.models import user, client, project, lead, invoice, project_metric
     Base.metadata.create_all(bind=engine)
     print("Database tables created successfully!")

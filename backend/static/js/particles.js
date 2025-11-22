@@ -30,6 +30,8 @@ class ParticleWave {
         this.canvas.style.height = '100%';
         this.canvas.style.zIndex = '-1';
         this.canvas.style.pointerEvents = 'none';
+        this.canvas.style.filter = 'blur(1px)';
+        this.canvas.style.opacity = '0.6';
 
         document.body.prepend(this.canvas);
 
@@ -126,9 +128,27 @@ class ParticleWave {
         // Clear canvas cleanly (minimal trail)
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Draw each particle
+        // Draw each particle with vertical fade
         this.particles.forEach(particle => {
-            this.ctx.fillStyle = particle.color;
+            // Calculate opacity based on vertical position (fade out towards bottom)
+            const fadeStart = this.canvas.height * 0.3; // Start fading at 30% down
+            const fadeEnd = this.canvas.height * 0.8;   // Fully faded at 80% down
+
+            let verticalOpacity = 1;
+            if (particle.y > fadeStart) {
+                verticalOpacity = Math.max(0, 1 - (particle.y - fadeStart) / (fadeEnd - fadeStart));
+            }
+
+            // Apply vertical fade to particle color
+            const baseColor = particle.color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
+            if (baseColor) {
+                const [, r, g, b, a] = baseColor;
+                const finalOpacity = parseFloat(a) * verticalOpacity;
+                this.ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${finalOpacity})`;
+            } else {
+                this.ctx.fillStyle = particle.color;
+            }
+
             this.ctx.beginPath();
             this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
             this.ctx.fill();
@@ -152,12 +172,15 @@ class ParticleWave {
     }
 }
 
-// Initialize particle wave when DOM is ready
+// Initialize particle wave when DOM is ready (only on home page)
 document.addEventListener('DOMContentLoaded', () => {
     // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (!prefersReducedMotion) {
+    // Only run particle animation on home page
+    const isHomePage = window.location.pathname === '/' || window.location.pathname === '';
+
+    if (!prefersReducedMotion && isHomePage) {
         window.particleWave = new ParticleWave();
     }
 });

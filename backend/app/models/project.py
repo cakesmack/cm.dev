@@ -27,6 +27,7 @@ class Project(Base):
     # Relationships
     client = relationship("Client", back_populates="projects")
     media = relationship("ProjectMedia", back_populates="project", cascade="all, delete-orphan")
+    metrics = relationship("ProjectMetric", back_populates="project", cascade="all, delete-orphan")
     invoices = relationship("Invoice", back_populates="project")
 
 

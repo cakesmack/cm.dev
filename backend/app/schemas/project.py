@@ -4,6 +4,24 @@ from typing import Optional, List
 import re
 
 
+class ProjectMetricBase(BaseModel):
+    icon_type: str
+    icon_value: str
+    metric_value: str
+    metric_label: str
+    display_order: int = 0
+
+
+class ProjectMetricResponse(ProjectMetricBase):
+    id: int
+    project_id: int
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
 class ProjectMediaBase(BaseModel):
     media_type: str = "image"
     url: str
@@ -60,6 +78,7 @@ class ProjectResponse(ProjectBase):
     created_at: datetime
     updated_at: datetime
     media: List[ProjectMediaResponse] = []
+    metrics: List[ProjectMetricResponse] = []
 
     class Config:
         from_attributes = True
