@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,12 +9,15 @@
     <!-- Distinctive Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -25,6 +29,11 @@
                         'deep-blue': '#2c5282',
                         'accent-amber': '#d97706',
                         'accent-rose': '#e11d48',
+                        // Perplexity-inspired dark mode colors
+                        'perplexity-dark': '#191A1A',
+                        'perplexity-light': '#202222',
+                        'perplexity-text': '#E2E8F0',
+                        'perplexity-accent': '#22B3C1',
                     },
                     fontFamily: {
                         sans: ['DM Sans', 'system-ui', '-apple-system', 'sans-serif'],
@@ -32,6 +41,14 @@
                     }
                 }
             }
+        }
+    </script>
+    <script>
+        // Check for saved theme preference or system preference
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
         }
     </script>
     <style>
@@ -79,6 +96,11 @@
             box-shadow: 0 2px 8px rgba(91, 142, 179, 0.3);
         }
 
+        .dark .nav-link::after {
+            background: linear-gradient(90deg, #22B3C1 0%, #5b8eb3 100%);
+            box-shadow: 0 2px 8px rgba(34, 179, 193, 0.3);
+        }
+
         .nav-link:hover::after,
         .nav-link.active::after {
             width: 100%;
@@ -92,9 +114,19 @@
             transition: transform 0.2s ease-out, box-shadow 0.2s ease-out !important;
         }
 
+        .dark .project-card {
+            background: linear-gradient(to bottom, #202222, #191A1A);
+            border: 1px solid #2d3748;
+        }
+
         .project-card:hover {
             transform: translateY(-6px) !important;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(91, 142, 179, 0.08);
+        }
+
+        .dark .project-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 8px 20px rgba(34, 179, 193, 0.1);
+            border-color: #22B3C1;
         }
 
         /* CTA buttons with magnetic hover effect */
@@ -138,6 +170,11 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
 
+        .dark .social-link:hover {
+            background: linear-gradient(135deg, #2d3748, #1a202c);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
         /* Profile image with gradient and subtle animation */
         .profile-image {
             aspect-ratio: 1;
@@ -147,9 +184,17 @@
         }
 
         @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         /* Skill cards with refined hover */
@@ -169,6 +214,10 @@
             transition: opacity 0.4s;
         }
 
+        .dark .skill-card::after {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        }
+
         .skill-card:hover::after {
             opacity: 1;
         }
@@ -178,9 +227,24 @@
         }
 
         /* Custom focus states with gradient rings */
-        input:focus, textarea:focus {
+        input:focus,
+        textarea:focus {
             outline: none;
             box-shadow: 0 0 0 3px rgba(91, 142, 179, 0.1), 0 0 0 1px #5b8eb3;
+        }
+
+        .dark input:focus,
+        .dark textarea:focus {
+            box-shadow: 0 0 0 3px rgba(34, 179, 193, 0.2), 0 0 0 1px #22B3C1;
+            background-color: #202222;
+            color: #E2E8F0;
+        }
+
+        .dark input,
+        .dark textarea {
+            background-color: #191A1A;
+            color: #E2E8F0;
+            border-color: #2d3748;
         }
 
         /* Main content positioning */
@@ -198,52 +262,97 @@
         .prose {
             color: #4b5563;
         }
+
+        .dark .prose {
+            color: #E2E8F0;
+        }
+
         .prose strong {
             font-weight: 600;
             color: #1a202c;
         }
+
+        .dark .prose strong {
+            color: #fff;
+        }
+
         .prose em {
             font-style: italic;
         }
+
         .prose ul {
             list-style-type: disc;
             padding-left: 1.5rem;
             margin: 1rem 0;
         }
+
         .prose ol {
             list-style-type: decimal;
             padding-left: 1.5rem;
             margin: 1rem 0;
         }
+
         .prose li {
             margin: 0.25rem 0;
         }
-        .prose h1, .prose h2, .prose h3 {
+
+        .prose h1,
+        .prose h2,
+        .prose h3 {
             font-weight: 600;
             color: #1a202c;
             margin-top: 1.5rem;
             margin-bottom: 0.75rem;
         }
-        .prose h1 { font-size: 1.5rem; }
-        .prose h2 { font-size: 1.25rem; }
-        .prose h3 { font-size: 1.125rem; }
+
+        .dark .prose h1,
+        .dark .prose h2,
+        .dark .prose h3 {
+            color: #fff;
+        }
+
+        .prose h1 {
+            font-size: 1.5rem;
+        }
+
+        .prose h2 {
+            font-size: 1.25rem;
+        }
+
+        .prose h3 {
+            font-size: 1.125rem;
+        }
+
         .prose a {
             color: #5b8eb3;
             text-decoration: underline;
         }
+
+        .dark .prose a {
+            color: #22B3C1;
+        }
+
         .prose a:hover {
             color: #2c5282;
         }
+
+        .dark .prose a:hover {
+            color: #5b8eb3;
+        }
+
         .prose p {
             margin: 1rem 0;
             line-height: 1.75;
         }
+
         .prose p:first-child {
             margin-top: 0;
         }
+
         .prose p:last-child {
             margin-bottom: 0;
         }
+
         .prose br {
             display: block;
             margin: 0.5rem 0;
@@ -252,7 +361,9 @@
     </style>
     {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-gradient-to-br from-white via-warm-grey to-light-grey text-charcoal antialiased">
+
+<body
+    class="bg-gradient-to-br from-white via-warm-grey to-light-grey dark:from-perplexity-dark dark:via-perplexity-dark dark:to-perplexity-light text-charcoal dark:text-perplexity-text antialiased transition-colors duration-300">
     {% include 'components/navbar.html' %}
 
     <main>
@@ -261,31 +372,36 @@
 
     <!-- Lightbox Modal -->
     <div id="lightbox" class="hidden fixed inset-0 bg-black bg-opacity-90 z-[100] flex items-center justify-center p-4">
-        <button id="lightbox-close" class="absolute top-6 right-6 text-white hover:text-gray-300 transition-colors z-10">
+        <button id="lightbox-close"
+            class="absolute top-6 right-6 text-white hover:text-gray-300 transition-colors z-10">
             <i data-lucide="x" class="w-8 h-8"></i>
         </button>
-        <button id="lightbox-prev" class="absolute left-6 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 hidden">
+        <button id="lightbox-prev"
+            class="absolute left-6 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 hidden">
             <i data-lucide="chevron-left" class="w-10 h-10"></i>
         </button>
-        <button id="lightbox-next" class="absolute right-6 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 hidden">
+        <button id="lightbox-next"
+            class="absolute right-6 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 hidden">
             <i data-lucide="chevron-right" class="w-10 h-10"></i>
         </button>
         <img id="lightbox-image" src="" alt="" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl">
     </div>
 
     <!-- Footer -->
-    <footer class="bg-gradient-to-b from-white to-warm-grey py-16 px-6 border-t border-gray-100 relative">
-        <div class="absolute inset-0 bg-gradient-to-t from-charcoal/5 to-transparent"></div>
+    <footer class="bg-gradient-to-b from-white to-warm-grey dark:from-perplexity-light dark:to-perplexity-dark py-16 px-6 border-t border-gray-100 dark:border-gray-800 relative">
+        <div class="absolute inset-0 bg-gradient-to-t from-charcoal/5 dark:from-perplexity-dark/50 to-transparent"></div>
         <div class="container mx-auto max-w-6xl relative z-10">
             <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                <p class="text-gray-600 text-sm font-medium">
+                <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">
                     &copy; 2025 Craig Mackenzie.
                 </p>
                 <div class="flex gap-6">
-                    <a href="mailto:craig@cmack.dev" class="text-gray-500 hover:text-charcoal transition-all duration-300 hover:scale-110">
+                    <a href="mailto:craig@cmack.dev"
+                        class="text-gray-500 dark:text-gray-400 hover:text-charcoal dark:hover:text-perplexity-accent transition-all duration-300 hover:scale-110">
                         <i data-lucide="mail" class="w-5 h-5"></i>
                     </a>
-                    <a href="https://wa.me/447497716117" target="_blank" class="text-gray-500 hover:text-charcoal transition-all duration-300 hover:scale-110">
+                    <a href="https://wa.me/447497716117" target="_blank"
+                        class="text-gray-500 dark:text-gray-400 hover:text-charcoal dark:hover:text-perplexity-accent transition-all duration-300 hover:scale-110">
                         <i data-lucide="message-circle" class="w-5 h-5"></i>
                     </a>
                 </div>
@@ -320,9 +436,7 @@
         });
     </script>
 
-    <!-- Particle wave background -->
-    <script src="{{ url_for('static', path='/js/particles.js') }}"></script>
-
     {% block extra_scripts %}{% endblock %}
 </body>
+
 </html>

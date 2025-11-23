@@ -1,29 +1,45 @@
 <!-- Navigation -->
-<nav class="fixed top-0 w-full bg-white/95 backdrop-blur-lg z-50 border-b border-gray-100 shadow-sm">
+<nav
+    class="fixed top-0 w-full bg-white/95 dark:bg-perplexity-dark/95 backdrop-blur-lg z-50 border-b border-gray-100 dark:border-gray-800 shadow-sm transition-colors duration-300">
     <div class="container mx-auto px-6 lg:px-8 py-5">
         <div class="flex items-center justify-between">
-            <a href="/" class="text-xl font-display font-bold text-charcoal tracking-tight hover:text-muted-blue transition-colors duration-300">
+            <a href="/"
+                class="text-xl font-display font-bold text-charcoal dark:text-white tracking-tight hover:text-muted-blue dark:hover:text-perplexity-accent transition-colors duration-300">
                 Craig Mackenzie
             </a>
             <div class="hidden md:flex items-center space-x-10">
-                <a href="/#home" class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal">Home</a>
-                <a href="/#projects" class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal">Projects</a>
-                <a href="/#about" class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal">About</a>
-                <a href="/#contact" class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal">Contact</a>
+                <a href="/#home"
+                    class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">Home</a>
+                <a href="/#projects"
+                    class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">Projects</a>
+                <a href="/#about"
+                    class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">About</a>
+                <a href="/#contact"
+                    class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">Contact</a>
+                <button id="theme-toggle"
+                    class="text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white transition-colors focus:outline-none">
+                    <i data-lucide="moon" class="w-5 h-5 hidden dark:block"></i>
+                    <i data-lucide="sun" class="w-5 h-5 block dark:hidden"></i>
+                </button>
             </div>
             <!-- Mobile menu button -->
-            <button id="mobile-menu-button" class="md:hidden text-charcoal focus:outline-none">
+            <button id="mobile-menu-button" class="md:hidden text-charcoal dark:text-white focus:outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
                 </svg>
             </button>
         </div>
         <!-- Mobile menu -->
         <div id="mobile-menu" class="hidden md:hidden mt-6 pb-4 space-y-4">
-            <a href="/#home" class="block text-sm font-medium text-gray-600 hover:text-charcoal">Home</a>
-            <a href="/#projects" class="block text-sm font-medium text-gray-600 hover:text-charcoal">Projects</a>
-            <a href="/#about" class="block text-sm font-medium text-gray-600 hover:text-charcoal">About</a>
-            <a href="/#contact" class="block text-sm font-medium text-gray-600 hover:text-charcoal">Contact</a>
+            <a href="/#home"
+                class="block text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">Home</a>
+            <a href="/#projects"
+                class="block text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">Projects</a>
+            <a href="/#about"
+                class="block text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">About</a>
+            <a href="/#contact"
+                class="block text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">Contact</a>
         </div>
     </div>
 </nav>
@@ -86,4 +102,23 @@
             }
         });
     });
+
+    // Theme toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+            // Re-render icons if needed
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        });
+    }
 </script>

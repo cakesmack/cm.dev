@@ -1,405 +1,456 @@
 {% extends "base.html" %}
 
+{% block title %}Home - Craig Mackenzie{% endblock %}
+
 {% block content %}
-<!-- Hero / Home Section -->
-<section id="home" class="min-h-screen flex items-center justify-center px-6 pt-20 scroll-mt-20 relative">
-    <!-- Subtle gradient background -->
-    <div class="absolute inset-0 bg-gradient-to-br from-warm-grey via-white to-light-grey opacity-60"></div>
-
-    <div class="container mx-auto max-w-5xl text-center fade-in relative z-10">
-        <h1 class="text-6xl md:text-7xl lg:text-8xl font-display font-bold text-charcoal mb-8 leading-[1.1] tracking-tight">
-            Hi, I'm Craig
-        </h1>
-        <p class="text-2xl md:text-3xl lg:text-4xl text-charcoal-light mb-6 leading-snug font-light max-w-4xl mx-auto">
-I help businesses eliminate manual processes with automated systems that actually make work easier.
-
-        </p>
-        <p class="text-lg md:text-xl text-gray-600 mb-16 max-w-3xl mx-auto leading-relaxed">
-Data-driven. Practical. Built for the real world.        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <a href="#projects" class="cta-button bg-gradient-to-r from-charcoal via-charcoal-light to-deep-blue text-white px-12 py-5 rounded-xl font-semibold shadow-lg hover:shadow-2xl relative z-10">
-                View My Work
-            </a>
-            <a href="#about" class="cta-button bg-white text-charcoal px-12 py-5 rounded-xl font-semibold border-2 border-gray-200 hover:border-muted-blue shadow-md relative z-10">
-                About Me
-            </a>
-        </div>
+<!-- Hero Section -->
+<section id="home"
+    class="relative min-h-screen flex items-center justify-center overflow-hidden bg-white dark:bg-perplexity-dark transition-colors duration-300">
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+        <div class="absolute -top-40 -right-40 w-96 h-96 bg-muted-blue/10 rounded-full blur-3xl"></div>
+        <div class="absolute top-40 -left-20 w-72 h-72 bg-deep-blue/5 rounded-full blur-3xl"></div>
     </div>
+
+    <div class="max-w-6xl mx-auto px-6 relative z-10 text-center">
+        <div class="fade-in">
+            <h1
+                class="text-6xl md:text-7xl font-display font-bold text-charcoal dark:text-white mb-8 tracking-tight leading-tight">
+                Building <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-muted-blue to-deep-blue dark:from-perplexity-accent dark:to-blue-400">Digital
+                    Systems</span><br />
+                That Work For You
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+                I help businesses stop drowning in admin and start using their data.
+            </p>
+            <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-16 max-w-3xl mx-auto leading-relaxed">
+                Data-driven. Practical. Built for the real world. </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="#projects"
+                    class="cta-button bg-gradient-to-r from-charcoal via-charcoal-light to-deep-blue text-white px-12 py-5 rounded-xl font-semibold shadow-lg hover:shadow-2xl relative z-10">
+                    View My Work
+                </a>
+                <a href="#about"
+                    class="cta-button bg-white dark:bg-perplexity-light text-charcoal dark:text-white px-12 py-5 rounded-xl font-semibold border-2 border-gray-200 dark:border-gray-700 hover:border-muted-blue dark:hover:border-perplexity-accent shadow-md relative z-10">
+                    About Me
+                </a>
+            </div>
+        </div>
 </section>
 
-<!-- Projects Section -->
-<section id="projects" class="min-h-screen py-32 px-6 bg-gradient-to-b from-light-grey to-warm-grey scroll-mt-20 relative">
-    <div class="container mx-auto max-w-7xl">
+<!-- Featured Project Section -->
+<section id="projects"
+    class="py-24 bg-gradient-to-b from-light-grey to-warm-grey dark:from-perplexity-light dark:to-perplexity-dark scroll-mt-20 relative">
+    <div class="max-w-6xl mx-auto px-6">
         <div class="fade-in mb-20 text-center">
-            <h2 class="text-5xl md:text-6xl font-display font-bold text-charcoal mb-6 tracking-tight">
+            <h2 class="text-5xl md:text-6xl font-display font-bold text-charcoal dark:text-white mb-6 tracking-tight">
                 <span class="relative inline-block">
-                    Featured Projects
+                    Featured Project
                     <svg class="absolute -bottom-2 left-0 w-full h-3" viewBox="0 0 200 12" preserveAspectRatio="none">
-                        <path d="M0,7 Q50,0 100,7 T200,7" fill="none" stroke="#d97706" stroke-width="3" opacity="0.3"/>
+                        <path d="M0,7 Q50,0 100,7 T200,7" fill="none" stroke="#d97706" stroke-width="3" opacity="0.3" />
                     </svg>
                 </span>
             </h2>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">A selection of data-driven web applications and tools I've built</p>
+            <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">A showcase of my recent work</p>
         </div>
 
         {% if projects and projects|length > 0 %}
-            {% set featured_project = projects|selectattr("is_featured")|first %}
-            {% set other_projects = projects|rejectattr("is_featured")|list %}
+        {% set featured_project = projects|selectattr("is_featured")|first %}
 
-            {% if featured_project %}
-            <!-- Featured Project - Large Hero Card -->
-            <div class="fade-in max-w-6xl mx-auto mb-20">
-                <div class="project-card bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-100">
-                    {% set video_media = featured_project.media|selectattr("media_type", "equalto", "video")|list %}
-                    {% set image_media = featured_project.media|selectattr("media_type", "equalto", "image")|list %}
+        {% if featured_project %}
+        <!-- Featured Project - Large Hero Card -->
+        <div class="fade-in">
+            <div
+                class="project-card bg-white dark:bg-perplexity-light rounded-2xl overflow-hidden shadow-xl border border-gray-100 dark:border-gray-800">
+                {% set video_media = featured_project.media|selectattr("media_type", "equalto", "video")|list %}
+                {% set image_media = featured_project.media|selectattr("media_type", "equalto", "image")|list %}
 
-                    {% if video_media|length > 0 %}
-                    <video src="{{ video_media[0].url }}" class="w-full h-96 object-cover" controls muted autoplay loop>
-                        Your browser does not support the video tag.
-                    </video>
-                    {% elif image_media|length > 0 %}
-                    <img src="{{ image_media[0].url }}" alt="{{ image_media[0].alt_text }}" class="w-full h-96 object-cover lightbox-image">
-                    {% else %}
-                    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 h-96"></div>
-                    {% endif %}
-                    <div class="p-10">
-                        <div class="flex items-center gap-3 mb-4">
-                            <span class="px-4 py-2 bg-gradient-to-r from-muted-blue to-deep-blue text-white text-sm font-semibold rounded-full shadow-md">Featured Project</span>
-                        </div>
-                        <h3 class="text-4xl font-display font-bold text-charcoal mb-6">{{ featured_project.title }}</h3>
-                        <p class="text-gray-600 mb-8 leading-relaxed text-lg">
-                            {{ featured_project.short_description or (featured_project.description | striptags)[:200] + '...' if (featured_project.description | striptags | length) > 200 else (featured_project.description | striptags) }}
-                        </p>
-                        {% if featured_project.tech_stack %}
-                        <div class="flex flex-wrap gap-2 mb-8">
-                            {% for tech in featured_project.tech_stack %}
-                            <span class="px-4 py-2 bg-light-grey text-sm font-medium text-gray-700 rounded-full">{{ tech }}</span>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                        <a href="/projects/{{ featured_project.slug }}" class="text-muted-blue font-semibold hover:underline inline-flex items-center group text-xl">
-                            View Case Study
-                            <i data-lucide="arrow-right" class="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-
-            {% if other_projects and other_projects|length > 0 %}
-            <!-- Other Projects Grid -->
-            <div class="max-w-6xl mx-auto">
-                {% if featured_project %}
-                <h3 class="text-3xl font-display font-semibold text-charcoal mb-8 text-center fade-in">More Projects</h3>
+                {% if video_media|length > 0 %}
+                <video src="{{ video_media[0].url }}" class="w-full h-96 object-cover" controls muted autoplay loop>
+                    Your browser does not support the video tag.
+                </video>
+                {% elif image_media|length > 0 %}
+                <img src="{{ image_media[0].url }}" alt="{{ image_media[0].alt_text }}"
+                    class="w-full h-96 object-cover lightbox-image">
+                {% else %}
+                <div class="bg-gradient-to-br from-blue-500 to-indigo-600 h-96"></div>
                 {% endif %}
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {% for project in other_projects %}
-                    <!-- Project Card -->
-                    <div class="project-card fade-in bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100">
-                        {% if project.media and project.media|length > 0 %}
-                        <img src="{{ project.media[0].url }}" alt="{{ project.media[0].alt_text }}" class="w-full h-48 object-cover lightbox-image">
-                        {% else %}
-                        <div class="bg-gradient-to-br from-blue-500 to-indigo-600 h-48"></div>
-                        {% endif %}
-                        <div class="p-6">
-                            <h3 class="text-2xl font-display font-semibold text-charcoal mb-3">{{ project.title }}</h3>
-                            <p class="text-gray-600 mb-4 leading-relaxed text-base">
-                                {{ project.short_description or (project.description | striptags)[:150] + '...' if (project.description | striptags | length) > 150 else (project.description | striptags) }}
-                            </p>
-                            {% if project.tech_stack %}
-                            <div class="flex flex-wrap gap-2 mb-4">
-                                {% for tech in project.tech_stack[:3] %}
-                                <span class="px-3 py-1 bg-light-grey text-xs font-medium text-gray-700 rounded-full">{{ tech }}</span>
-                                {% endfor %}
-                                {% if project.tech_stack|length > 3 %}
-                                <span class="px-3 py-1 bg-light-grey text-xs font-medium text-gray-700 rounded-full">+{{ project.tech_stack|length - 3 }}</span>
-                                {% endif %}
-                            </div>
-                            {% endif %}
-                            <a href="/projects/{{ project.slug }}" class="text-muted-blue font-medium hover:underline inline-flex items-center group">
-                                View Case Study
-                                <i data-lucide="arrow-right" class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform"></i>
-                            </a>
-                        </div>
+                <div class="p-10">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span
+                            class="px-4 py-2 bg-gradient-to-r from-muted-blue to-deep-blue text-white text-sm font-semibold rounded-full shadow-md">Featured
+                            Project</span>
                     </div>
-                    {% endfor %}
+                    <h3 class="text-4xl font-display font-bold text-charcoal dark:text-white mb-6">{{
+                        featured_project.title }}</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed text-lg">
+                        {{ featured_project.short_description or (featured_project.description | striptags)[:200] +
+                        '...' if (featured_project.description | striptags | length) > 200 else
+                        (featured_project.description | striptags) }}
+                    </p>
+                    {% if featured_project.tech_stack %}
+                    <div class="flex flex-wrap gap-2 mb-8">
+                        {% for tech in featured_project.tech_stack %}
+                        <span
+                            class="px-4 py-2 bg-light-grey dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-full">{{
+                            tech }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <a href="/projects/{{ featured_project.slug }}"
+                        class="text-muted-blue dark:text-perplexity-accent font-semibold hover:underline inline-flex items-center group text-xl">
+                        View Case Study
+                        <i data-lucide="arrow-right"
+                            class="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
                 </div>
             </div>
-            {% endif %}
-
-            <!-- Other Projects Mention -->
-            <div class="fade-in text-center mt-20">
-                
-                <p class="text-gray-500">
-                    More projects coming soon.
-                </p>
-            </div>
+        </div>
         {% else %}
-            <!-- Placeholder when no projects -->
-            <div class="max-w-4xl mx-auto">
-                <div class="fade-in bg-white rounded-2xl overflow-hidden shadow-sm mb-12">
-                    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 h-64"></div>
-                    <div class="p-8">
-                        <h3 class="text-3xl font-semibold text-charcoal mb-4">Coming Soon</h3>
-                        <p class="text-gray-600 mb-6 leading-relaxed text-lg">
-                            Projects will be displayed here once added through the admin panel.
-                        </p>
-                    </div>
+        <!-- Placeholder when no featured project -->
+        <div>
+            <div class="fade-in bg-white rounded-2xl overflow-hidden shadow-sm mb-12">
+                <div class="bg-gradient-to-br from-blue-500 to-indigo-600 h-64"></div>
+                <div class="p-8">
+                    <h3 class="text-3xl font-semibold text-charcoal dark:text-white mb-4">Coming Soon</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed text-lg">
+                        Featured project will be displayed here once added through the admin panel.
+                    </p>
                 </div>
             </div>
+        </div>
+        {% endif %}
+        {% else %}
+        <!-- Placeholder when no projects at all -->
+        <div>
+            <div class="fade-in bg-white rounded-2xl overflow-hidden shadow-sm mb-12">
+                <div class="bg-gradient-to-br from-blue-500 to-indigo-600 h-64"></div>
+                <div class="p-8">
+                    <h3 class="text-3xl font-semibold text-charcoal dark:text-white mb-4">Coming Soon</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed text-lg">
+                        Projects will be displayed here once added through the admin panel.
+                    </p>
+                </div>
+            </div>
+        </div>
         {% endif %}
     </div>
 </section>
 
 <!-- About Section -->
-<section id="about" class="min-h-screen py-32 px-6 bg-white scroll-mt-20 relative">
+<section id="about" class="py-24 bg-white dark:bg-perplexity-dark scroll-mt-20 relative">
     <!-- Decorative element -->
-    <div class="absolute top-20 right-10 w-72 h-72 bg-gradient-to-br from-muted-blue/10 to-accent-amber/10 rounded-full blur-3xl"></div>
+    <div
+        class="absolute top-20 right-10 w-72 h-72 bg-gradient-to-br from-muted-blue/10 to-accent-amber/10 rounded-full blur-3xl">
+    </div>
 
-    <div class="container mx-auto max-w-6xl relative z-10">
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
         <div class="fade-in mb-20 text-center">
-            <h2 class="text-5xl md:text-6xl font-display font-bold text-charcoal mb-6 tracking-tight">
+            <h2 class="text-5xl md:text-6xl font-display font-bold text-charcoal dark:text-white mb-6 tracking-tight">
                 <span class="relative inline-block">
                     About Me
                     <svg class="absolute -bottom-2 left-0 w-full h-3" viewBox="0 0 200 12" preserveAspectRatio="none">
-                        <path d="M0,7 Q50,0 100,7 T200,7" fill="none" stroke="#5b8eb3" stroke-width="3" opacity="0.3"/>
+                        <path d="M0,7 Q50,0 100,7 T200,7" fill="none" stroke="#5b8eb3" stroke-width="3" opacity="0.3" />
                     </svg>
                 </span>
             </h2>
-            <p class="text-xl text-gray-600">Automating real-world workflows and uncovering the insights behind the data.</p>
+            <p class="text-xl text-gray-600 dark:text-gray-400">Automating real-world workflows and uncovering the
+                insights behind the data.</p>
         </div>
 
         <!-- Two-column layout -->
         <div class="fade-in grid md:grid-cols-3 gap-8 items-center mb-20">
             <!-- Left: Bio text -->
-            <div class="space-y-6 col-span-2 text-gray-600 leading-relaxed text-lg">
-                <h3 class="font-display font-semibold text-2xl text-charcoal">My Background</h3>
+            <div class="space-y-6 col-span-2 text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
+                <h3 class="font-display font-semibold text-2xl text-charcoal dark:text-white">My Background</h3>
                 <p>
-                   I’ve been building and experimenting with websites and small applications since I was a teenager. Even long before I worked in admin or tech, solving problems with code was just something I enjoyed.  </p>
-                                <h3 class="font-display font-semibold text-2xl text-charcoal">Finding The Problem</h3>
+                    I’ve been building and experimenting with websites and small applications since I was a teenager.
+                    Even long before I worked in admin or tech, solving problems with code was just something I enjoyed.
+                </p>
+                <h3 class="font-display font-semibold text-2xl text-charcoal dark:text-white">Finding The Problem</h3>
 
                 <p>
-When I moved into sales administration, I realised how much time and energy were lost to manual processes — handwritten forms, duplicated work, and information stored everywhere except where it was needed. I started creating tools to fix that.                </p>
-<p>Those early projects turned into full internal systems: automated workflows, dashboards, and data-driven tools that helped people work faster and with fewer mistakes.</p>
-                                <h3 class="font-display font-semibold text-2xl text-charcoal">A Pragmatic Approach</h3>
+                    When I moved into sales administration, I realised how much time and energy were lost to manual
+                    processes — handwritten forms, duplicated work, and information stored everywhere except where it
+                    was needed. I started creating tools to fix that. </p>
+                <p>Those early projects turned into full internal systems: automated workflows, dashboards, and
+                    data-driven tools that helped people work faster and with fewer mistakes.</p>
+                <h3 class="font-display font-semibold text-2xl text-charcoal dark:text-white">A Pragmatic Approach</h3>
 
                 <p>
-                    Now I focus on building practical, reliable digital solutions using Python, Flask/FastAPI, and modern web technologies. I approach problems from both a technical and a data perspective, aiming to create tools that genuinely improve the way people work.</p>
+                    Now I focus on building practical, reliable digital solutions using Python, Flask/FastAPI, and
+                    modern web technologies. I approach problems from both a technical and a data perspective, aiming to
+                    create tools that genuinely improve the way people work.</p>
             </div>
 
             <!-- Right: Profile image -->
             <div class="flex justify-center md:justify-end">
                 <div class="w-64 h-64 md:w-80 md:h-80 rounded-full shadow-2xl overflow-hidden">
-                    <img src="{{ url_for('static', path='/images/Gemini_Generated_Image_zg3w82zg3w82zg3w.png') }}" alt="Craig Mackenzie" class="w-full h-full object-cover">
+                    <img src="{{ url_for('static', path='/images/Gemini_Generated_Image_zg3w82zg3w82zg3w.png') }}"
+                        alt="Craig Mackenzie" class="w-full h-full object-cover">
                 </div>
             </div>
         </div>
 
         <!-- What I Do -->
-        <div class="fade-in mb-24">
-            <h3 class="text-3xl font-display font-semibold text-charcoal mb-12 text-center">What I Do</h3>
-            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                <!-- Automation -->
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                    <div class="w-12 h-12 bg-gradient-to-br from-muted-blue/10 to-deep-blue/10 rounded-xl flex items-center justify-center mb-4">
+        <div class="fade-in mb-24 mt-40">
+            <h3 class="text-3xl font-display font-semibold text-charcoal dark:text-white mb-12 text-center">What I Do
+            </h3>
+
+            <!-- First Row: 3 cards -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+                <!-- Workflow Automation -->
+                <div
+                    class="bg-white dark:bg-perplexity-light p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow">
+                    <div
+                        class="w-12 h-12 bg-gradient-to-br from-muted-blue/10 to-deep-blue/10 rounded-xl flex items-center justify-center mb-4">
                         <i data-lucide="zap" class="w-6 h-6 text-muted-blue"></i>
                     </div>
-                    <h4 class="text-xl font-display font-semibold text-charcoal mb-3">Automation</h4>
-                    <p class="text-gray-600 leading-relaxed">
-                        Replace paper processes, spreadsheets, and manual tasks with simple digital tools.
+                    <h4 class="text-xl font-display font-semibold text-charcoal dark:text-white mb-3">Workflow
+                        Automation</h4>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+                        I remove bottlenecks and manual steps from everyday business operations. I map out real-world
+                        processes, redesign them for clarity and speed, and replace paper-heavy tasks with fast,
+                        reliable digital tools that staff actually enjoy using.
                     </p>
                 </div>
 
-                <!-- Data Insights -->
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                    <div class="w-12 h-12 bg-gradient-to-br from-accent-amber/10 to-accent-rose/10 rounded-xl flex items-center justify-center mb-4">
+                <!-- Data Intelligence -->
+                <div
+                    class="bg-white dark:bg-perplexity-light p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow">
+                    <div
+                        class="w-12 h-12 bg-gradient-to-br from-accent-amber/10 to-accent-rose/10 rounded-xl flex items-center justify-center mb-4">
                         <i data-lucide="bar-chart-3" class="w-6 h-6 text-accent-amber"></i>
                     </div>
-                    <h4 class="text-xl font-display font-semibold text-charcoal mb-3">Data Insights</h4>
-                    <p class="text-gray-600 leading-relaxed">
-                        Turn scattered business data into clear reports that drive decisions.
+                    <h4 class="text-xl font-display font-semibold text-charcoal dark:text-white mb-3">Data Intelligence
+                    </h4>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+                        I turn scattered spreadsheets and raw operational data into clear insights that actually guide
+                        decisions. Usage analytics, trends, delays, performance signals—everything becomes visible
+                        instead of buried, giving businesses the clarity they've never had before.
                     </p>
                 </div>
 
-                <!-- Custom Systems -->
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                    <div class="w-12 h-12 bg-gradient-to-br from-deep-blue/10 to-muted-blue/10 rounded-xl flex items-center justify-center mb-4">
+                <!-- Custom Business Systems -->
+                <div
+                    class="bg-white dark:bg-perplexity-light p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow">
+                    <div
+                        class="w-12 h-12 bg-gradient-to-br from-deep-blue/10 to-muted-blue/10 rounded-xl flex items-center justify-center mb-4">
                         <i data-lucide="settings" class="w-6 h-6 text-deep-blue"></i>
                     </div>
-                    <h4 class="text-xl font-display font-semibold text-charcoal mb-3">Custom Systems</h4>
-                    <p class="text-gray-600 leading-relaxed">
-                        Build tailored solutions that fit the way a business actually works.
+                    <h4 class="text-xl font-display font-semibold text-charcoal dark:text-white mb-3">Custom Business
+                        Systems</h4>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+                        I build complete, tailored systems around how a business really works—no templates, no generic
+                        tools. These platforms connect processes, reduce inconsistencies, and create one central hub
+                        that grows with the business and is easy for non-technical teams to use.
                     </p>
                 </div>
             </div>
+
+
         </div>
 
         <!-- Skills & Technologies -->
         <div class="fade-in">
-            <h3 class="text-3xl font-display font-semibold text-charcoal mb-10 text-center">Skills & Technologies</h3>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+            <h3 class="text-3xl font-display font-semibold text-charcoal dark:text-white mb-10 text-center">Skills &
+                Technologies</h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <!-- Python -->
-                <div class="skill-card group bg-gradient-to-br from-[#3776AB]/5 to-[#FFD43B]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#3776AB]/20">
+                <div
+                    class="skill-card group bg-gradient-to-br from-[#3776AB]/5 to-[#FFD43B]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#3776AB]/20">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 flex-shrink-0">
                             <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M15.9 4c-1.7 0-3.2.2-4.5.5C8.3 5.3 7.5 6.8 7.5 9v3h8v1h-11c-1.7 0-3.2 1-3.7 3-.6 2.3-.6 3.7 0 6 .4 1.7 1.4 3 3.1 3h2v-2.6c0-2 1.7-3.7 3.7-3.7h8c1.6 0 2.9-1.3 2.9-3V9c0-1.5-.8-2.7-2.9-3.5-1.3-.3-2.8-.5-4.6-.5zm-4.4 2.5c.6 0 1.1.5 1.1 1.1s-.5 1.1-1.1 1.1-1.1-.5-1.1-1.1.5-1.1 1.1-1.1z" fill="#3776AB"/>
-                                <path d="M16.1 28c1.7 0 3.2-.2 4.5-.5 3.1-.8 3.9-2.3 3.9-4.5v-3h-8v-1h11c1.7 0 2.4-1.2 3-3 .6-1.9.6-3.7 0-6-.4-1.7-1.3-3-3-3h-2.1v2.7c0 2-1.7 3.6-3.7 3.6h-8c-1.6 0-2.9 1.4-2.9 3v7.7c0 1.6 1.3 2.5 2.9 3 1.9.6 3.7.7 5.4 0zm4.4-2.5c-.6 0-1.1-.5-1.1-1.1s.5-1.1 1.1-1.1 1.1.5 1.1 1.1-.5 1.1-1.1 1.1z" fill="#FFD43B"/>
+                                <path
+                                    d="M15.9 4c-1.7 0-3.2.2-4.5.5C8.3 5.3 7.5 6.8 7.5 9v3h8v1h-11c-1.7 0-3.2 1-3.7 3-.6 2.3-.6 3.7 0 6 .4 1.7 1.4 3 3.1 3h2v-2.6c0-2 1.7-3.7 3.7-3.7h8c1.6 0 2.9-1.3 2.9-3V9c0-1.5-.8-2.7-2.9-3.5-1.3-.3-2.8-.5-4.6-.5zm-4.4 2.5c.6 0 1.1.5 1.1 1.1s-.5 1.1-1.1 1.1-1.1-.5-1.1-1.1.5-1.1 1.1-1.1z"
+                                    fill="#3776AB" />
+                                <path
+                                    d="M16.1 28c1.7 0 3.2-.2 4.5-.5 3.1-.8 3.9-2.3 3.9-4.5v-3h-8v-1h11c1.7 0 2.4-1.2 3-3 .6-1.9.6-3.7 0-6-.4-1.7-1.3-3-3-3h-2.1v2.7c0 2-1.7 3.6-3.7 3.6h-8c-1.6 0-2.9 1.4-2.9 3v7.7c0 1.6 1.3 2.5 2.9 3 1.9.6 3.7.7 5.4 0zm4.4-2.5c-.6 0-1.1-.5-1.1-1.1s.5-1.1 1.1-1.1 1.1.5 1.1 1.1-.5 1.1-1.1 1.1z"
+                                    fill="#FFD43B" />
                             </svg>
                         </div>
-                        <p class="font-semibold text-charcoal">Python</p>
+                        <p class="font-semibold text-charcoal dark:text-white">Python</p>
                     </div>
                 </div>
 
                 <!-- Flask -->
-                <div class="skill-card group bg-charcoal/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-charcoal/20">
+                <div
+                    class="skill-card group bg-[#181717]/5 dark:bg-gray-700/20 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#181717]/20 dark:border-gray-600/30">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 flex-shrink-0">
-                            <i data-lucide="flask-conical" class="w-10 h-10 text-charcoal"></i>
+                            <i data-lucide="flask-conical" class="w-10 h-10 text-charcoal dark:text-white"></i>
                         </div>
-                        <p class="font-semibold text-charcoal">Flask</p>
+                        <p class="font-semibold text-charcoal dark:text-white">Flask</p>
                     </div>
                 </div>
 
                 <!-- FastAPI -->
-                <div class="skill-card group bg-[#009688]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#009688]/20">
+                <div
+                    class="skill-card group bg-[#009688]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#009688]/20">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 flex-shrink-0">
                             <i data-lucide="zap" class="w-10 h-10 text-[#009688]"></i>
                         </div>
-                        <p class="font-semibold text-charcoal">FastAPI</p>
+                        <p class="font-semibold text-charcoal dark:text-white">FastAPI</p>
                     </div>
                 </div>
 
                 <!-- SQLAlchemy -->
-                <div class="skill-card group bg-[#D71F00]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#D71F00]/20">
+                <div
+                    class="skill-card group bg-[#D71F00]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#D71F00]/20">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 flex-shrink-0">
                             <i data-lucide="database" class="w-10 h-10 text-[#D71F00]"></i>
                         </div>
-                        <p class="font-semibold text-charcoal">SQLAlchemy</p>
+                        <p class="font-semibold text-charcoal dark:text-white">SQLAlchemy</p>
                     </div>
                 </div>
 
                 <!-- PostgreSQL -->
-                <div class="skill-card group bg-[#336791]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#336791]/20">
+                <div
+                    class="skill-card group bg-[#336791]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#336791]/20">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 flex-shrink-0">
                             <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="8" cy="16" r="2" fill="#336791"/>
-                                <circle cx="16" cy="16" r="2" fill="#336791"/>
-                                <circle cx="24" cy="16" r="2" fill="#336791"/>
-                                <rect x="7" y="8" width="2" height="16" fill="#336791"/>
-                                <rect x="15" y="8" width="2" height="16" fill="#336791"/>
-                                <rect x="23" y="8" width="2" height="16" fill="#336791"/>
+                                <circle cx="8" cy="16" r="2" fill="#336791" />
+                                <circle cx="16" cy="16" r="2" fill="#336791" />
+                                <circle cx="24" cy="16" r="2" fill="#336791" />
+                                <rect x="7" y="8" width="2" height="16" fill="#336791" />
+                                <rect x="15" y="8" width="2" height="16" fill="#336791" />
+                                <rect x="23" y="8" width="2" height="16" fill="#336791" />
                             </svg>
                         </div>
-                        <p class="font-semibold text-charcoal">PostgreSQL</p>
+                        <p class="font-semibold text-charcoal dark:text-white">PostgreSQL</p>
                     </div>
                 </div>
 
                 <!-- HTML / CSS -->
-                <div class="skill-card group bg-[#E34F26]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#E34F26]/20">
+                <div
+                    class="skill-card group bg-[#E34F26]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#E34F26]/20">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 flex-shrink-0">
                             <i data-lucide="code-2" class="w-10 h-10 text-[#E34F26]"></i>
                         </div>
-                        <p class="font-semibold text-charcoal">HTML / CSS</p>
+                        <p class="font-semibold text-charcoal dark:text-white">HTML / CSS</p>
                     </div>
                 </div>
 
                 <!-- JavaScript -->
-                <div class="skill-card group bg-[#F7DF1E]/10 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#F7DF1E]/30">
+                <div
+                    class="skill-card group bg-[#F7DF1E]/10 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#F7DF1E]/30">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 flex-shrink-0">
                             <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="32" height="32" rx="2" fill="#F7DF1E"/>
-                                <text x="6" y="24" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#000">JS</text>
+                                <rect width="32" height="32" rx="2" fill="#F7DF1E" />
+                                <text x="6" y="24" font-family="Arial, sans-serif" font-size="18" font-weight="bold"
+                                    fill="#000">JS</text>
                             </svg>
                         </div>
-                        <p class="font-semibold text-charcoal">JavaScript</p>
+                        <p class="font-semibold text-charcoal dark:text-white">JavaScript</p>
                     </div>
                 </div>
 
                 <!-- Tailwind CSS -->
-                <div class="skill-card group bg-[#06B6D4]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#06B6D4]/20">
+                <div
+                    class="skill-card group bg-[#06B6D4]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#06B6D4]/20">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 flex-shrink-0">
                             <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M16 8c-3.5 0-5.8 1.8-6.7 5.3 1.3-1.8 2.9-2.4 4.7-2 1 .3 1.7 1 2.5 1.8 1.3 1.3 2.8 2.9 6.1 2.9 3.5 0 5.8-1.8 6.7-5.3-1.3 1.8-2.9 2.4-4.7 2-1-.3-1.7-1-2.5-1.8-1.3-1.3-2.8-2.9-6.1-2.9zm-6.6 8c-3.5 0-5.8 1.8-6.7 5.3 1.3-1.8 2.9-2.4 4.7-2 1 .3 1.7 1 2.5 1.8 1.3 1.3 2.8 2.9 6.1 2.9 3.5 0 5.8-1.8 6.7-5.3-1.3 1.8-2.9 2.4-4.7 2-1-.3-1.7-1-2.5-1.8-1.3-1.3-2.8-2.9-6.1-2.9z" fill="#06B6D4"/>
+                                <path
+                                    d="M16 8c-3.5 0-5.8 1.8-6.7 5.3 1.3-1.8 2.9-2.4 4.7-2 1 .3 1.7 1 2.5 1.8 1.3 1.3 2.8 2.9 6.1 2.9 3.5 0 5.8-1.8 6.7-5.3-1.3 1.8-2.9 2.4-4.7 2-1-.3-1.7-1-2.5-1.8-1.3-1.3-2.8-2.9-6.1-2.9zm-6.6 8c-3.5 0-5.8 1.8-6.7 5.3 1.3-1.8 2.9-2.4 4.7-2 1 .3 1.7 1 2.5 1.8 1.3 1.3 2.8 2.9 6.1 2.9 3.5 0 5.8-1.8 6.7-5.3-1.3 1.8-2.9 2.4-4.7 2-1-.3-1.7-1-2.5-1.8-1.3-1.3-2.8-2.9-6.1-2.9z"
+                                    fill="#06B6D4" />
                             </svg>
                         </div>
-                        <p class="font-semibold text-charcoal">Tailwind CSS</p>
+                        <p class="font-semibold text-charcoal dark:text-white">Tailwind CSS</p>
                     </div>
                 </div>
 
                 <!-- Pandas / NumPy -->
-                <div class="skill-card group bg-[#150458]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#150458]/20">
+                <div
+                    class="skill-card group bg-[#150458]/5 dark:bg-purple-900/20 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#150458]/20 dark:border-purple-700/30">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 flex-shrink-0">
-                            <i data-lucide="grid-3x3" class="w-10 h-10 text-[#150458]"></i>
+                            <i data-lucide="grid-3x3" class="w-10 h-10 text-[#150458] dark:text-purple-400"></i>
                         </div>
-                        <p class="font-semibold text-charcoal">Pandas / NumPy</p>
+                        <p class="font-semibold text-charcoal dark:text-white">Pandas / NumPy</p>
                     </div>
                 </div>
 
                 <!-- REST APIs -->
-                <div class="skill-card group bg-muted-blue/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-muted-blue/20">
+                <div
+                    class="skill-card group bg-muted-blue/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-muted-blue/20">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 flex-shrink-0">
                             <i data-lucide="globe" class="w-10 h-10 text-muted-blue"></i>
                         </div>
-                        <p class="font-semibold text-charcoal">REST APIs</p>
+                        <p class="font-semibold text-charcoal dark:text-white">REST APIs</p>
                     </div>
                 </div>
 
                 <!-- Git / GitHub -->
-                <div class="skill-card group bg-[#181717]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#181717]/20">
+                <div
+                    class="skill-card group bg-[#181717]/5 dark:bg-gray-700/20 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#181717]/20 dark:border-gray-600/30">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 flex-shrink-0">
-                            <i data-lucide="github" class="w-10 h-10 text-[#181717]"></i>
+                            <i data-lucide="github" class="w-10 h-10 text-[#181717] dark:text-white"></i>
                         </div>
-                        <p class="font-semibold text-charcoal">Git / GitHub</p>
+                        <p class="font-semibold text-charcoal dark:text-white">Git / GitHub</p>
                     </div>
                 </div>
 
                 <!-- Jinja2 Templates -->
-                <div class="skill-card group bg-[#B41717]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#B41717]/20">
+                <div
+                    class="skill-card group bg-[#B41717]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#B41717]/20">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 flex-shrink-0">
                             <i data-lucide="file-code" class="w-10 h-10 text-[#B41717]"></i>
                         </div>
-                        <p class="font-semibold text-charcoal">Jinja2 Templates</p>
+                        <p class="font-semibold text-charcoal dark:text-white">Jinja2 Templates</p>
                     </div>
                 </div>
 
                 <!-- Data Visualization -->
-                <div class="skill-card group bg-[#FF6B6B]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#FF6B6B]/20">
+                <div
+                    class="skill-card group bg-[#FF6B6B]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#FF6B6B]/20">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 flex-shrink-0">
                             <i data-lucide="bar-chart-3" class="w-10 h-10 text-[#FF6B6B]"></i>
                         </div>
-                        <p class="font-semibold text-charcoal">Data Visualization</p>
+                        <p class="font-semibold text-charcoal dark:text-white">Data Visualization</p>
                     </div>
                 </div>
 
                 <!-- SQLite -->
-                <div class="skill-card group bg-[#003B57]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#003B57]/20">
+                <div
+                    class="skill-card group bg-[#003B57]/5 dark:bg-blue-900/20 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#003B57]/20 dark:border-blue-700/30">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 flex-shrink-0">
-                            <i data-lucide="hard-drive" class="w-10 h-10 text-[#003B57]"></i>
+                            <i data-lucide="hard-drive" class="w-10 h-10 text-[#003B57] dark:text-blue-400"></i>
                         </div>
-                        <p class="font-semibold text-charcoal">SQLite</p>
+                        <p class="font-semibold text-charcoal dark:text-white">SQLite</p>
                     </div>
                 </div>
 
                 <!-- PythonAnywhere -->
-                <div class="skill-card group bg-[#1D9FD7]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#1D9FD7]/20">
+                <div
+                    class="skill-card group bg-[#1D9FD7]/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-[#1D9FD7]/20">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 flex-shrink-0">
                             <i data-lucide="cloud" class="w-10 h-10 text-[#1D9FD7]"></i>
                         </div>
-                        <p class="font-semibold text-charcoal">PythonAnywhere</p>
+                        <p class="font-semibold text-charcoal dark:text-white">PythonAnywhere</p>
+                    </div>
+                </div>
+
+                <!-- Auth & Security -->
+                <div
+                    class="skill-card group bg-gradient-to-br from-emerald-500/5 to-teal-500/5 p-5 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-emerald-500/20 dark:border-emerald-400/30">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 flex-shrink-0">
+                            <i data-lucide="shield-check" class="w-10 h-10 text-emerald-600 dark:text-emerald-400"></i>
+                        </div>
+                        <p class="font-semibold text-charcoal dark:text-white">Auth & Security</p>
                     </div>
                 </div>
             </div>
@@ -407,129 +458,163 @@ When I moved into sales administration, I realised how much time and energy were
     </div>
 </section>
 
-<!-- Contact Section -->
-<section id="contact" class="min-h-screen py-32 px-6 bg-gradient-to-b from-warm-grey to-light-grey scroll-mt-20 relative">
-    <!-- Decorative element -->
-    <div class="absolute bottom-20 left-10 w-96 h-96 bg-gradient-to-br from-deep-blue/10 to-muted-blue/10 rounded-full blur-3xl"></div>
+<!-- Other Projects Section -->
+<section
+    class="py-24 bg-gradient-to-b from-light-grey to-warm-grey dark:from-perplexity-light dark:to-perplexity-dark relative">
+    <div class="max-w-6xl mx-auto px-6">
+        {% if projects and projects|length > 0 %}
+        {% set other_projects = projects|rejectattr("is_featured")|list %}
 
-    <div class="container mx-auto max-w-5xl relative z-10">
+        {% if other_projects and other_projects|length > 0 %}
+        <div class="fade-in mb-12 text-center">
+            <h2 class="text-3xl font-display font-semibold text-charcoal dark:text-white mb-12">Project Portfolio</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for project in other_projects %}
+            <!-- Project Card -->
+            <div
+                class="project-card fade-in bg-white dark:bg-perplexity-light rounded-2xl overflow-hidden shadow-md border border-gray-100 dark:border-gray-800">
+                {% if project.media and project.media|length > 0 %}
+                <img src="{{ project.media[0].url }}" alt="{{ project.media[0].alt_text }}"
+                    class="w-full h-48 object-cover lightbox-image">
+                {% else %}
+                <div class="bg-gradient-to-br from-blue-500 to-indigo-600 h-48"></div>
+                {% endif %}
+                <div class="p-6">
+                    <h3 class="text-2xl font-display font-semibold text-charcoal dark:text-white mb-3">{{ project.title
+                        }}</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed text-base">
+                        {{ project.short_description or (project.description | striptags)[:150] + '...' if
+                        (project.description | striptags | length) > 150 else (project.description | striptags) }}
+                    </p>
+                    {% if project.tech_stack %}
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        {% for tech in project.tech_stack[:3] %}
+                        <span
+                            class="px-3 py-1 bg-light-grey dark:bg-gray-800 text-xs font-medium text-gray-700 dark:text-gray-300 rounded-full">{{
+                            tech }}</span>
+                        {% endfor %}
+                        {% if project.tech_stack|length > 3 %}
+                        <span
+                            class="px-3 py-1 bg-light-grey dark:bg-gray-800 text-xs font-medium text-gray-700 dark:text-gray-300 rounded-full">+{{
+                            project.tech_stack|length - 3 }}</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    <a href="/projects/{{ project.slug }}"
+                        class="text-muted-blue dark:text-perplexity-accent font-medium hover:underline inline-flex items-center group">
+                        View Case Study
+                        <i data-lucide="arrow-right"
+                            class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        
+        {% endif %}
+        {% endif %}
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact"
+    class="py-24 bg-gradient-to-b from-warm-grey to-light-grey dark:from-perplexity-dark dark:to-perplexity-light scroll-mt-20 relative">
+    <!-- Decorative element -->
+    <div
+        class="absolute bottom-20 left-10 w-96 h-96 bg-gradient-to-br from-deep-blue/10 to-muted-blue/10 rounded-full blur-3xl">
+    </div>
+
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
         <div class="fade-in mb-20 text-center">
-            <h2 class="text-5xl md:text-6xl font-display font-bold text-charcoal mb-6 tracking-tight">
+            <h2 class="text-5xl md:text-6xl font-display font-bold text-charcoal dark:text-white mb-6 tracking-tight">
                 <span class="relative inline-block">
                     Get In Touch
                     <svg class="absolute -bottom-2 left-0 w-full h-3" viewBox="0 0 200 12" preserveAspectRatio="none">
-                        <path d="M0,7 Q50,0 100,7 T200,7" fill="none" stroke="#e11d48" stroke-width="3" opacity="0.3"/>
+                        <path d="M0,7 Q50,0 100,7 T200,7" fill="none" stroke="#e11d48" stroke-width="3" opacity="0.3" />
                     </svg>
                 </span>
             </h2>
-            <p class="text-xl text-gray-600">Looking for help with automation or custom tools?</p>
+            <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                Have a project in mind? Let's discuss how we can work together.
+            </p>
         </div>
 
-        <div class="grid md:grid-cols-2 gap-12">
+        <div class="grid md:grid-cols-2 gap-12 items-start">
             <!-- Contact Form -->
-            <div class="fade-in">
+            <div
+                class="fade-in bg-white dark:bg-perplexity-light p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
                 <form id="contact-form" class="space-y-6">
                     <div>
-                        <label for="name" class="block text-sm font-medium text-charcoal mb-2">Name</label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            required
-                            class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue focus:border-transparent transition"
-                            placeholder="Your name"
-                        >
+                        <label for="name"
+                            class="block text-sm font-medium text-charcoal dark:text-gray-300 mb-2">Name</label>
+                        <input type="text" id="name" name="name" required
+                            class="w-full px-5 py-4 bg-gray-50 dark:bg-perplexity-dark border border-gray-200 dark:border-gray-700 text-charcoal dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue dark:focus:ring-perplexity-accent focus:border-transparent transition"
+                            placeholder="Your name">
                     </div>
                     <div>
-                        <label for="email" class="block text-sm font-medium text-charcoal mb-2">Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            required
-                            class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue focus:border-transparent transition"
-                            placeholder="your.email@example.com"
-                        >
+                        <label for="email"
+                            class="block text-sm font-medium text-charcoal dark:text-gray-300 mb-2">Email</label>
+                        <input type="email" id="email" name="email" required
+                            class="w-full px-5 py-4 bg-gray-50 dark:bg-perplexity-dark border border-gray-200 dark:border-gray-700 text-charcoal dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue dark:focus:ring-perplexity-accent focus:border-transparent transition"
+                            placeholder="your.email@example.com">
                     </div>
                     <div>
-                        <label for="subject" class="block text-sm font-medium text-charcoal mb-2">Subject</label>
-                        <input
-                            type="text"
-                            id="subject"
-                            name="subject"
-                            required
-                            class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue focus:border-transparent transition"
-                            placeholder="Project inquiry"
-                        >
+                        <label for="message"
+                            class="block text-sm font-medium text-charcoal dark:text-gray-300 mb-2">Message</label>
+                        <textarea id="message" name="message" rows="5" required
+                            class="w-full px-5 py-4 bg-gray-50 dark:bg-perplexity-dark border border-gray-200 dark:border-gray-700 text-charcoal dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue dark:focus:ring-perplexity-accent focus:border-transparent transition resize-none"
+                            placeholder="Tell me about your project..."></textarea>
                     </div>
-                    <div>
-                        <label for="message" class="block text-sm font-medium text-charcoal mb-2">Message</label>
-                        <textarea
-                            id="message"
-                            name="message"
-                            rows="6"
-                            required
-                            class="w-full px-5 py-4 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-muted-blue focus:border-transparent transition resize-none"
-                            placeholder="Tell me about your project..."
-                        ></textarea>
-                    </div>
-                    <button
-                        type="submit"
-                        class="cta-button w-full bg-charcoal text-white px-8 py-4 rounded-xl font-medium shadow-lg hover:shadow-xl transition"
-                    >
+                    <button type="submit"
+                        class="cta-button w-full bg-charcoal dark:bg-perplexity-accent text-white px-8 py-4 rounded-xl font-medium shadow-lg hover:shadow-xl transition">
                         Send Message
                     </button>
                 </form>
                 <div id="form-message" class="hidden mt-4 p-4 rounded-xl"></div>
             </div>
 
-            <!-- Contact Info & Social Links -->
+            <!-- Contact Info -->
             <div class="fade-in space-y-8">
                 <div>
-                    <h3 class="text-2xl font-display font-semibold text-charcoal mb-8">Other Ways to Connect</h3>
-                    <div class="space-y-5">
+                    <h3 class="text-2xl font-display font-semibold text-charcoal dark:text-white mb-6">Connect</h3>
+                    <div class="space-y-6">
                         <div class="flex items-center space-x-4">
-                            <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                                <i data-lucide="mail" class="w-6 h-6 text-muted-blue"></i>
+                            <div
+                                class="w-14 h-14 bg-white dark:bg-perplexity-light rounded-xl flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800">
+                                <i data-lucide="mail" class="w-6 h-6 text-muted-blue dark:text-perplexity-accent"></i>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-500 font-medium">Email</p>
-                                <p class="text-charcoal font-semibold">craig@cmack.dev</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Email</p>
+                                <a href="mailto:craig@cmack.dev"
+                                    class="text-charcoal dark:text-white font-semibold hover:text-muted-blue dark:hover:text-perplexity-accent transition-colors">craig@cmack.dev</a>
                             </div>
                         </div>
                         <div class="flex items-center space-x-4">
-                            <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                                <i data-lucide="map-pin" class="w-6 h-6 text-muted-blue"></i>
+                            <div
+                                class="w-14 h-14 bg-white dark:bg-perplexity-light rounded-xl flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-800">
+                                <i data-lucide="map-pin"
+                                    class="w-6 h-6 text-muted-blue dark:text-perplexity-accent"></i>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-500 font-medium">Location</p>
-                                <p class="text-charcoal font-semibold">Inverness, Scotland</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Location</p>
+                                <p class="text-charcoal dark:text-white font-semibold">Inverness, Scotland</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div>
-                    <h3 class="text-xl font-display font-semibold text-charcoal mb-6">Connect</h3>
-                    <div class="flex gap-4">
-                        <!-- Email -->
-                        <a href="mailto:craig@cmack.dev" class="social-link w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                            <i data-lucide="mail" class="w-6 h-6 text-charcoal"></i>
-                        </a>
-                        <!-- WhatsApp -->
-                        <a href="https://wa.me/447497716117" target="_blank" class="social-link w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                            <i data-lucide="message-circle" class="w-6 h-6 text-charcoal"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="bg-white p-8 rounded-2xl shadow-sm">
-                    <p class="text-gray-600 leading-relaxed">
+                <div
+                    class="bg-white dark:bg-perplexity-light p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
+                    <h4 class="text-lg font-semibold text-charcoal dark:text-white mb-4">Let's Collaborate</h4>
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
                         Open to freelance work and collaboration on tools that solve real operational problems.
                         If you're dealing with manual processes that need automation, let's talk.
                         <br /><br />
-                        If your business is held together by spreadsheets, paperwork, or memory, 
-I can help turn it into a clean, automated system.
+                        If your business is held together by spreadsheets, paperwork, or memory,
+                        I can help turn it into a clean, automated system.
                     </p>
                 </div>
             </div>
@@ -556,7 +641,7 @@ I can help turn it into a clean, automated system.
         try {
             const response = await fetch('/api/v1/contact', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
 
