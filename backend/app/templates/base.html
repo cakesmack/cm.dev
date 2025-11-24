@@ -197,6 +197,54 @@
             }
         }
 
+        /* Hero gradient orbs with subtle float and pulse */
+        .hero-orb-1 {
+            animation: floatOrb1 20s ease-in-out infinite, pulseOrb 8s ease-in-out infinite;
+        }
+
+        .hero-orb-2 {
+            animation: floatOrb2 25s ease-in-out infinite, pulseOrb 10s ease-in-out infinite 2s;
+        }
+
+        @keyframes floatOrb1 {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(30px, -20px) scale(1.05);
+            }
+            50% {
+                transform: translate(-20px, 30px) scale(0.95);
+            }
+            75% {
+                transform: translate(20px, 10px) scale(1.02);
+            }
+        }
+
+        @keyframes floatOrb2 {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(-25px, 25px) scale(0.98);
+            }
+            50% {
+                transform: translate(20px, -15px) scale(1.03);
+            }
+            75% {
+                transform: translate(-15px, -20px) scale(0.97);
+            }
+        }
+
+        @keyframes pulseOrb {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
         /* Skill cards with refined hover */
         .skill-card {
             position: relative;

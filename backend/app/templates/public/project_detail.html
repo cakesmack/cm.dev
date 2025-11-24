@@ -92,3 +92,75 @@
     </div>
 </article>
 {% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Lightbox functionality
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightbox-image');
+    const lightboxClose = document.getElementById('lightbox-close');
+    const lightboxPrev = document.getElementById('lightbox-prev');
+    const lightboxNext = document.getElementById('lightbox-next');
+
+    const lightboxImages = Array.from(document.querySelectorAll('.lightbox-image'));
+    let currentImageIndex = 0;
+
+    function openLightbox(index) {
+        currentImageIndex = index;
+        lightboxImage.src = lightboxImages[currentImageIndex].src;
+        lightboxImage.alt = lightboxImages[currentImageIndex].alt;
+        lightbox.classList.remove('hidden');
+
+        // Show/hide navigation buttons
+        if (lightboxImages.length > 1) {
+            lightboxPrev.classList.remove('hidden');
+            lightboxNext.classList.remove('hidden');
+        } else {
+            lightboxPrev.classList.add('hidden');
+            lightboxNext.classList.add('hidden');
+        }
+    }
+
+    function closeLightbox() {
+        lightbox.classList.add('hidden');
+    }
+
+    function showPrevImage() {
+        currentImageIndex = (currentImageIndex - 1 + lightboxImages.length) % lightboxImages.length;
+        lightboxImage.src = lightboxImages[currentImageIndex].src;
+        lightboxImage.alt = lightboxImages[currentImageIndex].alt;
+    }
+
+    function showNextImage() {
+        currentImageIndex = (currentImageIndex + 1) % lightboxImages.length;
+        lightboxImage.src = lightboxImages[currentImageIndex].src;
+        lightboxImage.alt = lightboxImages[currentImageIndex].alt;
+    }
+
+    // Add click handlers to all lightbox images
+    lightboxImages.forEach((img, index) => {
+        img.addEventListener('click', () => openLightbox(index));
+    });
+
+    // Lightbox controls
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightboxPrev.addEventListener('click', showPrevImage);
+    lightboxNext.addEventListener('click', showNextImage);
+
+    // Close on background click
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) {
+            closeLightbox();
+        }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('hidden')) {
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') showPrevImage();
+            if (e.key === 'ArrowRight') showNextImage();
+        }
+    });
+</script>
+{% endblock %}
