@@ -39,7 +39,7 @@ Automation that saves time. Insights that guide decisions.
 </section>
 
 <!-- Featured Project Section -->
-<section id="projects"
+<section id="featured-project"
     class="py-24 bg-gradient-to-b from-light-grey to-warm-grey dark:from-perplexity-light dark:to-perplexity-dark scroll-mt-20 relative">
     <div class="max-w-6xl mx-auto px-6">
         <div class="fade-in mb-20 text-center">
@@ -60,29 +60,33 @@ Automation that saves time. Insights that guide decisions.
         {% if featured_project %}
         <!-- Featured Project - Large Hero Card -->
         <div class="fade-in">
-            <a href="/projects/{{ featured_project.slug }}"
-                class="project-card bg-white dark:bg-perplexity-light rounded-2xl overflow-hidden shadow-xl border border-gray-100 dark:border-gray-800 block">
+            <div
+                class="project-card bg-white dark:bg-perplexity-light rounded-2xl overflow-hidden shadow-xl border border-gray-100 dark:border-gray-800">
                 {% set video_media = featured_project.media|selectattr("media_type", "equalto", "video")|list %}
                 {% set image_media = featured_project.media|selectattr("media_type", "equalto", "image")|list %}
 
-                {% if video_media|length > 0 %}
-                <video src="{{ video_media[0].url }}" class="w-full h-96 object-cover" controls muted autoplay loop>
-                    Your browser does not support the video tag.
-                </video>
-                {% elif image_media|length > 0 %}
-                <img src="{{ image_media[0].url }}" alt="{{ image_media[0].alt_text }}"
-                    class="w-full h-96 object-cover">
-                {% else %}
-                <div class="bg-gradient-to-br from-blue-500 to-indigo-600 h-96"></div>
-                {% endif %}
+                <a href="/projects/{{ featured_project.slug }}" class="block">
+                    {% if video_media|length > 0 %}
+                    <video src="{{ video_media[0].url }}" class="w-full h-96 object-cover" controls muted autoplay loop>
+                        Your browser does not support the video tag.
+                    </video>
+                    {% elif image_media|length > 0 %}
+                    <img src="{{ image_media[0].url }}" alt="{{ image_media[0].alt_text }}"
+                        class="w-full h-96 object-cover">
+                    {% else %}
+                    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 h-96"></div>
+                    {% endif %}
+                </a>
                 <div class="p-10">
                     <div class="flex items-center gap-3 mb-4">
                         <span
                             class="px-4 py-2 bg-gradient-to-r from-muted-blue to-deep-blue text-white text-sm font-semibold rounded-full shadow-md">Featured
                             Project</span>
                     </div>
-                    <h3 class="text-4xl font-display font-bold text-charcoal dark:text-white mb-6">{{
-                        featured_project.title }}</h3>
+                    <a href="/projects/{{ featured_project.slug }}">
+                        <h3 class="text-4xl font-display font-bold text-charcoal dark:text-white mb-6 hover:text-muted-blue dark:hover:text-perplexity-accent transition-colors">{{
+                            featured_project.title }}</h3>
+                    </a>
                     <p class="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed text-lg">
                         {{ featured_project.short_description or (featured_project.description | striptags)[:200] +
                         '...' if (featured_project.description | striptags | length) > 200 else
@@ -97,14 +101,22 @@ Automation that saves time. Insights that guide decisions.
                         {% endfor %}
                     </div>
                     {% endif %}
-                    <span
-                        class="text-muted-blue dark:text-perplexity-accent font-semibold inline-flex items-center group text-xl">
-                        View Case Study
-                        <i data-lucide="arrow-right"
-                            class="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform"></i>
-                    </span>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="/projects/{{ featured_project.slug }}"
+                            class="cta-button bg-muted-blue dark:bg-perplexity-accent text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition inline-flex items-center group">
+                            View Case Study
+                            <i data-lucide="arrow-right"
+                                class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <a href="#projects"
+                            class="bg-light-grey dark:bg-gray-800 text-charcoal dark:text-white px-8 py-4 rounded-xl font-semibold shadow-md hover:shadow-lg transition inline-flex items-center group">
+                            View All Projects
+                            <i data-lucide="chevron-down"
+                                class="w-5 h-5 ml-2 group-hover:translate-y-1 transition-transform"></i>
+                        </a>
+                    </div>
                 </div>
-            </a>
+            </div>
         </div>
         {% else %}
         <!-- Placeholder when no featured project -->
@@ -138,12 +150,7 @@ Automation that saves time. Insights that guide decisions.
 </section>
 
 <!-- About Section -->
-<section id="about" class="py-24 bg-white dark:bg-perplexity-dark scroll-mt-20 relative">
-    <!-- Decorative element -->
-    <div
-        class="absolute top-20 right-10 w-72 h-72 bg-gradient-to-br from-muted-blue/10 to-accent-amber/10 rounded-full blur-3xl">
-    </div>
-
+<section id="about" class="py-24 bg-white dark:bg-perplexity-dark scroll-mt-20 relative overflow-hidden">
     <div class="max-w-6xl mx-auto px-6 relative z-10">
         <div class="fade-in mb-20 text-center">
             <h2 class="text-5xl md:text-6xl font-display font-bold text-charcoal dark:text-white mb-6 tracking-tight">
@@ -158,37 +165,19 @@ Automation that saves time. Insights that guide decisions.
                 insights behind the data.</p>
         </div>
 
-        <!-- Two-column layout -->
-        <div class="fade-in grid md:grid-cols-3 gap-8 items-center mb-20">
-            <!-- Left: Bio text -->
-            <div class="space-y-6 col-span-2 text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
+        <!-- Bio text -->
+        <div class="fade-in mb-20 max-w-4xl mx-auto">
+            <div class="space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed text-lg text-center">
                 <h3 class="font-display font-semibold text-2xl text-charcoal dark:text-white">My Background</h3>
                 <p>
-                    I’ve been building and experimenting with websites and small applications since I was a teenager.
-                    Even long before I worked in admin or tech, solving problems with code was just something I enjoyed.
+                    I've spent years dipping in and out of web development, Python, automation, and data analysis—always learning, always experimenting. It wasn't until I worked in a fast-paced sales and admin role that everything came together. Seeing how much time was lost to inefficient processes made it obvious how valuable the right systems could be.
                 </p>
-                <h3 class="font-display font-semibold text-2xl text-charcoal dark:text-white">Finding The Problem</h3>
 
                 <p>
-                    When I moved into sales administration, I realised how much time and energy were lost to manual
-                    processes — handwritten forms, duplicated work, and information stored everywhere except where it
-                    was needed. I started creating tools to fix that. </p>
-                <p>Those early projects turned into full internal systems: automated workflows, dashboards, and
-                    data-driven tools that helped people work faster and with fewer mistakes.</p>
-                <h3 class="font-display font-semibold text-2xl text-charcoal dark:text-white">A Pragmatic Approach</h3>
-
+                    So I built them. Automated workflows, digital admin tools, internal dashboards, knowledge bases—simple systems that replaced hours of manual work and gave the team clearer visibility into what was actually happening.
+                </p>
                 <p>
-                    Now I focus on building practical, reliable digital solutions using Python, Flask/FastAPI, and
-                    modern web technologies. I approach problems from both a technical and a data perspective, aiming to
-                    create tools that genuinely improve the way people work.</p>
-            </div>
-
-            <!-- Right: Profile image -->
-            <div class="flex justify-center md:justify-end">
-                <div class="w-64 h-64 md:w-80 md:h-80 rounded-full shadow-2xl overflow-hidden">
-                    <img src="{{ url_for('static', path='/images/Gemini_Generated_Image_zg3w82zg3w82zg3w.png') }}"
-                        alt="Craig Mackenzie" class="w-full h-full object-cover">
-                </div>
+                    That's what I focus on now: creating practical, data-driven tools for businesses that want to move away from pen-and-paper workflows and start operating with modern, efficient systems.</p>
             </div>
         </div>
 
@@ -458,12 +447,12 @@ Automation that saves time. Insights that guide decisions.
     </div>
 </section>
 
-<!-- Other Projects Section -->
-<section
+<!-- Projects Section -->
+<section id="projects"
     class="py-24 bg-gradient-to-b from-light-grey to-warm-grey dark:from-perplexity-light dark:to-perplexity-dark relative">
     <div class="max-w-6xl mx-auto px-6">
         {% if projects and projects|length > 0 %}
-        {% set other_projects = projects|rejectattr("is_featured")|list %}
+        {% set other_projects = projects|list %}
 
         {% if other_projects and other_projects|length > 0 %}
         <div class="fade-in mb-12 text-center">

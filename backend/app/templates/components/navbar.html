@@ -1,29 +1,24 @@
 <!-- Navigation -->
 <nav
-    class="fixed top-0 w-full bg-white/95 dark:bg-perplexity-dark/95 backdrop-blur-lg z-50 border-b border-gray-100 dark:border-gray-800 shadow-sm transition-colors duration-300">
+    class="fixed top-0 w-full bg-perplexity-dark/95 backdrop-blur-lg z-50 border-b border-gray-800 shadow-sm transition-colors duration-300">
     <div class="container mx-auto px-6 lg:px-8 py-5">
         <div class="flex items-center justify-between">
             <a href="/"
-                class="text-xl font-display font-bold text-charcoal dark:text-white tracking-tight hover:text-muted-blue dark:hover:text-perplexity-accent transition-colors duration-300">
+                class="text-xl font-display font-bold text-white tracking-tight hover:text-perplexity-accent transition-colors duration-300">
                 Craig Mackenzie
             </a>
             <div class="hidden md:flex items-center space-x-10">
                 <a href="/#home"
-                    class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">Home</a>
+                    class="nav-link text-sm font-medium text-gray-300 hover:text-white">Home</a>
                 <a href="/#projects"
-                    class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">Projects</a>
+                    class="nav-link text-sm font-medium text-gray-300 hover:text-white">Projects</a>
                 <a href="/#about"
-                    class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">About</a>
+                    class="nav-link text-sm font-medium text-gray-300 hover:text-white">About</a>
                 <a href="/#contact"
-                    class="nav-link text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">Contact</a>
-                <button id="theme-toggle"
-                    class="text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white transition-colors focus:outline-none">
-                    <i data-lucide="moon" class="w-5 h-5 hidden dark:block"></i>
-                    <i data-lucide="sun" class="w-5 h-5 block dark:hidden"></i>
-                </button>
+                    class="nav-link text-sm font-medium text-gray-300 hover:text-white">Contact</a>
             </div>
             <!-- Mobile menu button -->
-            <button id="mobile-menu-button" class="md:hidden text-charcoal dark:text-white focus:outline-none">
+            <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
                     </path>
@@ -33,13 +28,13 @@
         <!-- Mobile menu -->
         <div id="mobile-menu" class="hidden md:hidden mt-6 pb-4 space-y-4">
             <a href="/#home"
-                class="block text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">Home</a>
+                class="block text-sm font-medium text-gray-300 hover:text-white">Home</a>
             <a href="/#projects"
-                class="block text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">Projects</a>
+                class="block text-sm font-medium text-gray-300 hover:text-white">Projects</a>
             <a href="/#about"
-                class="block text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">About</a>
+                class="block text-sm font-medium text-gray-300 hover:text-white">About</a>
             <a href="/#contact"
-                class="block text-sm font-medium text-gray-600 hover:text-charcoal dark:text-gray-300 dark:hover:text-white">Contact</a>
+                class="block text-sm font-medium text-gray-300 hover:text-white">Contact</a>
         </div>
     </div>
 </nav>
@@ -94,31 +89,12 @@
         });
 
         navLinks.forEach(link => {
-            link.classList.remove('active', 'text-charcoal');
-            link.classList.add('text-gray-600');
+            link.classList.remove('active', 'text-white');
+            link.classList.add('text-gray-300');
             if (link.getAttribute('href') === `/#${current}`) {
-                link.classList.remove('text-gray-600');
-                link.classList.add('active', 'text-charcoal');
+                link.classList.remove('text-gray-300');
+                link.classList.add('active', 'text-white');
             }
         });
     });
-
-    // Theme toggle
-    const themeToggleBtn = document.getElementById('theme-toggle');
-
-    if (themeToggleBtn) {
-        themeToggleBtn.addEventListener('click', () => {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                localStorage.theme = 'light';
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.theme = 'dark';
-            }
-            // Re-render icons if needed
-            if (window.lucide) {
-                lucide.createIcons();
-            }
-        });
-    }
 </script>

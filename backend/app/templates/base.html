@@ -44,12 +44,8 @@
         }
     </script>
     <script>
-        // Check for saved theme preference or system preference
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
+        // Always use dark mode
+        document.documentElement.classList.add('dark');
     </script>
     <style>
         /* Grain texture overlay for visual depth */
@@ -406,6 +402,560 @@
             margin: 0.5rem 0;
             content: "";
         }
+
+        /* Keyframe animations for tech patterns */
+        @keyframes techPatternShift {
+            0%, 100% {
+                background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+            }
+            50% {
+                background-position: 100px 100px, -80px 120px, 60px -90px, -100px 70px, 50px -60px, -70px 90px, 40px -50px, 30px 40px, -40px 50px, 0% 0%;
+            }
+        }
+
+        @keyframes techPatternPulse {
+            0%, 100% {
+                opacity: 0.10;
+            }
+            50% {
+                opacity: 0.24;
+            }
+        }
+
+        @keyframes techPatternPulseHero {
+            0%, 100% {
+                opacity: 0.08;
+            }
+            50% {
+                opacity: 0.22;
+            }
+        }
+
+        @keyframes techPatternPulseContact {
+            0%, 100% {
+                opacity: 0.09;
+            }
+            50% {
+                opacity: 0.18;
+            }
+        }
+
+        /* About section tech background with abstract technical pattern */
+        #about {
+            position: relative;
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+
+        #about::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.08;
+            animation: techPatternShift 40s ease-in-out infinite, techPatternPulse 8s ease-in-out infinite;
+
+            /* Multiple layered gradients creating abstract technical lines */
+            background-image:
+                /* Angled lines at various degrees - creating circuit-like paths */
+                repeating-linear-gradient(35deg,
+                    transparent,
+                    transparent 80px,
+                    rgba(255, 255, 255, 0.4) 80px,
+                    rgba(255, 255, 255, 0.4) 82px
+                ),
+                repeating-linear-gradient(-48deg,
+                    transparent,
+                    transparent 120px,
+                    rgba(255, 255, 255, 0.6) 120px,
+                    rgba(255, 255, 255, 0.6) 122px
+                ),
+                repeating-linear-gradient(68deg,
+                    transparent,
+                    transparent 95px,
+                    rgba(255, 255, 255, 0.3) 95px,
+                    rgba(255, 255, 255, 0.3) 96px
+                ),
+                repeating-linear-gradient(-22deg,
+                    transparent,
+                    transparent 140px,
+                    rgba(255, 255, 255, 0.5) 140px,
+                    rgba(255, 255, 255, 0.5) 142px
+                ),
+                repeating-linear-gradient(15deg,
+                    transparent,
+                    transparent 110px,
+                    rgba(255, 255, 255, 0.25) 110px,
+                    rgba(255, 255, 255, 0.25) 111px
+                ),
+                /* Thin intersecting lines for complexity */
+                repeating-linear-gradient(-65deg,
+                    transparent,
+                    transparent 160px,
+                    rgba(255, 255, 255, 0.35) 160px,
+                    rgba(255, 255, 255, 0.35) 161px
+                ),
+                repeating-linear-gradient(82deg,
+                    transparent,
+                    transparent 75px,
+                    rgba(255, 255, 255, 0.2) 75px,
+                    rgba(255, 255, 255, 0.2) 76px
+                ),
+                /* Subtle grid elements */
+                repeating-linear-gradient(90deg,
+                    transparent,
+                    transparent 200px,
+                    rgba(255, 255, 255, 0.15) 200px,
+                    rgba(255, 255, 255, 0.15) 201px
+                ),
+                repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 180px,
+                    rgba(255, 255, 255, 0.15) 180px,
+                    rgba(255, 255, 255, 0.15) 181px
+                ),
+                /* Base gradient background */
+                linear-gradient(105deg,
+                    rgba(44, 95, 111, 0.15) 0%,
+                    rgba(30, 58, 76, 0.08) 50%,
+                    transparent 100%
+                );
+
+            /* Radial fade covering larger area - centered on right side + mouse spotlight */
+            mask-image:
+                radial-gradient(circle 180px at var(--mouse-x) var(--mouse-y),
+                    black 0%,
+                    rgba(0, 0, 0, 0.95) 8%,
+                    rgba(0, 0, 0, 0.85) 20%,
+                    rgba(0, 0, 0, 0.7) 35%,
+                    rgba(0, 0, 0, 0.5) 50%,
+                    rgba(0, 0, 0, 0.3) 65%,
+                    rgba(0, 0, 0, 0.15) 80%,
+                    rgba(0, 0, 0, 0.05) 92%,
+                    transparent 100%
+                ),
+                radial-gradient(ellipse 140% 100% at 85% 50%,
+                    rgba(0, 0, 0, 0.7) 0%,
+                    rgba(0, 0, 0, 0.6) 20%,
+                    rgba(0, 0, 0, 0.4) 40%,
+                    rgba(0, 0, 0, 0.2) 60%,
+                    transparent 80%
+                );
+            -webkit-mask-image:
+                radial-gradient(circle 180px at var(--mouse-x) var(--mouse-y),
+                    black 0%,
+                    rgba(0, 0, 0, 0.95) 8%,
+                    rgba(0, 0, 0, 0.85) 20%,
+                    rgba(0, 0, 0, 0.7) 35%,
+                    rgba(0, 0, 0, 0.5) 50%,
+                    rgba(0, 0, 0, 0.3) 65%,
+                    rgba(0, 0, 0, 0.15) 80%,
+                    rgba(0, 0, 0, 0.05) 92%,
+                    transparent 100%
+                ),
+                radial-gradient(ellipse 140% 100% at 85% 50%,
+                    rgba(0, 0, 0, 0.7) 0%,
+                    rgba(0, 0, 0, 0.6) 20%,
+                    rgba(0, 0, 0, 0.4) 40%,
+                    rgba(0, 0, 0, 0.2) 60%,
+                    transparent 80%
+                );
+            mask-composite: add;
+            -webkit-mask-composite: source-over;
+        }
+
+        /* Dark mode adjustments */
+        .dark #about::before {
+            opacity: 0.12;
+            background-image:
+                repeating-linear-gradient(35deg,
+                    transparent,
+                    transparent 80px,
+                    rgba(34, 179, 193, 0.5) 80px,
+                    rgba(34, 179, 193, 0.5) 82px
+                ),
+                repeating-linear-gradient(-48deg,
+                    transparent,
+                    transparent 120px,
+                    rgba(91, 142, 179, 0.6) 120px,
+                    rgba(91, 142, 179, 0.6) 122px
+                ),
+                repeating-linear-gradient(68deg,
+                    transparent,
+                    transparent 95px,
+                    rgba(34, 179, 193, 0.3) 95px,
+                    rgba(34, 179, 193, 0.3) 96px
+                ),
+                repeating-linear-gradient(-22deg,
+                    transparent,
+                    transparent 140px,
+                    rgba(91, 142, 179, 0.5) 140px,
+                    rgba(91, 142, 179, 0.5) 142px
+                ),
+                repeating-linear-gradient(15deg,
+                    transparent,
+                    transparent 110px,
+                    rgba(34, 179, 193, 0.25) 110px,
+                    rgba(34, 179, 193, 0.25) 111px
+                ),
+                repeating-linear-gradient(-65deg,
+                    transparent,
+                    transparent 160px,
+                    rgba(91, 142, 179, 0.35) 160px,
+                    rgba(91, 142, 179, 0.35) 161px
+                ),
+                repeating-linear-gradient(82deg,
+                    transparent,
+                    transparent 75px,
+                    rgba(34, 179, 193, 0.2) 75px,
+                    rgba(34, 179, 193, 0.2) 76px
+                ),
+                repeating-linear-gradient(90deg,
+                    transparent,
+                    transparent 200px,
+                    rgba(34, 179, 193, 0.15) 200px,
+                    rgba(34, 179, 193, 0.15) 201px
+                ),
+                repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 180px,
+                    rgba(34, 179, 193, 0.15) 180px,
+                    rgba(34, 179, 193, 0.15) 181px
+                ),
+                linear-gradient(105deg,
+                    rgba(44, 95, 111, 0.2) 0%,
+                    rgba(30, 58, 76, 0.1) 50%,
+                    transparent 100%
+                );
+        }
+
+        /* Hero section tech background - fade from left to right */
+        #home {
+            position: relative;
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+
+        #home::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.06;
+            animation: techPatternShift 35s ease-in-out infinite, techPatternPulseHero 6s ease-in-out infinite;
+
+            background-image:
+                repeating-linear-gradient(42deg,
+                    transparent,
+                    transparent 90px,
+                    rgba(255, 255, 255, 0.4) 90px,
+                    rgba(255, 255, 255, 0.4) 92px
+                ),
+                repeating-linear-gradient(-55deg,
+                    transparent,
+                    transparent 110px,
+                    rgba(255, 255, 255, 0.5) 110px,
+                    rgba(255, 255, 255, 0.5) 112px
+                ),
+                repeating-linear-gradient(75deg,
+                    transparent,
+                    transparent 100px,
+                    rgba(255, 255, 255, 0.3) 100px,
+                    rgba(255, 255, 255, 0.3) 101px
+                ),
+                repeating-linear-gradient(-28deg,
+                    transparent,
+                    transparent 130px,
+                    rgba(255, 255, 255, 0.45) 130px,
+                    rgba(255, 255, 255, 0.45) 132px
+                ),
+                repeating-linear-gradient(18deg,
+                    transparent,
+                    transparent 115px,
+                    rgba(255, 255, 255, 0.25) 115px,
+                    rgba(255, 255, 255, 0.25) 116px
+                ),
+                repeating-linear-gradient(-70deg,
+                    transparent,
+                    transparent 150px,
+                    rgba(255, 255, 255, 0.35) 150px,
+                    rgba(255, 255, 255, 0.35) 151px
+                ),
+                repeating-linear-gradient(85deg,
+                    transparent,
+                    transparent 80px,
+                    rgba(255, 255, 255, 0.2) 80px,
+                    rgba(255, 255, 255, 0.2) 81px
+                ),
+                linear-gradient(95deg,
+                    transparent 0%,
+                    rgba(91, 142, 179, 0.08) 50%,
+                    rgba(44, 82, 130, 0.12) 100%
+                );
+
+            /* Fade from left to right + mouse spotlight */
+            mask-image:
+                radial-gradient(circle 180px at var(--mouse-x) var(--mouse-y),
+                    black 0%,
+                    rgba(0, 0, 0, 0.95) 8%,
+                    rgba(0, 0, 0, 0.85) 20%,
+                    rgba(0, 0, 0, 0.7) 35%,
+                    rgba(0, 0, 0, 0.5) 50%,
+                    rgba(0, 0, 0, 0.3) 65%,
+                    rgba(0, 0, 0, 0.15) 80%,
+                    rgba(0, 0, 0, 0.05) 92%,
+                    transparent 100%
+                ),
+                linear-gradient(to right,
+                    rgba(0, 0, 0, 0.6) 0%,
+                    rgba(0, 0, 0, 0.5) 20%,
+                    rgba(0, 0, 0, 0.4) 40%,
+                    rgba(0, 0, 0, 0.2) 60%,
+                    transparent 80%
+                );
+            -webkit-mask-image:
+                radial-gradient(circle 180px at var(--mouse-x) var(--mouse-y),
+                    black 0%,
+                    rgba(0, 0, 0, 0.95) 8%,
+                    rgba(0, 0, 0, 0.85) 20%,
+                    rgba(0, 0, 0, 0.7) 35%,
+                    rgba(0, 0, 0, 0.5) 50%,
+                    rgba(0, 0, 0, 0.3) 65%,
+                    rgba(0, 0, 0, 0.15) 80%,
+                    rgba(0, 0, 0, 0.05) 92%,
+                    transparent 100%
+                ),
+                linear-gradient(to right,
+                    rgba(0, 0, 0, 0.6) 0%,
+                    rgba(0, 0, 0, 0.5) 20%,
+                    rgba(0, 0, 0, 0.4) 40%,
+                    rgba(0, 0, 0, 0.2) 60%,
+                    transparent 80%
+                );
+            mask-composite: add;
+            -webkit-mask-composite: source-over;
+        }
+
+        .dark #home::before {
+            opacity: 0.10;
+            background-image:
+                repeating-linear-gradient(42deg,
+                    transparent,
+                    transparent 90px,
+                    rgba(34, 179, 193, 0.5) 90px,
+                    rgba(34, 179, 193, 0.5) 92px
+                ),
+                repeating-linear-gradient(-55deg,
+                    transparent,
+                    transparent 110px,
+                    rgba(91, 142, 179, 0.6) 110px,
+                    rgba(91, 142, 179, 0.6) 112px
+                ),
+                repeating-linear-gradient(75deg,
+                    transparent,
+                    transparent 100px,
+                    rgba(34, 179, 193, 0.3) 100px,
+                    rgba(34, 179, 193, 0.3) 101px
+                ),
+                repeating-linear-gradient(-28deg,
+                    transparent,
+                    transparent 130px,
+                    rgba(91, 142, 179, 0.5) 130px,
+                    rgba(91, 142, 179, 0.5) 132px
+                ),
+                repeating-linear-gradient(18deg,
+                    transparent,
+                    transparent 115px,
+                    rgba(34, 179, 193, 0.25) 115px,
+                    rgba(34, 179, 193, 0.25) 116px
+                ),
+                repeating-linear-gradient(-70deg,
+                    transparent,
+                    transparent 150px,
+                    rgba(91, 142, 179, 0.35) 150px,
+                    rgba(91, 142, 179, 0.35) 151px
+                ),
+                repeating-linear-gradient(85deg,
+                    transparent,
+                    transparent 80px,
+                    rgba(34, 179, 193, 0.2) 80px,
+                    rgba(34, 179, 193, 0.2) 81px
+                ),
+                linear-gradient(95deg,
+                    transparent 0%,
+                    rgba(34, 179, 193, 0.1) 50%,
+                    rgba(91, 142, 179, 0.15) 100%
+                );
+        }
+
+        /* Contact section tech background - radial fade from center */
+        #contact {
+            position: relative;
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+
+        #contact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.07;
+            animation: techPatternShift 45s ease-in-out infinite 2s, techPatternPulseContact 10s ease-in-out infinite 1s;
+
+            background-image:
+                repeating-linear-gradient(38deg,
+                    transparent,
+                    transparent 85px,
+                    rgba(255, 255, 255, 0.4) 85px,
+                    rgba(255, 255, 255, 0.4) 87px
+                ),
+                repeating-linear-gradient(-52deg,
+                    transparent,
+                    transparent 125px,
+                    rgba(255, 255, 255, 0.55) 125px,
+                    rgba(255, 255, 255, 0.55) 127px
+                ),
+                repeating-linear-gradient(72deg,
+                    transparent,
+                    transparent 105px,
+                    rgba(255, 255, 255, 0.3) 105px,
+                    rgba(255, 255, 255, 0.3) 106px
+                ),
+                repeating-linear-gradient(-25deg,
+                    transparent,
+                    transparent 135px,
+                    rgba(255, 255, 255, 0.5) 135px,
+                    rgba(255, 255, 255, 0.5) 137px
+                ),
+                repeating-linear-gradient(12deg,
+                    transparent,
+                    transparent 105px,
+                    rgba(255, 255, 255, 0.25) 105px,
+                    rgba(255, 255, 255, 0.25) 106px
+                ),
+                repeating-linear-gradient(-68deg,
+                    transparent,
+                    transparent 165px,
+                    rgba(255, 255, 255, 0.35) 165px,
+                    rgba(255, 255, 255, 0.35) 166px
+                ),
+                repeating-linear-gradient(80deg,
+                    transparent,
+                    transparent 78px,
+                    rgba(255, 255, 255, 0.2) 78px,
+                    rgba(255, 255, 255, 0.2) 79px
+                ),
+                linear-gradient(120deg,
+                    rgba(225, 29, 72, 0.08) 0%,
+                    rgba(44, 82, 130, 0.08) 50%,
+                    transparent 100%
+                );
+
+            /* Radial fade from center-right + mouse spotlight */
+            mask-image:
+                radial-gradient(circle 180px at var(--mouse-x) var(--mouse-y),
+                    black 0%,
+                    rgba(0, 0, 0, 0.95) 8%,
+                    rgba(0, 0, 0, 0.85) 20%,
+                    rgba(0, 0, 0, 0.7) 35%,
+                    rgba(0, 0, 0, 0.5) 50%,
+                    rgba(0, 0, 0, 0.3) 65%,
+                    rgba(0, 0, 0, 0.15) 80%,
+                    rgba(0, 0, 0, 0.05) 92%,
+                    transparent 100%
+                ),
+                radial-gradient(ellipse at 70% 50%,
+                    rgba(0, 0, 0, 0.6) 0%,
+                    rgba(0, 0, 0, 0.5) 25%,
+                    rgba(0, 0, 0, 0.3) 50%,
+                    transparent 75%
+                );
+            -webkit-mask-image:
+                radial-gradient(circle 180px at var(--mouse-x) var(--mouse-y),
+                    black 0%,
+                    rgba(0, 0, 0, 0.95) 8%,
+                    rgba(0, 0, 0, 0.85) 20%,
+                    rgba(0, 0, 0, 0.7) 35%,
+                    rgba(0, 0, 0, 0.5) 50%,
+                    rgba(0, 0, 0, 0.3) 65%,
+                    rgba(0, 0, 0, 0.15) 80%,
+                    rgba(0, 0, 0, 0.05) 92%,
+                    transparent 100%
+                ),
+                radial-gradient(ellipse at 70% 50%,
+                    rgba(0, 0, 0, 0.6) 0%,
+                    rgba(0, 0, 0, 0.5) 25%,
+                    rgba(0, 0, 0, 0.3) 50%,
+                    transparent 75%
+                );
+            mask-composite: add;
+            -webkit-mask-composite: source-over;
+        }
+
+        .dark #contact::before {
+            opacity: 0.11;
+            background-image:
+                repeating-linear-gradient(38deg,
+                    transparent,
+                    transparent 85px,
+                    rgba(34, 179, 193, 0.5) 85px,
+                    rgba(34, 179, 193, 0.5) 87px
+                ),
+                repeating-linear-gradient(-52deg,
+                    transparent,
+                    transparent 125px,
+                    rgba(91, 142, 179, 0.6) 125px,
+                    rgba(91, 142, 179, 0.6) 127px
+                ),
+                repeating-linear-gradient(72deg,
+                    transparent,
+                    transparent 105px,
+                    rgba(34, 179, 193, 0.3) 105px,
+                    rgba(34, 179, 193, 0.3) 106px
+                ),
+                repeating-linear-gradient(-25deg,
+                    transparent,
+                    transparent 135px,
+                    rgba(91, 142, 179, 0.5) 135px,
+                    rgba(91, 142, 179, 0.5) 137px
+                ),
+                repeating-linear-gradient(12deg,
+                    transparent,
+                    transparent 105px,
+                    rgba(34, 179, 193, 0.25) 105px,
+                    rgba(34, 179, 193, 0.25) 106px
+                ),
+                repeating-linear-gradient(-68deg,
+                    transparent,
+                    transparent 165px,
+                    rgba(91, 142, 179, 0.35) 165px,
+                    rgba(91, 142, 179, 0.35) 166px
+                ),
+                repeating-linear-gradient(80deg,
+                    transparent,
+                    transparent 78px,
+                    rgba(34, 179, 193, 0.2) 78px,
+                    rgba(34, 179, 193, 0.2) 79px
+                ),
+                linear-gradient(120deg,
+                    rgba(34, 179, 193, 0.1) 0%,
+                    rgba(91, 142, 179, 0.1) 50%,
+                    transparent 100%
+                );
+        }
     </style>
     {% block extra_head %}{% endblock %}
 </head>
@@ -482,6 +1032,43 @@
             }
             observer.observe(el);
         });
+
+        // Mouse spotlight effect for tech patterns
+        function updateMousePosition(section, event) {
+            const rect = section.getBoundingClientRect();
+            const x = ((event.clientX - rect.left) / rect.width) * 100;
+            const y = ((event.clientY - rect.top) / rect.height) * 100;
+            section.style.setProperty('--mouse-x', `${x}%`);
+            section.style.setProperty('--mouse-y', `${y}%`);
+        }
+
+        const homeSection = document.getElementById('home');
+        const aboutSection = document.getElementById('about');
+        const contactSection = document.getElementById('contact');
+
+        if (homeSection) {
+            homeSection.addEventListener('mousemove', (e) => updateMousePosition(homeSection, e));
+            homeSection.addEventListener('mouseleave', () => {
+                homeSection.style.setProperty('--mouse-x', '50%');
+                homeSection.style.setProperty('--mouse-y', '50%');
+            });
+        }
+
+        if (aboutSection) {
+            aboutSection.addEventListener('mousemove', (e) => updateMousePosition(aboutSection, e));
+            aboutSection.addEventListener('mouseleave', () => {
+                aboutSection.style.setProperty('--mouse-x', '50%');
+                aboutSection.style.setProperty('--mouse-y', '50%');
+            });
+        }
+
+        if (contactSection) {
+            contactSection.addEventListener('mousemove', (e) => updateMousePosition(contactSection, e));
+            contactSection.addEventListener('mouseleave', () => {
+                contactSection.style.setProperty('--mouse-x', '50%');
+                contactSection.style.setProperty('--mouse-y', '50%');
+            });
+        }
     </script>
 
     {% block extra_scripts %}{% endblock %}
