@@ -345,8 +345,9 @@
         .prose h3 {
             font-weight: 600;
             color: #1a202c;
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
         }
 
         .dark .prose h1,
@@ -385,8 +386,8 @@
         }
 
         .prose p {
-            margin: 1rem 0;
-            line-height: 1.75;
+            margin: 0.5rem 0;
+            line-height: 1.7;
         }
 
         .prose p:first-child {
@@ -397,9 +398,18 @@
             margin-bottom: 0;
         }
 
+        .prose p:empty {
+            margin: 0.25rem 0;
+        }
+
+        .prose h1 + p,
+        .prose h2 + p,
+        .prose h3 + p {
+            margin-top: 0;
+        }
+
         .prose br {
             display: block;
-            margin: 0.5rem 0;
             content: "";
         }
 
