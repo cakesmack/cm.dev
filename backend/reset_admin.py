@@ -1,13 +1,11 @@
 """Reset admin password script"""
 import sys
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
+from app.db import SessionLocal
 from app.core.security import get_password_hash
+from sqlalchemy import text
 
-# Connect to database
-engine = create_engine("sqlite:///./mackenzie_dev.db")
-Session = sessionmaker(bind=engine)
-session = Session()
+# Use the app's database configuration (works with both SQLite and PostgreSQL)
+session = SessionLocal()
 
 try:
     # Direct SQL update to avoid model loading issues

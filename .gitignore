@@ -99,7 +99,6 @@ dmypy.json
 
 # Personal Documentation & Notes
 CLAUDE.md
-DEPLOYMENT.md
 docs/
 
 # Production files that shouldn't be in git

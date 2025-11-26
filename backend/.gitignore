@@ -17,5 +17,6 @@ ENV/
 *.log
 /static/uploads/*
 !/static/uploads/.gitkeep
-alembic/versions/*
-!alembic/versions/.gitkeep
+# Only ignore compiled Python files in alembic versions, not the migrations themselves
+alembic/versions/*.pyc
+alembic/versions/__pycache__/
