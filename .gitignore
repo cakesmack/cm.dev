@@ -58,8 +58,8 @@ backend/env/
 logs/
 *.log.*
 
-# Uploaded Media Files
-backend/static/uploads/*
+# Uploaded Media Files - included in git for portfolio site
+# (For user-generated content, would need cloud storage like S3/Cloudinary)
 !backend/static/uploads/.gitkeep
 
 # Compiled Templates
