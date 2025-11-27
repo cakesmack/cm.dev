@@ -648,6 +648,15 @@ Automation that saves time. Insights that guide decisions.
             });
 
             if (response.ok) {
+                // Track successful form submission
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'form_submission', {
+                        'event_category': 'contact',
+                        'event_label': 'Contact Form',
+                        'value': 1
+                    });
+                }
+
                 // Success - show message with icon
                 formMessage.innerHTML = `
                     <div class="flex items-start gap-3">

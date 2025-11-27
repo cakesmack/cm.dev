@@ -106,6 +106,17 @@
 
 {% block extra_scripts %}
 <script>
+    // Track project view
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'view_project', {
+            'project_title': '{{ project.title }}',
+            'project_slug': '{{ project.slug }}',
+            'event_category': 'engagement',
+            'event_label': '{{ project.title }}'
+        });
+    }
+</script>
+<script>
     // Lightbox functionality
     const lightbox = document.getElementById('lightbox');
     const lightboxImage = document.getElementById('lightbox-image');
