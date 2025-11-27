@@ -2,6 +2,17 @@
 
 {% block title %}{{ project.title }} - Craig Mackenzie{% endblock %}
 
+{% block description %}{{ project.short_description or (project.description | striptags)[:160] }}{% endblock %}
+
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ project.title }} | Craig Mackenzie{% endblock %}
+{% block og_description %}{{ project.short_description or (project.description | striptags)[:200] }}{% endblock %}
+{% if project.media and project.media|length > 0 %}
+{% block og_image %}{{ project.media[0].url }}{% endblock %}
+{% endif %}
+
+{% block keywords %}{{ project.title }}, {% if project.tech_stack %}{{ project.tech_stack | join(', ') }}, {% endif %}Craig Mackenzie, portfolio, case study{% endblock %}
+
 {% block content %}
 <article class="pt-32 pb-20 px-6">
     <div class="max-w-4xl mx-auto">
