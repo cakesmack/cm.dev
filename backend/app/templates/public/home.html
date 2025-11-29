@@ -15,16 +15,16 @@
         <div class="fade-in">
             <h1
                 class="text-6xl md:text-7xl font-display font-bold text-charcoal dark:text-white mb-8 tracking-tight leading-tight">
-                Building <span
+                I Build Practical  <span
                     class="text-transparent bg-clip-text bg-gradient-to-r from-muted-blue to-deep-blue dark:from-perplexity-accent dark:to-blue-400">Digital
-                    Systems</span><br />
+                    Tools </span><br />
                 That Work For You
             </h1>
             <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-Automation that saves time. Insights that guide decisions.
+I replace slow, manual processes with easy-to-use systems, automation, and data-driven insights.
             </p>
             <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-16 max-w-3xl mx-auto leading-relaxed">
-                Data-driven. Practical. Built for the real world. </p>
+                Let's Work Together</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <a href="#projects"
                     class="cta-button bg-gradient-to-r from-charcoal via-charcoal-light to-deep-blue text-white px-12 py-5 rounded-xl font-semibold shadow-lg hover:shadow-2xl relative z-10">
@@ -40,109 +40,153 @@ Automation that saves time. Insights that guide decisions.
 
 <!-- Featured Project Section -->
 <section id="featured-project"
-    class="py-24 bg-gradient-to-b from-light-grey to-warm-grey dark:from-perplexity-light dark:to-perplexity-dark scroll-mt-20 relative">
-    <div class="max-w-6xl mx-auto px-6">
-        <div class="fade-in mb-20 text-center">
-            <h2 class="text-5xl md:text-6xl font-display font-bold text-charcoal dark:text-white mb-6 tracking-tight">
-                <span class="relative inline-block">
-                    Featured Project
-                    <svg class="absolute -bottom-2 left-0 w-full h-3" viewBox="0 0 200 12" preserveAspectRatio="none">
-                        <path d="M0,7 Q50,0 100,7 T200,7" fill="none" stroke="#d97706" stroke-width="3" opacity="0.3" />
-                    </svg>
-                </span>
-            </h2>
-            <p class="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">A showcase of my recent work</p>
-        </div>
+    class="py-20 md:py-24 bg-gradient-to-b from-light-grey to-warm-grey dark:from-perplexity-light dark:to-perplexity-dark scroll-mt-20 relative overflow-hidden">
 
+    <!-- Decorative gradient orbs -->
+    <div class="absolute top-20 -right-40 w-96 h-96 bg-muted-blue/10 dark:bg-perplexity-accent/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-40 -left-40 w-80 h-80 bg-deep-blue/5 dark:bg-muted-blue/10 rounded-full blur-3xl"></div>
+
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
         {% if projects and projects|length > 0 %}
         {% set featured_project = projects|selectattr("is_featured")|first %}
 
         {% if featured_project %}
-        <!-- Featured Project - Large Hero Card -->
-        <div class="fade-in">
-            <div
-                class="project-card bg-white dark:bg-perplexity-light rounded-2xl overflow-hidden shadow-xl border border-gray-100 dark:border-gray-800">
-                {% set video_media = featured_project.media|selectattr("media_type", "equalto", "video")|list %}
-                {% set image_media = featured_project.media|selectattr("media_type", "equalto", "image")|list %}
+        {% set video_media = featured_project.media|selectattr("media_type", "equalto", "video")|list %}
+        {% set image_media = featured_project.media|selectattr("media_type", "equalto", "image")|list %}
 
-                <a href="/projects/{{ featured_project.slug }}" class="block">
-                    {% if video_media|length > 0 %}
-                    <video src="{{ video_media[0].url }}" class="w-full h-96 object-cover" controls muted autoplay loop>
-                        Your browser does not support the video tag.
-                    </video>
-                    {% elif image_media|length > 0 %}
-                    <img src="{{ image_media[0].url }}" alt="{{ image_media[0].alt_text }}"
-                        class="w-full h-96 object-cover">
-                    {% else %}
-                    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 h-96"></div>
+        <!-- Premium Two-Column Layout -->
+        <div class="fade-in grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+            <!-- Left Column: Text Content -->
+            <div class="space-y-6">
+                <!-- Featured Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-2 border border-perplexity-accent/30 dark:border-perplexity-accent/50 rounded-full">
+                    <div class="w-2 h-2 bg-perplexity-accent rounded-full animate-pulse"></div>
+                    <span class="text-sm font-medium text-perplexity-accent uppercase tracking-wider">Featured Project</span>
+                </div>
+
+                <!-- Title -->
+                <h2 class="text-4xl md:text-5xl font-display font-bold text-charcoal dark:text-white leading-tight">
+                    {{ featured_project.title }}
+                </h2>
+
+                <!-- Subtitle/Category -->
+                {% if featured_project.tech_stack and featured_project.tech_stack|length > 0 %}
+                <p class="text-lg text-gray-500 dark:text-gray-400 font-medium">
+                    {{ featured_project.tech_stack[0] }} Platform
+                </p>
+                {% endif %}
+
+                <!-- Description -->
+                <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                    {{ featured_project.short_description or (featured_project.description | striptags)[:250] + '...' if (featured_project.description | striptags | length) > 250 else (featured_project.description | striptags) }}
+                </p>
+
+                <!-- Tech Stack Pills -->
+                {% if featured_project.tech_stack %}
+                <div class="flex flex-wrap gap-2 pt-2">
+                    {% for tech in featured_project.tech_stack[:4] %}
+                    <span class="px-3 py-1.5 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg border border-gray-200 dark:border-gray-700">
+                        {{ tech }}
+                    </span>
+                    {% endfor %}
+                    {% if featured_project.tech_stack|length > 4 %}
+                    <span class="px-3 py-1.5 bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg border border-gray-200 dark:border-gray-700">
+                        +{{ featured_project.tech_stack|length - 4 }} more
+                    </span>
                     {% endif %}
-                </a>
-                <div class="p-10">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span
-                            class="px-4 py-2 bg-gradient-to-r from-muted-blue to-deep-blue text-white text-sm font-semibold rounded-full shadow-md">Featured
-                            Project</span>
-                    </div>
-                    <a href="/projects/{{ featured_project.slug }}">
-                        <h3 class="text-4xl font-display font-bold text-charcoal dark:text-white mb-6 hover:text-muted-blue dark:hover:text-perplexity-accent transition-colors">{{
-                            featured_project.title }}</h3>
+                </div>
+                {% endif %}
+
+                <!-- CTA Button -->
+                <div class="pt-4">
+                    <a href="/projects/{{ featured_project.slug }}"
+                        class="inline-flex items-center gap-2 bg-perplexity-accent hover:bg-perplexity-accent/90 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group">
+                        View Case Study
+                        <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
                     </a>
-                    <p class="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed text-lg">
-                        {{ featured_project.short_description or (featured_project.description | striptags)[:200] +
-                        '...' if (featured_project.description | striptags | length) > 200 else
-                        (featured_project.description | striptags) }}
-                    </p>
-                    {% if featured_project.tech_stack %}
-                    <div class="flex flex-wrap gap-2 mb-8">
-                        {% for tech in featured_project.tech_stack %}
-                        <span
-                            class="px-4 py-2 bg-light-grey dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-full">{{
-                            tech }}</span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                    <div class="flex flex-wrap gap-4">
-                        <a href="/projects/{{ featured_project.slug }}"
-                            class="cta-button bg-muted-blue dark:bg-perplexity-accent text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition inline-flex items-center group">
-                            View Case Study
-                            <i data-lucide="arrow-right"
-                                class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"></i>
-                        </a>
-                        <a href="#projects"
-                            class="bg-light-grey dark:bg-gray-800 text-charcoal dark:text-white px-8 py-4 rounded-xl font-semibold shadow-md hover:shadow-lg transition inline-flex items-center group">
-                            View All Projects
-                            <i data-lucide="chevron-down"
-                                class="w-5 h-5 ml-2 group-hover:translate-y-1 transition-transform"></i>
-                        </a>
-                    </div>
                 </div>
             </div>
+
+            <!-- Right Column: Browser Mockup with Screenshot -->
+            <div class="featured-project-mockup">
+                <!-- Browser Window Mockup -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700/50 overflow-hidden transform hover:scale-[1.02] transition-transform duration-500">
+                    <!-- Browser Chrome -->
+                    <div class="bg-gray-100 dark:bg-gray-900 px-4 py-3 flex items-center gap-2 border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex gap-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <div class="flex-1 mx-4">
+                            <div class="bg-white dark:bg-gray-800 rounded-md px-3 py-1 text-xs text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700">
+                                {{ featured_project.title|lower|replace(' ', '-') }}.app
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Screenshot Container -->
+                    <div class="relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+                        {% if video_media|length > 0 %}
+                        <video src="{{ video_media[0].url }}" class="w-full aspect-video object-cover" controls muted autoplay loop>
+                            Your browser does not support the video tag.
+                        </video>
+                        {% elif image_media|length > 0 %}
+                        <img src="{{ image_media[0].url }}"
+                             alt="{{ image_media[0].alt_text or featured_project.title + ' screenshot' }}"
+                             class="w-full aspect-video object-cover">
+                        {% else %}
+                        <!-- Placeholder -->
+                        <div class="aspect-video flex items-center justify-center">
+                            <div class="text-center">
+                                <i data-lucide="monitor" class="w-20 h-20 text-gray-300 dark:text-gray-600 mx-auto mb-4"></i>
+                                <p class="text-gray-400 dark:text-gray-500 font-medium">Project Screenshot</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Scroll to all projects hint -->
+                <div class="mt-6 text-center lg:text-right">
+                    <a href="#projects" class="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-perplexity-accent dark:hover:text-perplexity-accent transition-colors group">
+                        <span>View all projects</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 group-hover:translate-y-0.5 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+
         </div>
         {% else %}
         <!-- Placeholder when no featured project -->
-        <div>
-            <div class="fade-in bg-white rounded-2xl overflow-hidden shadow-sm mb-12">
-                <div class="bg-gradient-to-br from-blue-500 to-indigo-600 h-64"></div>
-                <div class="p-8">
-                    <h3 class="text-3xl font-semibold text-charcoal dark:text-white mb-4">Coming Soon</h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed text-lg">
-                        Featured project will be displayed here once added through the admin panel.
-                    </p>
+        <div class="fade-in text-center py-20">
+            <div class="max-w-2xl mx-auto">
+                <div class="w-20 h-20 bg-gradient-to-br from-perplexity-accent/20 to-muted-blue/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="star" class="w-10 h-10 text-perplexity-accent"></i>
                 </div>
+                <h3 class="text-3xl font-display font-bold text-charcoal dark:text-white mb-4">Featured Project Coming Soon</h3>
+                <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                    A showcase project will be displayed here once marked as featured in the admin panel.
+                </p>
+                <a href="#projects" class="inline-flex items-center gap-2 text-perplexity-accent hover:underline">
+                    Browse all projects
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
             </div>
         </div>
         {% endif %}
         {% else %}
         <!-- Placeholder when no projects at all -->
-        <div>
-            <div class="fade-in bg-white rounded-2xl overflow-hidden shadow-sm mb-12">
-                <div class="bg-gradient-to-br from-blue-500 to-indigo-600 h-64"></div>
-                <div class="p-8">
-                    <h3 class="text-3xl font-semibold text-charcoal dark:text-white mb-4">Coming Soon</h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed text-lg">
-                        Projects will be displayed here once added through the admin panel.
-                    </p>
+        <div class="fade-in text-center py-20">
+            <div class="max-w-2xl mx-auto">
+                <div class="w-20 h-20 bg-gradient-to-br from-perplexity-accent/20 to-muted-blue/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="folder" class="w-10 h-10 text-perplexity-accent"></i>
                 </div>
+                <h3 class="text-3xl font-display font-bold text-charcoal dark:text-white mb-4">No Projects Yet</h3>
+                <p class="text-lg text-gray-600 dark:text-gray-400">
+                    Projects will be displayed here once added through the admin panel.
+                </p>
             </div>
         </div>
         {% endif %}
@@ -182,62 +226,94 @@ Automation that saves time. Insights that guide decisions.
         </div>
 
         <!-- What I Do -->
-        <div class="fade-in mb-24 mt-40">
-            <h3 class="text-3xl font-display font-semibold text-charcoal dark:text-white mb-12 text-center">What I Do
-            </h3>
+        <div class="mb-24 mt-40">
+            <h3 class="text-3xl font-display font-semibold text-charcoal dark:text-white mb-16 text-center fade-in">What I Do</h3>
 
-            <!-- First Row: 3 cards -->
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-                <!-- Workflow Automation -->
-                <div
-                    class="bg-white dark:bg-perplexity-light p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow">
-                    <div
-                        class="w-12 h-12 bg-gradient-to-br from-muted-blue/10 to-deep-blue/10 rounded-xl flex items-center justify-center mb-4">
-                        <i data-lucide="zap" class="w-6 h-6 text-muted-blue"></i>
+            <!-- Three Clean Pillars -->
+            <div class="grid lg:grid-cols-3 gap-12 lg:gap-16">
+
+                <!-- Pillar 1: Workflow Automation -->
+                <div class="fade-in p-8 rounded-2xl border border-white/10 dark:border-white/5 bg-white/5 dark:bg-white/5 hover:bg-white/10 dark:hover:bg-white/10 transition-all duration-300">
+                    <!-- Icon Circle -->
+                    <div class="w-14 h-14 rounded-full bg-muted-blue/10 dark:bg-perplexity-accent/10 flex items-center justify-center mb-6">
+                        <i data-lucide="zap" class="w-7 h-7 text-muted-blue dark:text-perplexity-accent"></i>
                     </div>
-                    <h4 class="text-xl font-display font-semibold text-charcoal dark:text-white mb-3">Workflow
-                        Automation</h4>
-                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
-                        I remove bottlenecks and manual steps from everyday business operations. I map out real-world
-                        processes, redesign them for clarity and speed, and replace paper-heavy tasks with fast,
-                        reliable digital tools that staff actually enjoy using.
-                    </p>
+
+                    <!-- Heading -->
+                    <h4 class="text-xl font-display font-semibold text-charcoal dark:text-white mb-4">Workflow Automation</h4>
+
+                    <!-- Description -->
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+I design simple, reliable digital tools that remove slow, manual steps from day-to-day work. My focus is always the same: reduce friction, increase clarity, and give teams back their time.                    </p>
+
+                    <!-- Bullet Points -->
+                    <ul class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                        <li class="flex items-start gap-2">
+                            <span class="text-perplexity-accent mt-1">•</span>
+                            <span>Replace paper processes with fast digital workflows</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-perplexity-accent mt-1">•</span>
+                            <span>Automate repetitive admin and communication loops</span>
+                        </li>
+                    </ul>
                 </div>
 
-                <!-- Data Intelligence -->
-                <div
-                    class="bg-white dark:bg-perplexity-light p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow">
-                    <div
-                        class="w-12 h-12 bg-gradient-to-br from-accent-amber/10 to-accent-rose/10 rounded-xl flex items-center justify-center mb-4">
-                        <i data-lucide="bar-chart-3" class="w-6 h-6 text-accent-amber"></i>
+                <!-- Pillar 2: Data Intelligence -->
+                <div class="fade-in p-8 rounded-2xl border border-white/10 dark:border-white/5 bg-white/5 dark:bg-white/5 hover:bg-white/10 dark:hover:bg-white/10 transition-all duration-300" style="transition-delay: 0.1s;">
+                    <!-- Icon Circle -->
+                    <div class="w-14 h-14 rounded-full bg-accent-amber/10 dark:bg-accent-amber/10 flex items-center justify-center mb-6">
+                        <i data-lucide="bar-chart-3" class="w-7 h-7 text-accent-amber dark:text-accent-amber"></i>
                     </div>
-                    <h4 class="text-xl font-display font-semibold text-charcoal dark:text-white mb-3">Data Intelligence
-                    </h4>
-                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
-                        I turn scattered spreadsheets and raw operational data into clear insights that actually guide
-                        decisions. Usage analytics, trends, delays, performance signals—everything becomes visible
-                        instead of buried, giving businesses the clarity they've never had before.
-                    </p>
+
+                    <!-- Heading -->
+                    <h4 class="text-xl font-display font-semibold text-charcoal dark:text-white mb-4">Data Intelligence</h4>
+
+                    <!-- Description -->
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+I help businesses understand what their data is actually saying. Instead of scattered spreadsheets, I build clear, practical insights that guide smarter decisions.                    </p>
+
+                    <!-- Bullet Points -->
+                    <ul class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-amber mt-1">•</span>
+                            <span>Usage analytics and performance reports</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-accent-amber mt-1">•</span>
+                            <span>Simple dashboards that highlight trends and issues</span>
+                        </li>
+                    </ul>
                 </div>
 
-                <!-- Custom Business Systems -->
-                <div
-                    class="bg-white dark:bg-perplexity-light p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow">
-                    <div
-                        class="w-12 h-12 bg-gradient-to-br from-deep-blue/10 to-muted-blue/10 rounded-xl flex items-center justify-center mb-4">
-                        <i data-lucide="settings" class="w-6 h-6 text-deep-blue"></i>
+                <!-- Pillar 3: Custom Business Systems -->
+                <div class="fade-in p-8 rounded-2xl border border-white/10 dark:border-white/5 bg-white/5 dark:bg-white/5 hover:bg-white/10 dark:hover:bg-white/10 transition-all duration-300" style="transition-delay: 0.2s;">
+                    <!-- Icon Circle -->
+                    <div class="w-14 h-14 rounded-full bg-deep-blue/10 dark:bg-muted-blue/10 flex items-center justify-center mb-6">
+                        <i data-lucide="settings" class="w-7 h-7 text-deep-blue dark:text-muted-blue"></i>
                     </div>
-                    <h4 class="text-xl font-display font-semibold text-charcoal dark:text-white mb-3">Custom Business
-                        Systems</h4>
-                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
-                        I build complete, tailored systems around how a business really works—no templates, no generic
-                        tools. These platforms connect processes, reduce inconsistencies, and create one central hub
-                        that grows with the business and is easy for non-technical teams to use.
-                    </p>
+
+                    <!-- Heading -->
+                    <h4 class="text-xl font-display font-semibold text-charcoal dark:text-white mb-4">Custom Business Systems</h4>
+
+                    <!-- Description -->
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+I build tailored systems that match how a business really works—not generic off-the-shelf tools. Everything is designed to be clear, efficient, and easy for non-technical teams.                    </p>
+
+                    <!-- Bullet Points -->
+                    <ul class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                        <li class="flex items-start gap-2">
+                            <span class="text-muted-blue mt-1">•</span>
+                            <span>Bring multiple workflows into one clean hub</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-muted-blue mt-1">•</span>
+                            <span>Scale as the business grows without adding complexity</span>
+                        </li>
+                    </ul>
                 </div>
+
             </div>
-
-
         </div>
 
         <!-- Skills & Technologies -->
@@ -451,59 +527,100 @@ Automation that saves time. Insights that guide decisions.
 <section id="projects"
     class="py-24 bg-gradient-to-b from-light-grey to-warm-grey dark:from-perplexity-light dark:to-perplexity-dark relative">
     <div class="max-w-6xl mx-auto px-6">
-        {% if projects and projects|length > 0 %}
-        {% set other_projects = projects|list %}
-
-        {% if other_projects and other_projects|length > 0 %}
         <div class="fade-in mb-12 text-center">
             <h2 class="text-3xl font-display font-semibold text-charcoal dark:text-white mb-12">Project Portfolio</h2>
         </div>
 
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {% for project in other_projects %}
-            <!-- Project Card -->
-            <a href="/projects/{{ project.slug }}"
-                class="project-card fade-in bg-white dark:bg-perplexity-light rounded-2xl overflow-hidden shadow-md border border-gray-100 dark:border-gray-800 block">
-                {% if project.media and project.media|length > 0 %}
-                <img src="{{ project.media[0].url }}" alt="{{ project.media[0].alt_text }}"
-                    class="w-full h-48 object-cover">
-                {% else %}
-                <div class="bg-gradient-to-br from-blue-500 to-indigo-600 h-48"></div>
-                {% endif %}
-                <div class="p-6">
-                    <h3 class="text-2xl font-display font-semibold text-charcoal dark:text-white mb-3">{{ project.title
-                        }}</h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed text-base">
-                        {{ project.short_description or (project.description | striptags)[:150] + '...' if
-                        (project.description | striptags | length) > 150 else (project.description | striptags) }}
-                    </p>
-                    {% if project.tech_stack %}
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        {% for tech in project.tech_stack[:3] %}
-                        <span
-                            class="px-3 py-1 bg-light-grey dark:bg-gray-800 text-xs font-medium text-gray-700 dark:text-gray-300 rounded-full">{{
-                            tech }}</span>
-                        {% endfor %}
-                        {% if project.tech_stack|length > 3 %}
-                        <span
-                            class="px-3 py-1 bg-light-grey dark:bg-gray-800 text-xs font-medium text-gray-700 dark:text-gray-300 rounded-full">+{{
-                            project.tech_stack|length - 3 }}</span>
-                        {% endif %}
-                    </div>
-                    {% endif %}
-                    <span
-                        class="text-muted-blue dark:text-perplexity-accent font-medium inline-flex items-center group">
-                        View Case Study
-                        <i data-lucide="arrow-right"
-                            class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform"></i>
-                    </span>
-                </div>
-            </a>
-            {% endfor %}
-        </div>
+        {% if projects and projects|length > 0 %}
+        <!-- Flow List Container -->
+        <div class="relative max-w-6xl mx-auto">
+            <!-- Vertical Flow Line -->
+            <div class="absolute left-0 top-0 bottom-0 w-0.5 bg-gradient-to-b from-perplexity-accent/30 via-perplexity-accent/60 to-perplexity-accent/30 hidden md:block"></div>
 
-        
-        {% endif %}
+            <!-- Projects List -->
+            <div class="space-y-0" id="portfolio-list">
+                {% for project in projects %}
+                {% set loop_index = loop.index %}
+                {% set project_id = "P-%03d"|format(loop_index) %}
+                {% set tech_string = project.tech_stack|join(' / ') if project.tech_stack else 'Web Development' %}
+                {% set image_media = project.media|selectattr("media_type", "equalto", "image")|list %}
+
+                <!-- Project {{ loop_index }}: {{ project_id }} {{ project.title }} -->
+                <div class="project-item relative" data-project="{{ project_id|lower }}">
+                    <!-- Project Header -->
+                    <div class="project-header cursor-pointer relative md:pl-12 pl-0 pr-6 py-8 transition-all duration-300 hover:bg-gray-800 rounded-lg">
+                        <!-- Flow Line Dot -->
+                        <div class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-perplexity-accent border-4 border-perplexity-dark transition-all duration-300 hidden md:block"></div>
+
+                        <!-- Header Content -->
+                        <div class="flex items-center justify-between gap-4 md:gap-6">
+                            <div class="flex-1 min-w-0 flex items-center">
+                                <div class="flex-1">
+                                    <div class="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-2">
+                                        <span class="font-mono text-sm text-perplexity-accent flex-shrink-0">{{ project_id }}</span>
+                                        <h3 class="text-xl md:text-2xl font-display font-semibold text-gray-100">{{ project.title }}</h3>
+                                    </div>
+                                    <div class="font-mono text-xs text-gray-400">{{ tech_string }}</div>
+                                </div>
+                            </div>
+
+                            <!-- Larger Thumbnail Preview -->
+                            <div class="project-thumbnail-small flex-shrink-0 hidden md:block">
+                                {% if image_media and image_media|length > 0 %}
+                                <div class="w-48 h-32 rounded-lg overflow-hidden border border-gray-700 bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg">
+                                    <img src="{{ image_media[0].url }}" alt="{{ image_media[0].alt_text or project.title }}" class="w-full h-full object-cover">
+                                </div>
+                                {% else %}
+                                <div class="w-48 h-32 rounded-lg overflow-hidden border border-gray-700 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center shadow-lg">
+                                    <i data-lucide="layout-dashboard" class="w-12 h-12 text-perplexity-accent/30"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Expand Icon -->
+                            <div class="project-icon transition-transform duration-300 text-perplexity-accent flex-shrink-0">
+                                <i data-lucide="chevron-down" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project Detail -->
+                    <div class="project-detail overflow-hidden transition-all duration-500" style="max-height: 0;">
+                        <div class="md:pl-12 pl-0 pr-6 py-8 md:border-l-2 border-perplexity-accent/20">
+                            <p class="text-gray-300 leading-relaxed mb-6">
+                                {{ project.short_description or (project.description | striptags)[:200] + '...' if (project.description | striptags | length) > 200 else (project.description | striptags) }}
+                            </p>
+
+                            <!-- Dashboard Image -->
+                            <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl mb-6 overflow-hidden border border-gray-700">
+                                {% if image_media and image_media|length > 0 %}
+                                <img src="{{ image_media[0].url }}" alt="{{ image_media[0].alt_text or project.title }}" class="w-full aspect-video object-cover">
+                                {% else %}
+                                <div class="aspect-video flex items-center justify-center">
+                                    <div class="text-center">
+                                        <i data-lucide="layout-dashboard" class="w-16 h-16 text-perplexity-accent/30 mx-auto mb-2"></i>
+                                        <p class="text-gray-500 text-sm">Dashboard Preview</p>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <a href="/projects/{{ project.slug }}" class="cta-button bg-perplexity-accent text-white px-6 py-3 rounded-xl font-semibold inline-flex items-center gap-2 hover:bg-perplexity-accent/90 transition-all">
+                                View Full Case Study
+                                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+        {% else %}
+        <!-- Placeholder when no projects -->
+        <div class="text-center text-gray-400">
+            <p>No projects available yet.</p>
+        </div>
         {% endif %}
     </div>
 </section>

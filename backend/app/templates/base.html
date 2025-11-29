@@ -343,6 +343,46 @@
             scroll-margin-top: 5rem;
         }
 
+        /* Portfolio Flow List Styling */
+        .project-item .project-header {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .project-item .project-header:hover {
+            transform: translateX(4px);
+        }
+
+        .project-detail {
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .project-icon {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Small thumbnail in header */
+        .project-thumbnail-small {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Hide small thumbnail when project is expanded */
+        .project-item.expanded .project-thumbnail-small {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+        }
+
+        /* Flow line dot animation */
+        .project-header > div:first-child {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        background-color 0.3s ease;
+        }
+
+        /* Active state glow */
+        .project-item.active .project-header > div:first-child {
+            box-shadow: 0 0 20px rgba(34, 179, 193, 0.5);
+        }
+
         /* Prose styling for rich text content */
         .prose {
             color: #4b5563;
@@ -1141,6 +1181,9 @@
             });
         }
     </script>
+
+    <!-- Main JavaScript -->
+    <script src="/static/js/main.js"></script>
 
     {% block extra_scripts %}{% endblock %}
 </body>

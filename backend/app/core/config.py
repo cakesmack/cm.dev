@@ -24,6 +24,11 @@ class Settings(BaseSettings):
     SMTP_FROM_NAME: str = "Craig Mackenzie Portfolio"
     NOTIFICATION_EMAIL: str = "craig@cmack.dev"
 
+    # Cloudinary configuration
+    CLOUDINARY_CLOUD_NAME: str = ""
+    CLOUDINARY_API_KEY: str = ""
+    CLOUDINARY_API_SECRET: str = ""
+
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=True
