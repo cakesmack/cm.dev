@@ -1,0 +1,68 @@
+/* Hero Section Styles - cmack.dev v2.0 */
+
+#home {
+  min-height: 70vh;
+  max-height: 90vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle background texture */
+#home::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+  background-size: 24px 24px;
+  z-index: 1;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.dark #home::after {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+/* Hero gradient orbs - more subtle */
+.hero-orb-1, .hero-orb-2, .hero-orb-3 {
+  animation: float 20s infinite ease-in-out;
+  pointer-events: none;
+}
+
+.hero-orb-1 { animation-delay: 0s; }
+.hero-orb-2 { animation-delay: 5s; }
+.hero-orb-3 { animation-delay: 10s; }
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(30px, -30px); }
+  66% { transform: translate(-20px, 20px); }
+}
+
+/* CTA Button */
+.hero-cta {
+  background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+  padding: 1rem 2.5rem;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: white;
+  box-shadow: 0 4px 20px -4px rgba(52, 152, 219, 0.4);
+  transition: all var(--duration-normal) var(--ease-smooth);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hero-cta:hover {
+  box-shadow: 0 8px 30px -4px rgba(52, 152, 219, 0.6);
+  transform: translateY(-2px);
+}
+
+.hero-cta:active {
+  transform: translateY(0);
+}

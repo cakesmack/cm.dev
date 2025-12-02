@@ -13,98 +13,191 @@
 
 {% block keywords %}{{ project.title }}, {% if project.tech_stack %}{{ project.tech_stack | join(', ') }}, {% endif %}Craig Mackenzie, portfolio, case study{% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="/static/css/project-detail.css">
+{% endblock %}
+
 {% block content %}
-<article class="pt-32 pb-20 px-6">
-    <div class="max-w-4xl mx-auto">
-        <a href="/#projects"
-            class="fade-in text-muted-blue dark:text-perplexity-accent hover:text-charcoal dark:hover:text-white mb-8 inline-flex items-center gap-2 font-medium transition">
-            <i data-lucide="arrow-left" class="w-5 h-5"></i>
-            <span>Back to Projects</span>
-        </a>
+<article class="pt-32 pb-20">
+    <div class="project-detail-container">
+        <!-- Sidebar Navigation (Desktop) -->
+        <aside class="project-sidebar">
+            <nav>
+                <h3>On This Page</h3>
+                <ul class="project-nav-list">
+                    <li class="project-nav-item">
+                        <a href="#overview" class="project-nav-link active">Overview</a>
+                    </li>
+                    {% if project.case_study or project.description %}
+                    <li class="project-nav-item">
+                        <a href="#about-project" class="project-nav-link">About</a>
+                    </li>
+                    {% endif %}
+                    {% if project.tech_stack %}
+                    <li class="project-nav-item">
+                        <a href="#tech-stack" class="project-nav-link">Tech Stack</a>
+                    </li>
+                    {% endif %}
+                    {% if project.metrics and project.metrics|length > 0 %}
+                    <li class="project-nav-item">
+                        <a href="#metrics" class="project-nav-link">Key Metrics</a>
+                    </li>
+                    {% endif %}
+                    {% if project.media and project.media|length > 1 %}
+                    <li class="project-nav-item">
+                        <a href="#gallery" class="project-nav-link">Gallery</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </aside>
 
-        <h1 class="fade-in text-5xl md:text-6xl font-bold text-charcoal dark:text-white mb-4 tracking-tight">{{
-            project.title }}</h1>
+        <!-- Main Content -->
+        <div class="project-content-main">
+            <!-- Mobile Navigation Dropdown -->
+            <div class="project-mobile-nav">
+                <select id="project-mobile-nav-select">
+                    <option value="overview">Overview</option>
+                    {% if project.case_study or project.description %}
+                    <option value="about-project">About</option>
+                    {% endif %}
+                    {% if project.tech_stack %}
+                    <option value="tech-stack">Tech Stack</option>
+                    {% endif %}
+                    {% if project.metrics and project.metrics|length > 0 %}
+                    <option value="metrics">Key Metrics</option>
+                    {% endif %}
+                    {% if project.media and project.media|length > 1 %}
+                    <option value="gallery">Gallery</option>
+                    {% endif %}
+                </select>
+            </div>
 
-        {% if project.date %}
-        <p class="fade-in text-gray-600 dark:text-gray-400 text-lg mb-8">{{ project.date.strftime('%B %Y') }}</p>
-        {% endif %}
+            <!-- Back link -->
+            <a href="/#projects"
+                class="fade-in text-muted-blue dark:text-perplexity-accent hover:text-charcoal dark:hover:text-white mb-8 inline-flex items-center gap-2 font-medium transition">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                <span>Back to Projects</span>
+            </a>
 
-        {% if project.media and project.media|length > 0 %}
-        <div class="fade-in mb-12">
-            <img src="{{ project.media[0].url }}" alt="{{ project.media[0].alt_text }}"
-                class="w-full rounded-2xl shadow-lg lightbox-image cursor-pointer hover:shadow-2xl transition-shadow border border-gray-100 dark:border-gray-800">
-        </div>
-        {% endif %}
+            <!-- Overview Section -->
+            <section id="overview" class="project-section fade-in">
+                <h1 class="text-5xl md:text-6xl font-bold text-charcoal dark:text-white mb-4 tracking-tight">
+                    {{ project.title }}
+                </h1>
 
-        {% if project.tech_stack %}
-        <div class="fade-in flex flex-wrap gap-3 mb-12">
-            {% for tech in project.tech_stack %}
-            <span
-                class="bg-light-grey dark:bg-gray-800 text-charcoal dark:text-gray-300 px-5 py-2 rounded-full text-sm font-medium shadow-sm">{{
-                tech }}</span>
-            {% endfor %}
-        </div>
-        {% endif %}
+                {% if project.date %}
+                <p class="text-gray-600 dark:text-gray-400 text-lg mb-8">
+                    {{ project.date.strftime('%B %Y') }}
+                </p>
+                {% endif %}
 
-        <div class="fade-in prose prose-lg max-w-none text-gray-700 dark:text-gray-300 leading-relaxed">
-            {% if project.case_study %}
-            {{ project.case_study | safe }}
-            {% else %}
-            {{ project.description | safe }}
+                {% if project.media and project.media|length > 0 %}
+                <div class="mb-8">
+                    <img src="{{ project.media[0].url }}"
+                         alt="{{ project.media[0].alt_text or project.title }}"
+                         class="w-full rounded-2xl shadow-lg hover:shadow-2xl transition-shadow border border-gray-100 dark:border-gray-800 lightbox-image cursor-pointer">
+                </div>
+                {% endif %}
+
+                {% if project.short_description %}
+                <p class="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
+                    {{ project.short_description }}
+                </p>
+                {% endif %}
+            </section>
+
+            <!-- About Section -->
+            {% if project.case_study or project.description %}
+            <section id="about-project" class="project-section fade-in">
+                <h2>About the Project</h2>
+                <div class="prose prose-lg max-w-none text-gray-700 dark:text-gray-300 leading-relaxed">
+                    {% if project.case_study %}
+                    {{ project.case_study | safe }}
+                    {% else %}
+                    {{ project.description | safe }}
+                    {% endif %}
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- Tech Stack Section -->
+            {% if project.tech_stack %}
+            <section id="tech-stack" class="project-section fade-in">
+                <h2>Tech Stack</h2>
+                <div class="flex flex-wrap gap-3">
+                    {% for tech in project.tech_stack %}
+                    <span class="bg-light-grey dark:bg-gray-800 text-charcoal dark:text-gray-300 px-5 py-2 rounded-full text-sm font-medium shadow-sm">
+                        {{ tech }}
+                    </span>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- Key Metrics Section -->
+            {% if project.metrics and project.metrics|length > 0 %}
+            <section id="metrics" class="project-section fade-in">
+                <h2>Key Metrics</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    {% for metric in project.metrics %}
+                    <div class="bg-light-grey dark:bg-perplexity-light rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 flex items-start gap-4">
+                        <div class="flex-shrink-0 text-3xl mt-1">
+                            {% if metric.icon_type == 'emoji' %}
+                            {{ metric.icon_value }}
+                            {% else %}
+                            <i data-lucide="{{ metric.icon_value }}"
+                                class="w-8 h-8 text-muted-blue dark:text-perplexity-accent"></i>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <p class="text-3xl font-bold text-charcoal dark:text-white mb-1">
+                                {{ metric.metric_value }}
+                            </p>
+                            <p class="text-gray-600 dark:text-gray-400">
+                                {{ metric.metric_label }}
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- Gallery Section -->
+            {% if project.media|length > 1 %}
+            <section id="gallery" class="project-section fade-in">
+                <h2>Gallery</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    {% for media in project.media[1:] %}
+                    <img src="{{ media.url }}"
+                         alt="{{ media.alt_text or project.title }}"
+                         class="w-full rounded-2xl shadow-sm hover:shadow-lg transition cursor-pointer border border-gray-100 dark:border-gray-800 lightbox-image"
+                         loading="lazy">
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- Project URL -->
+            {% if project.project_url %}
+            <div class="mt-12 fade-in">
+                <a href="{{ project.project_url }}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="cta-button inline-flex items-center gap-2 bg-charcoal dark:bg-perplexity-accent text-white px-8 py-4 rounded-xl font-medium shadow-lg hover:shadow-xl transition">
+                    <span>View Live Project</span>
+                    <i data-lucide="external-link" class="w-5 h-5"></i>
+                </a>
+            </div>
             {% endif %}
         </div>
-
-        {% if project.metrics and project.metrics|length > 0 %}
-        <div
-            class="fade-in mt-12 bg-light-grey dark:bg-perplexity-light rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-800">
-            <h2 class="text-2xl font-bold text-charcoal dark:text-white mb-6">Key Achievements</h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                {% for metric in project.metrics %}
-                <div class="flex items-start gap-4">
-                    <div class="flex-shrink-0 text-3xl mt-1">
-                        {% if metric.icon_type == 'emoji' %}
-                        {{ metric.icon_value }}
-                        {% else %}
-                        <i data-lucide="{{ metric.icon_value }}"
-                            class="w-8 h-8 text-muted-blue dark:text-perplexity-accent"></i>
-                        {% endif %}
-                    </div>
-                    <div>
-                        <p class="text-2xl font-bold text-charcoal dark:text-white">{{ metric.metric_value }}</p>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm">{{ metric.metric_label }}</p>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        {% if project.project_url %}
-        <div class="fade-in mt-12">
-            <a href="{{ project.project_url }}" target="_blank" rel="noopener noreferrer"
-                class="cta-button inline-flex items-center gap-2 bg-charcoal dark:bg-perplexity-accent text-white px-8 py-4 rounded-xl font-medium shadow-lg hover:shadow-xl transition">
-                <span>View Live Project</span>
-                <i data-lucide="external-link" class="w-5 h-5"></i>
-            </a>
-        </div>
-        {% endif %}
-
-        {% if project.media|length > 1 %}
-        <div class="fade-in mt-16">
-            <h2 class="text-3xl font-bold text-charcoal dark:text-white mb-8">Gallery</h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                {% for media in project.media[1:] %}
-                <img src="{{ media.url }}" alt="{{ media.alt_text }}"
-                    class="w-full rounded-2xl shadow-sm hover:shadow-lg transition lightbox-image cursor-pointer border border-gray-100 dark:border-gray-800">
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
     </div>
 </article>
 {% endblock %}
 
 {% block extra_scripts %}
+<script src="/static/js/project-nav.js"></script>
 <script>
     // Track project view
     if (typeof gtag !== 'undefined') {

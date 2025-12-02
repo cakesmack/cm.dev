@@ -1,0 +1,195 @@
+/* Contact Section Styles - cmack.dev v2.0 */
+
+#contact {
+  background: linear-gradient(135deg,
+    rgba(248, 250, 252, 1) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
+}
+
+.dark #contact {
+  background: linear-gradient(135deg,
+    rgba(15, 23, 42, 1) 0%,
+    rgba(30, 41, 59, 1) 100%
+  );
+}
+
+.contact-container {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.contact-form {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.08);
+}
+
+.dark .contact-form {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(71, 85, 105, 0.5);
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.3);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.dark .form-label {
+  color: #e5e7eb;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  color: #1f2937;
+  background: white;
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.dark .form-input,
+.dark .form-textarea {
+  background: rgba(71, 85, 105, 0.2);
+  border-color: rgba(107, 114, 128, 0.5);
+  color: #f3f4f6;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.dark .form-input:focus,
+.dark .form-textarea:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 150px;
+}
+
+.form-submit {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+  color: white;
+  font-weight: 600;
+  font-size: 1.0625rem;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-smooth);
+  box-shadow: 0 4px 12px -2px rgba(52, 152, 219, 0.4);
+}
+
+.form-submit:hover {
+  box-shadow: 0 6px 20px -2px rgba(52, 152, 219, 0.6);
+  transform: translateY(-2px);
+}
+
+.form-submit:active {
+  transform: translateY(0);
+}
+
+.form-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Success/Error messages */
+.form-message {
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.form-message.success {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+
+.dark .form-message.success {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.form-message.error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.dark .form-message.error {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* Contact info pills */
+.contact-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.contact-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: #f3f4f6;
+  color: #4b5563;
+  border-radius: 9999px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.dark .contact-pill {
+  background: rgba(71, 85, 105, 0.5);
+  color: #d1d5db;
+}
+
+.contact-pill:hover {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.dark .contact-pill:hover {
+  background: rgba(71, 85, 105, 0.7);
+  color: #f3f4f6;
+}
+
+.contact-pill svg {
+  width: 18px;
+  height: 18px;
+}
