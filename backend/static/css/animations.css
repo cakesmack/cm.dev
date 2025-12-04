@@ -1,0 +1,42 @@
+/* Animation Utilities - cmack.dev v2.0 */
+
+/* Fade-in animation with consistent timing */
+.fade-in {
+  opacity: 0;
+  animation: fadeInUp var(--duration-slow) var(--ease-smooth) forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger delays for sequential animations */
+.fade-in:nth-child(1) { animation-delay: 0ms; }
+.fade-in:nth-child(2) { animation-delay: var(--stagger-delay); }
+.fade-in:nth-child(3) { animation-delay: calc(var(--stagger-delay) * 2); }
+.fade-in:nth-child(4) { animation-delay: calc(var(--stagger-delay) * 3); }
+.fade-in:nth-child(5) { animation-delay: calc(var(--stagger-delay) * 4); }
+.fade-in:nth-child(6) { animation-delay: calc(var(--stagger-delay) * 5); }
+
+/* Smooth transitions for interactive elements */
+.transition-smooth {
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+/* Hover lift effect */
+.hover-lift {
+  transition: transform var(--duration-normal) var(--ease-smooth),
+              box-shadow var(--duration-normal) var(--ease-smooth);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.1);
+}

@@ -14,6 +14,11 @@ class Project(Base):
     slug = Column(String, unique=True, nullable=False, index=True)
     short_description = Column(String(200), nullable=True)  # Brief preview for cards
     description = Column(Text, nullable=False)  # Full description
+    badge_label = Column(String(50), nullable=True)  # "Internal Tool", "Client Project", etc.
+    purpose = Column(String(200), nullable=True)  # One-sentence purpose
+    summary = Column(Text, nullable=True)  # 2-3 line summary for hero
+    key_features = Column(JSON, nullable=True)  # List of {title: str, description: str}
+    outcome = Column(Text, nullable=True)  # Business impact summary (2-4 sentences)
     case_study = Column(Text, nullable=True)  # Long markdown content
     tech_stack = Column(JSON, nullable=True)  # List of technologies
     project_url = Column(String, nullable=True)

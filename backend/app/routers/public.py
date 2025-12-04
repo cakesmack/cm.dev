@@ -12,7 +12,7 @@ templates = Jinja2Templates(directory="app/templates")
 @router.get("/", response_class=HTMLResponse)
 def home(request: Request, db: Session = Depends(get_db)):
     """Public home page"""
-    projects = project_service.get_projects(db, published_only=True, limit=6)
+    projects = project_service.get_projects(db, published_only=True, limit=100)
     return templates.TemplateResponse("public/home.html", {
         "request": request,
         "projects": projects

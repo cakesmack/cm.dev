@@ -1,0 +1,42 @@
+/* Design Tokens - cmack.dev v2.0 */
+
+:root {
+  /* Spacing Scale */
+  --space-section: 6rem;
+  --space-section-mobile: 3rem;
+  --space-element: 1.5rem;
+  --space-element-mobile: 1rem;
+
+  /* Max Widths */
+  --max-w-content: 64rem; /* max-w-4xl */
+  --max-w-wide: 80rem;    /* max-w-5xl */
+  --max-w-prose: 65ch;
+
+  /* Typography Scale */
+  --text-h1: clamp(2.5rem, 5vw, 3.5rem);
+  --text-h2: clamp(1.875rem, 3vw, 2.25rem);
+  --text-h3: clamp(1.5rem, 2.5vw, 1.875rem);
+  --text-body-lg: 1.25rem;
+  --text-body: 1rem;
+  --text-sm: 0.875rem;
+
+  /* Animation Timing */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Stagger Delay */
+  --stagger-delay: 80ms;
+
+  /* Border Radius */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+}
+
+/* Dark mode overrides if needed */
+.dark {
+  /* Add any dark-mode specific token overrides */
+}

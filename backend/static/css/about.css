@@ -1,0 +1,86 @@
+/* About Section Styles - cmack.dev v2.0 */
+
+#about {
+  background: linear-gradient(180deg,
+    rgba(248, 250, 252, 0) 0%,
+    rgba(248, 250, 252, 1) 50%,
+    rgba(248, 250, 252, 0) 100%
+  );
+}
+
+.dark #about {
+  background: linear-gradient(180deg,
+    rgba(15, 23, 42, 0) 0%,
+    rgba(15, 23, 42, 0.5) 50%,
+    rgba(15, 23, 42, 0) 100%
+  );
+}
+
+/* Visual anchor - tech pattern circle */
+.tech-anchor {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 3rem;
+  position: relative;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(100, 149, 237, 0.1) 0%, rgba(52, 152, 219, 0.15) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(52, 152, 219, 0.2);
+}
+
+.dark .tech-anchor {
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.15) 0%, rgba(100, 149, 237, 0.2) 100%);
+  border-color: rgba(52, 152, 219, 0.3);
+}
+
+/* Diagonal tech lines inside circle */
+.tech-anchor::before,
+.tech-anchor::after {
+  content: '';
+  position: absolute;
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.5), transparent);
+}
+
+.tech-anchor::before {
+  transform: rotate(45deg);
+}
+
+.tech-anchor::after {
+  transform: rotate(-45deg);
+}
+
+/* Icon inside anchor */
+.tech-anchor svg {
+  width: 64px;
+  height: 64px;
+  color: rgba(52, 152, 219, 0.8);
+  z-index: 1;
+}
+
+.dark .tech-anchor svg {
+  color: rgba(52, 152, 219, 1);
+}
+
+/* About text styling */
+.about-text {
+  max-width: 65ch;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+.about-text p {
+  margin-bottom: 1.5rem;
+  color: #4b5563;
+}
+
+.dark .about-text p {
+  color: #d1d5db;
+}
+
+.about-text p:last-child {
+  margin-bottom: 0;
+}

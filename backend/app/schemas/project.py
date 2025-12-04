@@ -1,6 +1,6 @@
 from pydantic import BaseModel, validator
-from datetime import date, datetime
-from typing import Optional, List
+from datetime import date as DateType, datetime as DateTimeType
+from typing import Optional, List, Dict
 import re
 
 
@@ -15,8 +15,8 @@ class ProjectMetricBase(BaseModel):
 class ProjectMetricResponse(ProjectMetricBase):
     id: int
     project_id: int
-    created_at: datetime
-    updated_at: datetime
+    created_at: DateTimeType
+    updated_at: DateTimeType
 
     class Config:
         from_attributes = True
@@ -36,7 +36,7 @@ class ProjectMediaCreate(ProjectMediaBase):
 class ProjectMediaResponse(ProjectMediaBase):
     id: int
     project_id: int
-    created_at: datetime
+    created_at: DateTimeType
 
     class Config:
         from_attributes = True
@@ -47,10 +47,15 @@ class ProjectBase(BaseModel):
     title: str
     short_description: Optional[str] = None
     description: str
+    badge_label: Optional[str] = None
+    purpose: Optional[str] = None
+    summary: Optional[str] = None
+    key_features: Optional[List[Dict[str, str]]] = None
+    outcome: Optional[str] = None
     case_study: Optional[str] = None
     tech_stack: Optional[List[str]] = None
     project_url: Optional[str] = None
-    date: Optional[date] = None
+    date: Optional[DateType] = None
     is_published: bool = False
     is_featured: bool = False
 
@@ -64,10 +69,15 @@ class ProjectUpdate(BaseModel):
     title: Optional[str] = None
     short_description: Optional[str] = None
     description: Optional[str] = None
+    badge_label: Optional[str] = None
+    purpose: Optional[str] = None
+    summary: Optional[str] = None
+    key_features: Optional[List[Dict[str, str]]] = None
+    outcome: Optional[str] = None
     case_study: Optional[str] = None
     tech_stack: Optional[List[str]] = None
     project_url: Optional[str] = None
-    date: Optional[date] = None
+    date: Optional[DateType] = None
     is_published: Optional[bool] = None
     is_featured: Optional[bool] = None
 
@@ -75,8 +85,8 @@ class ProjectUpdate(BaseModel):
 class ProjectResponse(ProjectBase):
     id: int
     slug: str
-    created_at: datetime
-    updated_at: datetime
+    created_at: DateTimeType
+    updated_at: DateTimeType
     media: List[ProjectMediaResponse] = []
     metrics: List[ProjectMetricResponse] = []
 
@@ -90,10 +100,15 @@ class ProjectListResponse(BaseModel):
     slug: str
     short_description: Optional[str] = None
     description: str
+    badge_label: Optional[str] = None
+    purpose: Optional[str] = None
+    summary: Optional[str] = None
+    key_features: Optional[List[Dict[str, str]]] = None
+    outcome: Optional[str] = None
     is_published: bool
     is_featured: bool
-    date: Optional[date] = None
-    created_at: datetime
+    date: Optional[DateType] = None
+    created_at: DateTimeType
 
     class Config:
         from_attributes = True

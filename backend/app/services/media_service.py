@@ -8,12 +8,13 @@ import cloudinary
 import cloudinary.uploader
 from app.models.project import Project, ProjectMedia
 from app.schemas.project import ProjectMediaCreate
+from app.core.config import settings
 
-# Configure Cloudinary from environment variables
+# Configure Cloudinary from settings
 cloudinary.config(
-    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.getenv("CLOUDINARY_API_KEY"),
-    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+    cloud_name=settings.CLOUDINARY_CLOUD_NAME,
+    api_key=settings.CLOUDINARY_API_KEY,
+    api_secret=settings.CLOUDINARY_API_SECRET
 )
 
 ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"}

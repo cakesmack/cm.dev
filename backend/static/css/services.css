@@ -1,0 +1,108 @@
+/* Services Section Styles - cmack.dev v2.0 */
+
+.service-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  border: 1px solid #e5e7eb;
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.dark .service-card {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(71, 85, 105, 0.5);
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
+  border-color: rgba(52, 152, 219, 0.3);
+}
+
+.dark .service-card:hover {
+  box-shadow: 0 12px 24px -8px rgba(52, 152, 219, 0.2);
+  border-color: rgba(52, 152, 219, 0.5);
+}
+
+/* Alternating subtle backgrounds */
+.service-card:nth-child(1) {
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.02), rgba(52, 152, 219, 0.04));
+}
+
+.dark .service-card:nth-child(1) {
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(52, 152, 219, 0.08));
+}
+
+.service-card:nth-child(2) {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.02), rgba(251, 191, 36, 0.04));
+}
+
+.dark .service-card:nth-child(2) {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.05), rgba(251, 191, 36, 0.08));
+}
+
+.service-card:nth-child(3) {
+  background: linear-gradient(135deg, rgba(100, 149, 237, 0.02), rgba(100, 149, 237, 0.04));
+}
+
+.dark .service-card:nth-child(3) {
+  background: linear-gradient(135deg, rgba(100, 149, 237, 0.05), rgba(100, 149, 237, 0.08));
+}
+
+/* Service icon styling */
+.service-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(100, 149, 237, 0.15));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.dark .service-icon {
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(100, 149, 237, 0.25));
+}
+
+.service-icon svg {
+  width: 28px;
+  height: 28px;
+  color: #3498db;
+}
+
+.dark .service-icon svg {
+  color: #60a5fa;
+}
+
+/* Proof bullets */
+.service-proof {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.service-proof li {
+  padding-left: 1.5rem;
+  position: relative;
+  color: #6b7280;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+.dark .service-proof li {
+  color: #9ca3af;
+}
+
+.service-proof li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #3498db;
+  font-weight: bold;
+}
+
+.dark .service-proof li::before {
+  color: #60a5fa;
+}
