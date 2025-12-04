@@ -548,53 +548,91 @@
             </p>
         </div>
 
+        <!-- Featured Project Block -->
+        {% for project in projects %}
+        {% if project.is_published and project.is_featured %}
+        <div class="mb-20 fade-in">
+            <div class="bg-gradient-to-br from-light-grey to-white dark:from-perplexity-light dark:to-perplexity-dark rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-xl">
+                <div class="grid lg:grid-cols-2 gap-0">
+                    <!-- Left: Text and CTA -->
+                    <div class="p-12 flex flex-col justify-center">
+                        {% if project.badge_label %}
+                        <span class="inline-block bg-perplexity-accent/10 text-perplexity-accent px-4 py-2 rounded-full text-sm font-semibold mb-4 w-fit">
+                            Featured: {{ project.badge_label }}
+                        </span>
+                        {% endif %}
+
+                        <h3 class="text-4xl font-bold text-charcoal dark:text-white mb-4">
+                            {{ project.title }}
+                        </h3>
+
+                        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                            {{ project.short_description or project.purpose }}
+                        </p>
+
+                        <a href="/projects/{{ project.slug }}"
+                           class="inline-flex items-center gap-2 bg-perplexity-accent hover:bg-perplexity-accent/90 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all w-fit">
+                            <span>View Case Study</span>
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+
+                    <!-- Right: Image -->
+                    <div class="relative overflow-hidden group lg:order-last order-first">
+                        {% if project.media and project.media|length > 0 %}
+                        <img src="{{ project.media[0].url }}"
+                             alt="{{ project.media[0].alt_text or project.title }}"
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:rotate-2 min-h-[300px]"
+                             loading="lazy">
+                        {% else %}
+                        <div class="w-full h-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center min-h-[300px]">
+                            <i data-lucide="image" class="w-24 h-24 text-gray-400"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+
         <!-- Projects grid -->
         {% if projects and projects|length > 0 %}
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for project in projects %}
             {% if project.is_published and not project.is_featured %}
-            <article class="project-card fade-in">
+            <article class="group bg-white dark:bg-perplexity-light rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 fade-in">
                 <!-- Project image -->
-                <a href="/projects/{{ project.slug }}" class="project-image">
+                <a href="/projects/{{ project.slug }}" class="block">
                     {% if project.media and project.media|length > 0 %}
-                    <img src="{{ project.media[0].url }}"
-                         alt="{{ project.media[0].alt_text or project.title }}"
-                         loading="lazy">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="{{ project.media[0].url }}"
+                             alt="{{ project.media[0].alt_text or project.title }}"
+                             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                             loading="lazy">
+                    </div>
                     {% else %}
-                    <div class="w-full h-full flex items-center justify-center">
-                        <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
+                    <div class="aspect-video bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                        <i data-lucide="image" class="w-16 h-16 text-gray-400"></i>
                     </div>
                     {% endif %}
                 </a>
 
                 <!-- Project content -->
-                <div class="project-content">
-                    <h3 class="project-title">
+                <div class="p-6">
+                    <h3 class="text-2xl font-bold text-charcoal dark:text-white mb-3 group-hover:underline transition-all">
                         <a href="/projects/{{ project.slug }}">{{ project.title }}</a>
                     </h3>
 
-                    <p class="project-description">
-                        {{ project.short_description or (project.description | striptags)[:120] + '...' }}
+                    <p class="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                        {{ project.short_description or (project.description | striptags)[:120] }}
                     </p>
 
-                    <a href="/projects/{{ project.slug }}" class="project-link">
+                    <a href="/projects/{{ project.slug }}"
+                       class="inline-flex items-center gap-2 text-muted-blue dark:text-perplexity-accent font-semibold hover:gap-3 transition-all">
                         <span>View Project</span>
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                        </svg>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     </a>
-
-                    <!-- Tech stack -->
-                    {% if project.tech_stack and project.tech_stack|length > 0 %}
-                    <div class="project-tech">
-                        {% for tech in project.tech_stack[:3] %}
-                        <span class="tech-pill">{{ tech }}</span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
                 </div>
             </article>
             {% endif %}

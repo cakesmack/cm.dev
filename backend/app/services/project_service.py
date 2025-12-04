@@ -56,11 +56,16 @@ def get_project_by_slug(db: Session, slug: str) -> Optional[Project]:
 
 
 def get_projects(db: Session, skip: int = 0, limit: int = 100, published_only: bool = False) -> List[Project]:
-    """Get list of projects"""
+    """Get list of projects - sorted by date (or created_at if no date)"""
+    from sqlalchemy import func
     query = db.query(Project)
     if published_only:
         query = query.filter(Project.is_published == True)
-    return query.order_by(Project.date.desc()).offset(skip).limit(limit).all()
+    # Sort by date if available, otherwise use created_at
+    # COALESCE returns the first non-NULL value
+    return query.order_by(
+        func.coalesce(Project.date, func.date(Project.created_at)).desc()
+    ).offset(skip).limit(limit).all()
 
 
 def update_project(db: Session, project_id: int, project_data: ProjectUpdate) -> Optional[Project]:
